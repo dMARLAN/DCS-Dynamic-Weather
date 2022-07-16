@@ -16,7 +16,7 @@ import java.nio.file.Path;
 
 import static java.lang.System.*;
 
-public class DiscordWebHook {
+public class DiscordWebHookService {
     public static void main(String[] args) throws IOException, URISyntaxException, InterruptedException {
         Gson gson = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
         final String DISCORD_API_KEY;

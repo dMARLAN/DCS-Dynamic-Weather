@@ -9,7 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 @Data
-public class FileHandler {
+public class FileHandlerService {
 
     public String readFile(String dir, String fileName) throws IOException {
         Path dataFilePath = Path.of(dir + fileName);

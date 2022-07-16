@@ -11,7 +11,7 @@ import java.util.Random;
 import static java.lang.System.out;
 
 @NoArgsConstructor
-public class MissionHandler {
+public class MissionHandlerService {
     public String editMission(String mission, AVWXWeather weatherAVWX) throws NoSuchAlgorithmException {
         double qnhInMg = weatherAVWX.getAltimeter().getValue() * 25.4;
         double tempC = weatherAVWX.getTemperature().getValue();

@@ -1,4 +1,4 @@
-package com.marlan.weatherupdate.processor;
+package com.marlan.weatherupdate.service;
 
 import lombok.AllArgsConstructor;
 
@@ -9,7 +9,7 @@ import java.io.InputStream;
 import static java.lang.System.getProperty;
 import static java.lang.System.out;
 
-public class Processor {
+public class SevenZipService {
     public void runProcess(ProcessBuilder pb) throws Exception {
         File processOutput = new File(getProperty("user.dir") + "\\ProcessOutput.txt");
         try {

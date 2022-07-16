@@ -11,14 +11,15 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
 @NoArgsConstructor
-public class AVWXGet {
-    public HttpResponse<String> getRequest(WeatherUpdateData weatherUpdateData) throws URISyntaxException, IOException, InterruptedException {
+public class AVWXClient {
+    HttpClient httpClient = HttpClient.newHttpClient();
+
+    public HttpResponse<String> getWeather(WeatherUpdateData weatherUpdateData) throws URISyntaxException, IOException, InterruptedException {
         HttpRequest getRequest = HttpRequest.newBuilder()
                 .uri(new URI("https://avwx.rest/api/metar/" + weatherUpdateData.getIcao()))
                 .header("Authorization", weatherUpdateData.getAvwxApiKey())
                 .build();
 
-        HttpClient httpClient = HttpClient.newHttpClient();
-        return httpClient.send(getRequest, HttpResponse.BodyHandlers.ofString());
+        return this.httpClient.send(getRequest, HttpResponse.BodyHandlers.ofString());
     }
 }

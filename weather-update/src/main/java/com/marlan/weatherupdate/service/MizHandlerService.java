@@ -1,13 +1,12 @@
 package com.marlan.weatherupdate.service;
 
-import com.marlan.weatherupdate.processor.Processor;
 import lombok.NoArgsConstructor;
 
 import static java.lang.System.getenv;
 import static java.lang.System.out;
 
 @NoArgsConstructor
-public class MizHandler {
+public class MizHandlerService {
     final String sevenZipPath = getenv("ProgramFiles") + "\\7-Zip\\7z.exe";
 
     public void extractMission(String miz) throws Exception {
@@ -20,8 +19,8 @@ public class MizHandler {
                 "mission",
                 "-y"
         );
-        Processor processor = new Processor();
-        processor.runProcess(pb);
+        SevenZipService sevenZipService = new SevenZipService();
+        sevenZipService.runProcess(pb);
     }
 
     public void updateMiz(String miz, String missionFile) throws Exception {
@@ -33,7 +32,7 @@ public class MizHandler {
                 miz,
                 missionFile
         );
-        Processor processor = new Processor();
-        processor.runProcess(pb);
+        SevenZipService sevenZipService = new SevenZipService();
+        sevenZipService.runProcess(pb);
     }
 }
