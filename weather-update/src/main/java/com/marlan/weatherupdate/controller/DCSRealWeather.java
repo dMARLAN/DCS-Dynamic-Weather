@@ -19,7 +19,7 @@ public class DCSRealWeather {
         final Gson gson = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
         final String DIR = getProperty("user.dir") + "\\";
         final String MISSION_FILE_NAME = "mission";
-        
+
         AVWXClient avwxClient = new AVWXClient();
         MizHandlerService mizHandlerService = new MizHandlerService();
         FileHandlerService fileHandlerService = new FileHandlerService();
