@@ -5,27 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="305cf9fa-b08e-490c-a85a-371e0b82f9bd" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/weather-update/src/main/java/com/marlan/weatherupdate/processor/Processor.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/weather-update/src/main/java/com/marlan/weatherupdate/service/AVWXGet.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/weather-update/src/main/java/com/marlan/weatherupdate/service/FileHandler.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/weather-update/src/main/java/com/marlan/weatherupdate/service/MissionHandler.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/weather-update/src/main/java/com/marlan/weatherupdate/utilities/ZuluLocalConverter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/7.2/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.2/executionHistory/executionHistory.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/7.2/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.2/executionHistory/executionHistory.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/7.2/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.2/fileHashes/fileHashes.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/7.2/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.2/fileHashes/fileHashes.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/7.2/fileHashes/resourceHashesCache.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.2/fileHashes/resourceHashesCache.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/d/8/d8733f5336dad4d5abd05c359fd980ea12ed8e89" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/index.pb" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/index.pb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/weather-update/build/classes/java/main/com/marlan/weatherupdate/controller/DCSRealWeather.class" beforeDir="false" afterPath="$PROJECT_DIR$/weather-update/build/classes/java/main/com/marlan/weatherupdate/controller/DCSRealWeather.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/weather-update/build/classes/java/main/com/marlan/weatherupdate/service/MizHandler$InputConsumer.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/weather-update/build/classes/java/main/com/marlan/weatherupdate/service/MizHandler.class" beforeDir="false" afterPath="$PROJECT_DIR$/weather-update/build/classes/java/main/com/marlan/weatherupdate/service/MizHandler.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/weather-update/build/tmp/compileJava/previous-compilation-data.bin" beforeDir="false" afterPath="$PROJECT_DIR$/weather-update/build/tmp/compileJava/previous-compilation-data.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/weather-update/src/main/java/com/marlan/weatherupdate/controller/DCSRealWeather.java" beforeDir="false" afterPath="$PROJECT_DIR$/weather-update/src/main/java/com/marlan/weatherupdate/controller/DCSRealWeather.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/weather-update/src/main/java/com/marlan/weatherupdate/service/MizHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/weather-update/src/main/java/com/marlan/weatherupdate/service/MizHandler.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
