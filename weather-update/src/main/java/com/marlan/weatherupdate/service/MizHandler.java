@@ -1,24 +1,16 @@
 package com.marlan.weatherupdate.service;
 
-import lombok.AllArgsConstructor;
-import lombok.Setter;
+import com.marlan.weatherupdate.processor.Processor;
+import lombok.NoArgsConstructor;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import static java.lang.System.getenv;
+import static java.lang.System.out;
 
-import static java.lang.System.*;
-
+@NoArgsConstructor
 public class MizHandler {
-    String sevenZipPath = getenv("ProgramFiles") + "\\7-Zip\\7z.exe";
-    @Setter private String miz;
-    @Setter private String missionFile;
+    final String sevenZipPath = getenv("ProgramFiles") + "\\7-Zip\\7z.exe";
 
-    public MizHandler(String miz) {
-        this.miz = miz;
-    }
-
-    public void extractMission() throws Exception {
+    public void extractMission(String miz) throws Exception {
         out.println("Extracting mission");
         ProcessBuilder pb = new ProcessBuilder(
                 sevenZipPath,
@@ -28,10 +20,11 @@ public class MizHandler {
                 "mission",
                 "-y"
         );
-        runProcess(pb);
+        Processor processor = new Processor();
+        processor.runProcess(pb);
     }
 
-    public void updateMiz() throws Exception {
+    public void updateMiz(String miz, String missionFile) throws Exception {
         out.println("Updating .miz");
         ProcessBuilder pb = new ProcessBuilder(
                 sevenZipPath,
@@ -40,38 +33,7 @@ public class MizHandler {
                 miz,
                 missionFile
         );
-        runProcess(pb);
-    }
-
-    public void runProcess(ProcessBuilder pb) throws Exception {
-        File processOutput = new File(getProperty("user.dir") + "\\ProcessOutput.txt");
-        try {
-            if (processOutput.createNewFile()) {
-                out.println("File created: " + processOutput.getName());
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        pb.redirectOutput(processOutput);
-        Process p = pb.start();
-        new Thread(new InputConsumer(p.getInputStream())).start();
-        out.println("MizHandler finished with exit code: " + p.waitFor());
-    }
-
-    @AllArgsConstructor
-    public static class InputConsumer implements Runnable {
-        private final InputStream is;
-
-        @Override
-        public void run() {
-            try {
-                int value;
-                while ((value = is.read()) != -1) {
-                    out.print((char) value);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+        Processor processor = new Processor();
+        processor.runProcess(pb);
     }
 }
