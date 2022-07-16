@@ -48,7 +48,7 @@ public class DCSRealWeather {
         AVWXWeather weatherAVWX = gson.fromJson(getResponse.body(), AVWXWeather.class);
         out.println("METAR: " + weatherAVWX.getSanitized());
 
-        String mizPath = DIR + "mission_files\\" + MIZ_NAME;
+        String mizPath = DIR + MIZ_NAME;
         MizHandler mizHandler = new MizHandler(mizPath);
         mizHandler.extractMission();
 

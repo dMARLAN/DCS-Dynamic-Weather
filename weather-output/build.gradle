@@ -2,7 +2,7 @@ plugins {
     id 'java'
 }
 
-group 'com.marlan'
+group 'com.marlan.weather-output'
 version '1.0-SNAPSHOT'
 
 repositories {
