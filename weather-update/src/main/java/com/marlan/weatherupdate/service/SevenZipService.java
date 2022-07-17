@@ -11,7 +11,7 @@ import static java.lang.System.out;
 
 public class SevenZipService {
     public void runProcess(ProcessBuilder pb) throws Exception {
-        File processOutput = new File(getProperty("user.dir") + "\\Logs\\SevenZipService.txt");
+        File processOutput = new File(getProperty("user.dir") + "\\logs\\SevenZipService.txt");
         try {
             if (processOutput.createNewFile()) {
                 out.println("File created: " + processOutput.getName());
