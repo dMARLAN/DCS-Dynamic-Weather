@@ -14,29 +14,29 @@ public class DCSRealWeather {
     public static void main(String[] args) throws Exception {
         final Gson gson = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
         final DirHandler dirHandler = new DirHandler();
-        final String DIR = dirHandler.getWorkingDir(args);
+        final String dir = dirHandler.getWorkingDir(args);
         final String MISSION_FILE_NAME = "mission";
 
         AVWXClient avwxClient = new AVWXClient();
-        MizHandler mizHandler = new MizHandler();
+        MizHandler mizHandler = new MizHandler(dir);
         FileHandler fileHandler = new FileHandler();
         MissionHandler missionHandler = new MissionHandler();
 
-        String dataContent = fileHandler.readFile(DIR, "Data.txt");
+        String dataContent = fileHandler.readFile(dir, "Data.txt");
         WeatherUpdateData weatherUpdateData = gson.fromJson(dataContent, WeatherUpdateData.class);
 
         AVWXWeather weatherAVWX = gson.fromJson(avwxClient.getWeather(weatherUpdateData).body(), AVWXWeather.class);
         out.println("METAR: " + weatherAVWX.getSanitized());
 
-        mizHandler.extractMission(DIR + weatherUpdateData.getMission());
-        String missionContent = fileHandler.readFile(DIR, MISSION_FILE_NAME);
+        mizHandler.extractMission(dir + weatherUpdateData.getMission());
+        String missionContent = fileHandler.readFile(dir, MISSION_FILE_NAME);
 
         String replacedMissionContent = missionHandler.editMission(missionContent, weatherAVWX);
 
-        fileHandler.overwriteFile(DIR, MISSION_FILE_NAME, replacedMissionContent);
+        fileHandler.overwriteFile(dir, MISSION_FILE_NAME, replacedMissionContent);
 
         mizHandler.updateMiz(weatherUpdateData.getMission(), MISSION_FILE_NAME);
 
-        fileHandler.deleteFile(DIR,MISSION_FILE_NAME);
+        fileHandler.deleteFile(dir,MISSION_FILE_NAME);
     }
 }

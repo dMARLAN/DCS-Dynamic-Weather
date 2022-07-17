@@ -1,13 +1,14 @@
 package com.marlan.weatherupdate.service;
 
-import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 
 import static java.lang.System.getenv;
 import static java.lang.System.out;
 
-@NoArgsConstructor
+@AllArgsConstructor
 public class MizHandler {
     final String sevenZipPath = getenv("ProgramFiles") + "\\7-Zip\\7z.exe";
+    final String dir;
 
     public void extractMission(String miz) throws Exception {
         out.println("Extracting mission");
@@ -19,7 +20,7 @@ public class MizHandler {
                 "mission",
                 "-y"
         );
-        SevenZip sevenZip = new SevenZip();
+        SevenZip sevenZip = new SevenZip(dir);
         sevenZip.runProcess(pb);
     }
 
@@ -32,7 +33,7 @@ public class MizHandler {
                 miz,
                 missionFile
         );
-        SevenZip sevenZip = new SevenZip();
+        SevenZip sevenZip = new SevenZip(dir);
         sevenZip.runProcess(pb);
     }
 }
