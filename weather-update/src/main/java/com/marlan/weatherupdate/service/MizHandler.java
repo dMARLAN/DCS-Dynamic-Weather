@@ -13,9 +13,10 @@ public class MizHandler {
         out.println("Extracting mission");
         ProcessBuilder pb = new ProcessBuilder(
                 sevenZipPath,
-                "e",
+                "x",
                 "-tzip",
                 dir+mizName,
+                "-o"+dir,
                 "mission",
                 "-y"
         );
