@@ -24,4 +24,9 @@ public class FileHandlerService {
             e.printStackTrace();
         }
     }
+
+    public void deleteFile(String dir, String fileName){
+        File file = new File(dir + fileName);
+        file.deleteOnExit();
+    }
 }
