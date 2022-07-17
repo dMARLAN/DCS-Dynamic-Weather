@@ -11,8 +11,8 @@ import static java.lang.System.out;
 @AllArgsConstructor
 public class SevenZip {
     private String dir;
-    public void runProcess(ProcessBuilder pb) throws Exception {
-        File processOutput = new File(dir + "\\logs\\SevenZipService.txt");
+    public void runProcess(ProcessBuilder pb) throws IOException, InterruptedException {
+        File processOutput = new File(dir + "logs\\SevenZip.txt");
         try {
             if (processOutput.createNewFile()) {
                 out.println("File created: " + processOutput.getName());
@@ -26,10 +26,7 @@ public class SevenZip {
         out.println("MizHandler finished with exit code: " + p.waitFor());
     }
 
-    @AllArgsConstructor
-    public static class InputConsumer implements Runnable {
-        private final InputStream is;
-
+    public record InputConsumer(InputStream is) implements Runnable {
         @Override
         public void run() {
             try {
