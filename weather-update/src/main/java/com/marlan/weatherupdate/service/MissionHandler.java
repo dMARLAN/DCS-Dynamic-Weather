@@ -11,7 +11,7 @@ import java.util.Random;
 import static java.lang.System.out;
 
 @NoArgsConstructor
-public class MissionHandlerService {
+public class MissionHandler {
     public String editMission(String mission, AVWXWeather weatherAVWX) throws NoSuchAlgorithmException {
         ZuluLocalConverter zuluLocalConverter = new ZuluLocalConverter();
         double qnhInMg = weatherAVWX.getAltimeter().getValue() * 25.4;

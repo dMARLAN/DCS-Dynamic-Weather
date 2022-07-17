@@ -1,6 +1,7 @@
 package com.marlan.weatherupdate.service;
 
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,7 +10,8 @@ import java.io.InputStream;
 import static java.lang.System.getProperty;
 import static java.lang.System.out;
 
-public class SevenZipService {
+@RequiredArgsConstructor
+public class SevenZip {
     public void runProcess(ProcessBuilder pb) throws Exception {
         File processOutput = new File(getProperty("user.dir") + "\\logs\\SevenZipService.txt");
         try {

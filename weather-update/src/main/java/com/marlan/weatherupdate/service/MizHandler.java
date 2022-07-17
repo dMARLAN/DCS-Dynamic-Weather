@@ -6,7 +6,7 @@ import static java.lang.System.getenv;
 import static java.lang.System.out;
 
 @NoArgsConstructor
-public class MizHandlerService {
+public class MizHandler {
     final String sevenZipPath = getenv("ProgramFiles") + "\\7-Zip\\7z.exe";
 
     public void extractMission(String miz) throws Exception {
@@ -19,8 +19,8 @@ public class MizHandlerService {
                 "mission",
                 "-y"
         );
-        SevenZipService sevenZipService = new SevenZipService();
-        sevenZipService.runProcess(pb);
+        SevenZip sevenZip = new SevenZip();
+        sevenZip.runProcess(pb);
     }
 
     public void updateMiz(String miz, String missionFile) throws Exception {
@@ -32,7 +32,7 @@ public class MizHandlerService {
                 miz,
                 missionFile
         );
-        SevenZipService sevenZipService = new SevenZipService();
-        sevenZipService.runProcess(pb);
+        SevenZip sevenZip = new SevenZip();
+        sevenZip.runProcess(pb);
     }
 }
