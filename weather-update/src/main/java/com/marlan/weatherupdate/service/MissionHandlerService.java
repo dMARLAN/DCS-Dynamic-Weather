@@ -23,32 +23,32 @@ public class MissionHandlerService {
         String cloudsPreset = buildCloudsPreset(selectCloudsPresetSuffix(metar));
 
         if (!mission.contains("[\"preset\"]")) {
-            mission = mission.replaceAll("(\\[\"iprecptns\"].*)\n", "[\"iprecptns\"] = 0,\n            [\"preset\"] = \"$cloudsPreset\",\n").replace("$cloudsPreset", cloudsPreset);
+            mission = mission.replaceAll("(\\[\"iprecptns\"].*)\n", "[\"iprecptns\"] = 0,\n            [\"preset\"] = \"\\$cloudsPreset\",\n").replace("$cloudsPreset", cloudsPreset);
         } else {
-            mission = mission.replaceAll("(\\[\"preset\"].*)\n", "[\"preset\"] = \"$cloudsPreset\",\n".replace("$cloudsPreset", cloudsPreset));
+            mission = mission.replaceAll("(\\[\"preset\"].*)\n", "[\"preset\"] = \"\\$cloudsPreset\",\n".replace("$cloudsPreset", cloudsPreset));
         }
         out.println("Clouds Preset set to: " + cloudsPreset);
 
         // TODO: Match Ground only?
-        mission = mission.replaceAll("(\\[\"speed\"].*)\n", "[\"speed\"] = $windSpeed,\n".replace("$windSpeed", Double.toString(windSpeed)));
+        mission = mission.replaceAll("(\\[\"speed\"].*)\n", "[\"speed\"] = \\$windSpeed,\n".replace("$windSpeed", Double.toString(windSpeed)));
         out.println("Wind Speed set to: " + windSpeed + " m/s");
 
-        mission = mission.replaceAll("(\\[\"dir\"].*)\n", "[\"dir\"] = $windDir,\n".replace("$windDir", Double.toString(windDir)));
+        mission = mission.replaceAll("(\\[\"dir\"].*)\n", "[\"dir\"] = \\$windDir,\n".replace("$windDir", Double.toString(windDir)));
         out.println("Wind Direction set to: " + windDir);
 
-        mission = mission.replaceAll("(\\[\"start_time\"].*)\n", "[\"start_time\"] = $startTime,\n".replace("$startTime", Integer.toString(timeInSeconds)));
+        mission = mission.replaceAll("(\\[\"start_time\"].*)\n", "[\"start_time\"] = \\$startTime,\n".replace("$startTime", Integer.toString(timeInSeconds)));
         out.println("Start Time set to: " + timeInSeconds + "s");
 
-        mission = mission.replaceAll("(\\[\"Day\"].*)\n", "[\"Day\"] = $day,\n".replace("$day", Integer.toString(Integer.parseInt(weatherAVWX.getTime().getRepr().substring(0, 2)))));
+        mission = mission.replaceAll("(\\[\"Day\"].*)\n", "[\"Day\"] = \\$day,\n".replace("$day", Integer.toString(Integer.parseInt(weatherAVWX.getTime().getRepr().substring(0, 2)))));
         out.println("Day set to: " + Integer.parseInt(weatherAVWX.getTime().getRepr().substring(0, 2)));
 
-        mission = mission.replaceAll("(\\[\"Month\"].*)\n", "[\"Month\"] = $month,\n".replace("$month", Integer.toString(Integer.parseInt(weatherAVWX.getTime().getDt().substring(5, 7)))));
+        mission = mission.replaceAll("(\\[\"Month\"].*)\n", "[\"Month\"] = \\$month,\n".replace("$month", Integer.toString(Integer.parseInt(weatherAVWX.getTime().getDt().substring(5, 7)))));
         out.println("Month set to: " + Integer.parseInt(weatherAVWX.getTime().getDt().substring(5, 7)));
 
-        mission = mission.replaceAll("(\\[\"temperature\"].*)\n", "[\"temperature\"] = $tempC,\n".replace("$tempC", Double.toString(tempC)));
+        mission = mission.replaceAll("(\\[\"temperature\"].*)\n", "[\"temperature\"] = \\$tempC,\n".replace("$tempC", Double.toString(tempC)));
         out.println("Temperature set to: " + tempC + "C");
 
-        mission = mission.replaceAll("(\\[\"qnh\"].*)\n", "[\"qnh\"] = $qnh,\n".replace("$qnh", Double.toString(qnhInMg)));
+        mission = mission.replaceAll("(\\[\"qnh\"].*)\n", "[\"qnh\"] = \\$qnh,\n".replace("$qnh", Double.toString(qnhInMg)));
         out.println("QNH set to: " + qnhInMg + "inHg");
 
         return mission;
