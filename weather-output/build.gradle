@@ -2,7 +2,7 @@ plugins {
     id 'java'
 }
 
-group 'com.marlan.weather-output'
+group 'com.marlan'
 version '1.0-SNAPSHOT'
 
 repositories {
@@ -11,7 +11,7 @@ repositories {
 
 jar {
     manifest {
-        attributes "Main-Class": "com.marlan.weatheroutput.service.DiscordWebHook"
+        attributes "Main-Class": "com.marlan.weatheroutput.service.DiscordWebHookService"
     }
 
     from {
