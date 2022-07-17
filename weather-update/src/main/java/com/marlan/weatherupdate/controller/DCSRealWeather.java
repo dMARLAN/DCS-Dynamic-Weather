@@ -39,5 +39,7 @@ public class DCSRealWeather {
         fileHandlerService.overwriteFile(DIR, MISSION_FILE_NAME, replacedMissionContent);
 
         mizHandlerService.updateMiz(weatherUpdateData.getMission(), MISSION_FILE_NAME);
+
+        fileHandlerService.deleteFile(DIR,MISSION_FILE_NAME);
     }
 }
