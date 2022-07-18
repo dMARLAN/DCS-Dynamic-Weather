@@ -35,25 +35,25 @@ public class MissionHandler {
         }
         out.println("Clouds Preset set to: " + cloudsPreset);
 
-        mission = mission.replaceAll("\\[\"at8000\"]\\s=\\s{0,25}\\{([^}]*)",
+        mission = mission.replaceAll("\\[\"at8000\"]\s=\s{0,25}\\{([^}]*)",
                 "[\"at8000\"] = \n\t    {\n\t\t[\"speed\"] = $wind8000Speed,\n\t\t[\"dir\"] = $wind8000Dir,\n\t    "
                 .replace("$wind8000Speed", Double.toString(windSpeed))
                 .replace("$wind8000Dir", Double.toString(windDir)));
         out.println("Wind at 8000 set to: " + windSpeed + " m/s, " + windDir + " degrees");
 
-        mission = mission.replaceAll("\\[\"at2000\"]\\s=\\s{0,25}\\{([^}]*)",
+        mission = mission.replaceAll("\\[\"at2000\"]\s=\s{0,25}\\{([^}]*)",
                 "[\"at2000\"] = \n\t    {\n\t\t[\"speed\"] = $wind2000Speed,\n\t\t[\"dir\"] = $wind2000Dir,\n\t    "
                         .replace("$wind2000Speed", Double.toString(windSpeed))
                         .replace("$wind2000Dir", Double.toString(windDir)));
         out.println("Wind at 2000 set to: " + windSpeed + " m/s, " + windDir + " degrees");
 
-        mission = mission.replaceAll("\\[\"atGround\"]\\s=\\s{0,25}\\{([^}]*)",
+        mission = mission.replaceAll("\\[\"atGround\"]\s=\s{0,25}\\{([^}]*)",
                 "[\"atGround\"] = \n\t    {\n\t\t[\"speed\"] = $windGroundSpeed,\n\t\t[\"dir\"] = $windGroundDir,\n\t    "
                         .replace("$windGroundSpeed", Double.toString(windSpeed))
                         .replace("$windGroundDir", Double.toString(windDir)));
         out.println("Wind at Ground set to: " + windSpeed + " m/s, " + windDir + " degrees");
 
-        mission = mission.replaceAll("(\\[\"start_time\"].*)\n", "[\"start_time\"] = \\$startTime,\n".replace("$startTime", Integer.toString(timeInSeconds)));
+        mission = mission.replaceAll("(?<=\\[\"currentKey\"]\s{1,5}=\s{1,5}.{1,100}\n)(.*)", "    [\"start_time\"] = $startTime,".replace("$startTime", Integer.toString(timeInSeconds)));
         out.println("Start Time set to: " + timeInSeconds + "s");
 
         mission = mission.replaceAll("(\\[\"Day\"].*)\n", "[\"Day\"] = \\$day,\n".replace("$day", Integer.toString(Integer.parseInt(weatherAVWX.getTime().getRepr().substring(0, 2)))));
