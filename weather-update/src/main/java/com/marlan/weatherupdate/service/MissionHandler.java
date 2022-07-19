@@ -17,7 +17,7 @@ public class MissionHandler {
         double qnhInMg = weatherAVWX.getAltimeter().getValue() * 25.4;
         double tempC = weatherAVWX.getTemperature().getValue();
         double windSpeed = Math.min(weatherAVWX.getWindSpeed().getValue() / 1.944, 15);
-        double windDir = weatherAVWX.getWindDirection().getValue();
+        double windDir = invertWindDirection(weatherAVWX.getWindDirection().getValue()); // Inverted because DCS is backwards.
         String metar = weatherAVWX.getSanitized();
         int timeInSeconds = ((Integer.parseInt(weatherAVWX.getTime().getRepr().substring(2, 4)) + zuluLocalConverter.zuluToLocalConversion(weatherAVWX.getStation())) % 24) * 3600;
         String cloudsPreset = buildCloudsPreset(selectCloudsPresetSuffix(metar));
@@ -92,5 +92,13 @@ public class MissionHandler {
         if (metar.contains("SCT")) return random.nextInt(10) + 3;
         if (metar.contains("FEW")) return random.nextInt(5) + 1;
         return 0;
+    }
+
+    private double invertWindDirection(double windDirection) {
+        if (windDirection >= 0 && windDirection <= 180) {
+            return windDirection + 180;
+        } else {
+            return windDirection - 180;
+        }
     }
 }
