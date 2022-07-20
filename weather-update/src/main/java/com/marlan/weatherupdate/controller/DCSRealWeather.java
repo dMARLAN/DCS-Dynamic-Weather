@@ -6,6 +6,7 @@ import com.google.gson.GsonBuilder;
 import com.marlan.weatherupdate.model.AVWXWeather;
 import com.marlan.weatherupdate.model.WeatherUpdateData;
 import com.marlan.weatherupdate.service.*;
+import com.marlan.weatherupdate.utilities.DirHandler;
 
 import static java.lang.System.out;
 
@@ -13,8 +14,7 @@ public class DCSRealWeather {
 
     public static void main(String[] args) throws Exception {
         final Gson gson = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
-        final DirHandler dirHandler = new DirHandler();
-        final String dir = dirHandler.getWorkingDir(args);
+        final String dir = DirHandler.getWorkingDir(args);
         final String MISSION_FILE_NAME = "mission";
 
         AVWXClient avwxClient = new AVWXClient();
