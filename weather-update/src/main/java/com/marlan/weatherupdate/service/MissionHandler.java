@@ -1,7 +1,7 @@
 package com.marlan.weatherupdate.service;
 
 import com.marlan.weatherupdate.model.AVWXWeather;
-import com.marlan.weatherupdate.utilities.ZuluLocalConverter;
+import com.marlan.weatherupdate.utilities.ZoneIdFromIcao;
 import lombok.NoArgsConstructor;
 
 import java.security.NoSuchAlgorithmException;
@@ -13,14 +13,12 @@ import static java.lang.System.out;
 @NoArgsConstructor
 public class MissionHandler {
     public String editMission(String mission, AVWXWeather weatherAVWX) throws NoSuchAlgorithmException {
-        ZuluLocalConverter zuluLocalConverter = new ZuluLocalConverter();
-        double qnhInMg = weatherAVWX.getAltimeter().getValue() * 25.4;
+        java.time.ZonedDateTime zonedDateTime = java.time.ZonedDateTime.now(java.time.ZoneId.of(ZoneIdFromIcao.getZoneId(weatherAVWX.getStation())));
+        double qnh_mmHg = weatherAVWX.getAltimeter().getValue() * 25.4;
         double tempC = weatherAVWX.getTemperature().getValue();
         double windSpeed = Math.min(weatherAVWX.getWindSpeed().getValue() / 1.944, 15);
         double windDir = invertWindDirection(weatherAVWX.getWindDirection().getValue()); // Inverted because DCS is backwards.
-        String metar = weatherAVWX.getSanitized();
-        int timeInSeconds = ((Integer.parseInt(weatherAVWX.getTime().getRepr().substring(2, 4)) + zuluLocalConverter.zuluToLocalConversion(weatherAVWX.getStation())) % 24) * 3600;
-        String cloudsPreset = buildCloudsPreset(selectCloudsPresetSuffix(metar));
+        String cloudsPreset = buildCloudsPreset(selectCloudsPresetSuffix(weatherAVWX.getSanitized()));
 
         if (!mission.contains("[\"preset\"]")) {
             mission = mission.replaceAll(
@@ -39,34 +37,37 @@ public class MissionHandler {
                 "[\"at8000\"] =\n            {\n                [\"speed\"] = $wind8000Speed,\n                [\"dir\"] = $wind8000Dir,\n            "
                 .replace("$wind8000Speed", Double.toString(windSpeed))
                 .replace("$wind8000Dir", Double.toString(windDir)));
-        out.println("Wind at 8000 set to: " + windSpeed + " m/s, " + windDir + " degrees");
+        out.println("Wind at 8000 set to: " + windSpeed + " m/s (" + windSpeed * 1.944 + " kts)");
+        out.println("Wind at 8000 set to: " + windDir + " degrees");
 
         mission = mission.replaceAll("\\[\"at2000\"]\\s+=\\s+\\{([^}]*)",
                 "[\"at2000\"] =\n            {\n                [\"speed\"] = $wind2000Speed,\n                [\"dir\"] = $wind2000Dir,\n            "
                         .replace("$wind2000Speed", Double.toString(windSpeed))
                         .replace("$wind2000Dir", Double.toString(windDir)));
-        out.println("Wind at 2000 set to: " + windSpeed + " m/s, " + windDir + " degrees");
+        out.println("Wind at 2000 set to: " + windSpeed + " m/s (" + windSpeed * 1.944 + " kts)");
+        out.println("Wind at 2000 set to: " + windDir + " degrees");
 
         mission = mission.replaceAll("\\[\"atGround\"]\\s+=\\s+\\{([^}]*)",
                 "[\"atGround\"] =\n            {\n                [\"speed\"] = $windGroundSpeed,\n                [\"dir\"] = $windGroundDir,\n            "
                         .replace("$windGroundSpeed", Double.toString(windSpeed))
                         .replace("$windGroundDir", Double.toString(windDir)));
-        out.println("Wind at Ground set to: " + windSpeed + " m/s, " + windDir + " degrees");
+        out.println("Wind at Ground set to: " + windSpeed + " m/s (" + windSpeed * 1.944 + " kts)");
+        out.println("Wind at Ground set to: " + windDir + " degrees");
 
-        mission = mission.replaceAll("(?<=\\[\"currentKey\"]\\s{1,5}=\\s{1,5}.{1,100}\n)(.*)", "    [\"start_time\"] = $startTime,".replace("$startTime", Integer.toString(timeInSeconds)));
-        out.println("Start Time set to: " + timeInSeconds + "s");
+        mission = mission.replaceAll("(?<=\\[\"currentKey\"]\\s{1,5}=\\s{1,5}.{1,100}\n)(.*)", "    [\"start_time\"] = $startTime,".replace("$startTime", Integer.toString(zonedDateTime.getHour()*3600)));
+        out.println("Start Time set to: " + zonedDateTime.getHour()*3600 + "s (" + zonedDateTime.getHour() + "h)");
 
         mission = mission.replaceAll("(\\[\"Day\"].*)\n", "[\"Day\"] = \\$day,\n".replace("$day", Integer.toString(Integer.parseInt(weatherAVWX.getTime().getRepr().substring(0, 2)))));
-        out.println("Day set to: " + Integer.parseInt(weatherAVWX.getTime().getRepr().substring(0, 2)));
+        out.println("Day set to: " + zonedDateTime.getDayOfMonth());
 
         mission = mission.replaceAll("(\\[\"Month\"].*)\n", "[\"Month\"] = \\$month,\n".replace("$month", Integer.toString(Integer.parseInt(weatherAVWX.getTime().getDt().substring(5, 7)))));
-        out.println("Month set to: " + Integer.parseInt(weatherAVWX.getTime().getDt().substring(5, 7)));
+        out.println("Month set to: " + zonedDateTime.getMonthValue());
 
         mission = mission.replaceAll("(\\[\"temperature\"].*)\n", "[\"temperature\"] = \\$tempC,\n".replace("$tempC", Double.toString(tempC)));
         out.println("Temperature set to: " + tempC + "C");
 
-        mission = mission.replaceAll("(\\[\"qnh\"].*)\n", "[\"qnh\"] = \\$qnh,\n".replace("$qnh", Double.toString(qnhInMg)));
-        out.println("QNH set to: " + qnhInMg + "mmHg");
+        mission = mission.replaceAll("(\\[\"qnh\"].*)\n", "[\"qnh\"] = \\$qnh,\n".replace("$qnh", Double.toString(qnh_mmHg)));
+        out.println("QNH set to: " + qnh_mmHg + "mmHg (" + qnh_mmHg/25.4 + "inHg)");
 
         return mission;
     }
