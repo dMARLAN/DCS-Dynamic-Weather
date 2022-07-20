@@ -8,12 +8,12 @@ import static java.lang.System.out;
 public class ZoneIdFromIcao {
     public static String getZoneId(String icao) {
         if (icao.equals("KLSV")) return "America/Los_Angeles"; // Nellis AFB
-        if (icao.equals("OMAM")) return ""; // Al Dhafra AFB
-        if (icao.equals("PGUA")) return ""; // Andersen AFB
-        if (icao.equals("UGSB")) return ""; // Batumi AFB
-        if (icao.equals("LTAG")) return ""; // Incirlik AFB
-        if (icao.equals("EGYP")) return ""; // Mount Pleasant AFB
-        out.println("ZuluLocalConverter: ICAO Unknown, time conversion set to 0");
+        if (icao.equals("OMAM")) return "Asia/Dubai"; // Al Dhafra AFB
+        if (icao.equals("PGUA")) return "Pacific/Guam"; // Andersen AFB
+        if (icao.equals("UGSB")) return "Asia/Tbilisi"; // Batumi AFB
+        if (icao.equals("LTAG")) return "Asia/Damascus"; // Incirlik AFB
+        if (icao.equals("EGYP")) return "Atlantic/Stanley"; // Mount Pleasant AFB
+        out.println("ICAO Unknown, time conversion set to UTC");
         return "UTC";
     }
 }
