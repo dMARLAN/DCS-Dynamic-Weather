@@ -10,7 +10,7 @@ public class MizHandler {
     final String sevenZipPath = getenv("ProgramFiles") + "\\7-Zip\\7z.exe";
 
     public void extractMission(String dir, String mizName) throws Exception {
-        out.println("INFO: Extracting mission from " + dir + "\\" + mizName);
+        out.println("INFO: Extracting mission from " + dir + mizName);
         ProcessBuilder pb = new ProcessBuilder(
                 sevenZipPath,
                 "x",
@@ -25,7 +25,7 @@ public class MizHandler {
     }
 
     public void updateMiz(String dir, String mizName, String missionFile) throws Exception {
-        out.println("INFO: Updating " + dir + "\\" + mizName);
+        out.println("INFO: Updating " + dir + mizName);
         ProcessBuilder pb = new ProcessBuilder(
                 sevenZipPath,
                 "a",
