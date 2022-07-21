@@ -1,78 +1,119 @@
 package com.marlan.weatherupdate.service;
 
-import com.marlan.weatherupdate.model.AVWXWeather;
-import com.marlan.weatherupdate.utilities.ZoneIdFromIcao;
+import com.marlan.weatherupdate.model.metar.AVWXMetar;
+import com.marlan.weatherupdate.model.metar.fields.WindDirection;
+import com.marlan.weatherupdate.model.metar.fields.WindSpeed;
+import com.marlan.weatherupdate.model.station.AVWXStation;
+import com.marlan.weatherupdate.utilities.StationInfo;
 import lombok.NoArgsConstructor;
 
-import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.util.Optional;
 import java.util.Random;
 
 import static java.lang.System.out;
 
 @NoArgsConstructor
 public class MissionHandler {
-    public String editMission(String mission, AVWXWeather weatherAVWX) throws NoSuchAlgorithmException {
-        java.time.ZonedDateTime zonedDateTime = java.time.ZonedDateTime.now(java.time.ZoneId.of(ZoneIdFromIcao.getZoneId(weatherAVWX.getStation())));
-        double qnh_mmHg = weatherAVWX.getAltimeter().getValue() * 25.4;
-        double tempC = weatherAVWX.getTemperature().getValue();
-        double windSpeed = Math.min(weatherAVWX.getWindSpeed().getValue() / 1.944, 15);
-        double windDir = invertWindDirection(weatherAVWX.getWindDirection().getValue()); // Inverted because DCS is backwards.
-        String cloudsPreset = buildCloudsPreset(selectCloudsPresetSuffix(weatherAVWX.getSanitized()));
+    public String editMission(String mission, AVWXMetar metarAVWX, AVWXStation stationAVWX) {
+        java.time.ZonedDateTime zonedDateTime = java.time.ZonedDateTime.now(java.time.ZoneId.of(StationInfo.getZoneId(stationAVWX.getCountry())));
+
+        double qnh_mmHg = metarAVWX.getAltimeter().getValue() * 25.4;
+        double tempC = metarAVWX.getTemperature().getValue();
+
+        Optional<Double> optionalWindSpeed = metarAVWX.getWindSpeed().map(WindSpeed::getValue).orElse(Optional.of(0.0));
+        double windSpeed = optionalWindSpeed.orElse(0.0);
+        Optional<Double> optionalWindDir = metarAVWX.getWindDirection().map(WindDirection::getValue).orElse(Optional.of(0.0));
+        double windDir = optionalWindDir.orElse(0.0);
+
+        double windSpeedGround = getModifiedWindSpeed(1660, windSpeed, stationAVWX); // "Ground" Wind is 33m/100ft but also sets 1660m/5500ft
+        double windSpeed2000 = getModifiedWindSpeed(2000, windSpeed, stationAVWX); // "2000" Wind is 2000m/6600ft
+        double windSpeed8000 = getModifiedWindSpeed(8000, windSpeed, stationAVWX); // "8000" Wind is 8000m/26000ft
+
+        double windDirectionGround = invertWindDirection(windDir); // Wind Direction is backwards in DCS.
+        double windDirection2000 = randomizeWindDirection(windDir);
+        double windDirection8000 = randomizeWindDirection(windDir);
+        String cloudsPreset = buildCloudsPreset(selectCloudsPresetSuffix(metarAVWX.getSanitized()));
 
         if (!mission.contains("[\"preset\"]")) {
             mission = mission.replaceAll(
-                    "(\\[\"iprecptns\"].*)\n",
-                    "[\"iprecptns\"] = 0,\n            [\"preset\"] = \"\\$cloudsPreset\",\n")
+                            "(\\[\"iprecptns\"].*)\n",
+                            "[\"iprecptns\"] = 0,\n            [\"preset\"] = \"\\$cloudsPreset\",\n")
                     .replace("$cloudsPreset", cloudsPreset);
         } else {
             mission = mission.replaceAll(
                     "(\\[\"preset\"].*)\n",
                     "[\"preset\"] = \"\\$cloudsPreset\",\n"
-                    .replace("$cloudsPreset", cloudsPreset));
+                            .replace("$cloudsPreset", cloudsPreset));
         }
-        out.println("Clouds Preset set to: " + cloudsPreset);
+        out.println("INFO: Clouds Preset set to: " + cloudsPreset);
 
         mission = mission.replaceAll("\\[\"at8000\"]\\s+=\\s+\\{([^}]*)",
                 "[\"at8000\"] =\n            {\n                [\"speed\"] = $wind8000Speed,\n                [\"dir\"] = $wind8000Dir,\n            "
-                .replace("$wind8000Speed", Double.toString(windSpeed))
-                .replace("$wind8000Dir", Double.toString(windDir)));
-        out.println("Wind at 8000 set to: " + windSpeed + " m/s (" + windSpeed * 1.944 + " kts)");
-        out.println("Wind at 8000 set to: " + windDir + " degrees");
+                        .replace("$wind8000Speed", Double.toString(windSpeed8000))
+                        .replace("$wind8000Dir", Double.toString(windDirection8000)));
+        out.println("INFO: Wind at 8000 set to: " + Math.floor(windSpeed8000) + " m/s (" + Math.floor(windSpeed8000) * 1.944 + " kts)" + " at " + Math.floor(windDirection8000) + "°");
 
         mission = mission.replaceAll("\\[\"at2000\"]\\s+=\\s+\\{([^}]*)",
                 "[\"at2000\"] =\n            {\n                [\"speed\"] = $wind2000Speed,\n                [\"dir\"] = $wind2000Dir,\n            "
-                        .replace("$wind2000Speed", Double.toString(windSpeed))
-                        .replace("$wind2000Dir", Double.toString(windDir)));
-        out.println("Wind at 2000 set to: " + windSpeed + " m/s (" + windSpeed * 1.944 + " kts)");
-        out.println("Wind at 2000 set to: " + windDir + " degrees");
+                        .replace("$wind2000Speed", Double.toString(windSpeed2000))
+                        .replace("$wind2000Dir", Double.toString(windDirection2000)));
+        out.println("INFO: Wind at 2000 set to: " + Math.floor(windSpeed2000) + " m/s (" + Math.floor(windSpeed2000) * 1.944 + " kts)" + " at " + Math.floor(windDirection2000) + "°");
 
         mission = mission.replaceAll("\\[\"atGround\"]\\s+=\\s+\\{([^}]*)",
                 "[\"atGround\"] =\n            {\n                [\"speed\"] = $windGroundSpeed,\n                [\"dir\"] = $windGroundDir,\n            "
-                        .replace("$windGroundSpeed", Double.toString(windSpeed))
-                        .replace("$windGroundDir", Double.toString(windDir)));
-        out.println("Wind at Ground set to: " + windSpeed + " m/s (" + windSpeed * 1.944 + " kts)");
-        out.println("Wind at Ground set to: " + windDir + " degrees");
+                        .replace("$windGroundSpeed", Double.toString(windSpeedGround))
+                        .replace("$windGroundDir", Double.toString(windDirectionGround)));
+        out.println("INFO: Wind at Ground set to: " + Math.floor(windSpeedGround) + " m/s (" + Math.floor(windSpeedGround) * 1.944 + " kts)" + " at " + Math.floor(windDirectionGround) + "°");
 
-        mission = mission.replaceAll("(?<=\\[\"currentKey\"]\\s{1,5}=\\s{1,5}.{1,100}\n)(.*)", "    [\"start_time\"] = $startTime,".replace("$startTime", Integer.toString(zonedDateTime.getHour()*3600)));
-        out.println("Start Time set to: " + zonedDateTime.getHour()*3600 + "s (" + zonedDateTime.getHour() + "h)");
+        mission = mission.replaceAll("(?<=\\[\"currentKey\"]\\s{1,5}=\\s{1,5}.{1,100}\n)(.*)", "    [\"start_time\"] = $startTime,".replace("$startTime", Integer.toString(zonedDateTime.getHour() * 3600)));
+        out.println("INFO: Start Time set to: " + zonedDateTime.getHour() * 3600 + "s (" + zonedDateTime.getHour() + "h)");
 
-        mission = mission.replaceAll("(\\[\"Day\"].*)\n", "[\"Day\"] = \\$day,\n".replace("$day", Integer.toString(Integer.parseInt(weatherAVWX.getTime().getRepr().substring(0, 2)))));
-        out.println("Day set to: " + zonedDateTime.getDayOfMonth());
+        mission = mission.replaceAll("(\\[\"Day\"].*)\n", "[\"Day\"] = \\$day,\n".replace("$day", Integer.toString(Integer.parseInt(metarAVWX.getTime().getRepr().substring(0, 2)))));
+        out.println("INFO: Day set to: " + zonedDateTime.getDayOfMonth());
 
-        mission = mission.replaceAll("(\\[\"Month\"].*)\n", "[\"Month\"] = \\$month,\n".replace("$month", Integer.toString(Integer.parseInt(weatherAVWX.getTime().getDt().substring(5, 7)))));
-        out.println("Month set to: " + zonedDateTime.getMonthValue());
+        mission = mission.replaceAll("(\\[\"Month\"].*)\n", "[\"Month\"] = \\$month,\n".replace("$month", Integer.toString(Integer.parseInt(metarAVWX.getTime().getDt().substring(5, 7)))));
+        out.println("INFO: Month set to: " + zonedDateTime.getMonthValue());
 
         mission = mission.replaceAll("(\\[\"temperature\"].*)\n", "[\"temperature\"] = \\$tempC,\n".replace("$tempC", Double.toString(tempC)));
-        out.println("Temperature set to: " + tempC + "C");
+        out.println("INFO: Temperature set to: " + tempC + "C");
 
         mission = mission.replaceAll("(\\[\"qnh\"].*)\n", "[\"qnh\"] = \\$qnh,\n".replace("$qnh", Double.toString(qnh_mmHg)));
-        out.println("QNH set to: " + qnh_mmHg + "mmHg (" + qnh_mmHg/25.4 + "inHg)");
+        out.println("INFO: QNH set to: " + Math.floor(qnh_mmHg) + "mmHg (" + Math.floor(qnh_mmHg / 25.4) + "inHg)");
 
         return mission;
     }
 
-    private String buildCloudsPreset(int cloudsPresetSuffix){
+    private double getModifiedWindSpeed(double altitudeMeters, double windSpeedKnots, AVWXStation stationAVWX) {
+        Random random = new SecureRandom();
+        double windSpeedMultiplier;
+        if (altitudeMeters == 1660) {
+            double stationAltitude = stationAVWX.getElevationM();
+            windSpeedMultiplier = Math.abs((0.5 / 1660) * stationAltitude - 1);
+            return windSpeedKnots * windSpeedMultiplier / 1.944;
+        } else if (altitudeMeters == 2000) {
+            windSpeedMultiplier = random.nextGaussian(2, 1);
+            return windSpeedKnots * windSpeedMultiplier / 1.944;
+        } else if (altitudeMeters == 8000) {
+            windSpeedMultiplier = random.nextGaussian(2.5, 1);
+            return windSpeedKnots * windSpeedMultiplier / 1.944;
+        } else {
+            return 0.0;
+        }
+    }
+
+    private double randomizeWindDirection(double windDirection) {
+        Random random = new SecureRandom();
+        double randomizedWindDirection = windDirection + random.nextGaussian(0, 60);
+        if (randomizedWindDirection < 0) {
+            randomizedWindDirection += 360;
+        } else if (randomizedWindDirection > 360) {
+            randomizedWindDirection -= 360;
+        }
+        return randomizedWindDirection;
+    }
+
+    private String buildCloudsPreset(int cloudsPresetSuffix) {
         if (cloudsPresetSuffix == 0) {
             return "nil";
         } else {
@@ -84,8 +125,8 @@ public class MissionHandler {
         }
     }
 
-    private int selectCloudsPresetSuffix(String metar) throws NoSuchAlgorithmException {
-        Random random = SecureRandom.getInstanceStrong();
+    private int selectCloudsPresetSuffix(String metar) {
+        Random random = new SecureRandom();
         if (metar.contains("SKC") || metar.contains("NCD")) return 0;
         if (metar.contains("CLR") || metar.contains("NSC") || metar.contains("CAVOK")) return random.nextInt(3);
         if (metar.contains("OVC")) return random.nextInt(10) + 21;
