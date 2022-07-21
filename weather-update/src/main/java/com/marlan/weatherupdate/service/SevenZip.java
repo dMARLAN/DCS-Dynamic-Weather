@@ -11,6 +11,7 @@ import static java.lang.System.out;
 @AllArgsConstructor
 public class SevenZip {
     private String dir;
+
     public void runProcess(ProcessBuilder pb) throws IOException, InterruptedException {
         File processOutput = new File(dir + "logs\\SevenZip.txt");
         try {
@@ -23,7 +24,11 @@ public class SevenZip {
         pb.redirectOutput(processOutput);
         Process p = pb.start();
         new Thread(new InputConsumer(p.getInputStream())).start();
-        out.println("MizHandler finished with exit code: " + p.waitFor());
+        if (p.waitFor() != 0) {
+            out.println("ERROR: SevenZip process failed with exit code:" + p.waitFor());
+        } else {
+            out.println("INFO: SevenZip process finished successfully");
+        }
     }
 
     public record InputConsumer(InputStream is) implements Runnable {
