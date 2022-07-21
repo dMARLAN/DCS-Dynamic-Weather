@@ -1,4 +1,4 @@
-package com.marlan.weatherupdate.model;
+package com.marlan.weatherupdate.model.metar.fields;
 
 import lombok.Data;
 
