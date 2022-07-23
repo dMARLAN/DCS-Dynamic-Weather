@@ -7,6 +7,5 @@ public class AVWXStation {
     private double elevationFt;
     private double elevationM;
     private double latitude;
-    private double longitude;
     private String country;
 }
