@@ -27,8 +27,9 @@ public class MissionHandler {
         double windSpeed2000 = getModifiedWindSpeed(2000, windSpeed, stationAVWX); // "2000" Wind is 2000m/6600ft
         double windSpeed8000 = getModifiedWindSpeed(8000, windSpeed, stationAVWX); // "8000" Wind is 8000m/26000ft
 
-        double tempC = metarAVWX.getTemperature().flatMap(Temperature::getValue).orElse(Constants.ISA_TEMP_C);
-        double correctedQffInHg = AltimeterHandler.getCorrectedQff(metarAVWX.getAltimeter().getValue(), tempC, stationAVWX);
+        double stationTempC = metarAVWX.getTemperature().flatMap(Temperature::getValue).orElse(Constants.ISA_TEMP_C);
+        double seaLevelTempC = stationTempC + Constants.TEMP_LAPSE_RATE_C * (stationAVWX.getElevationFt() / 1000);
+        double correctedQffInHg = AltimeterHandler.getCorrectedQff(metarAVWX.getAltimeter().getValue(), stationTempC, stationAVWX);
         double qffMmHg = correctedQffInHg * Constants.INHG_TO_MMHG;
 
         double windDirectionGround = invertWindDirection(windDir); // Wind Direction is backwards in DCS.
@@ -77,8 +78,8 @@ public class MissionHandler {
         mission = mission.replaceAll("(\\[\"Month\"].*)\n", "[\"Month\"] = \\$month,\n".replace("$month", Integer.toString(Integer.parseInt(metarAVWX.getTime().getDt().substring(5, 7)))));
         out.println("INFO: Month set to: " + zonedDateTime.getMonthValue());
 
-        mission = mission.replaceAll("(\\[\"temperature\"].*)\n", "[\"temperature\"] = \\$tempC,\n".replace("$tempC", Double.toString(tempC)));
-        out.println("INFO: Temperature set to: " + tempC + " C");
+        mission = mission.replaceAll("(\\[\"temperature\"].*)\n", "[\"temperature\"] = \\$stationTempC,\n".replace("$stationTempC", Double.toString(stationTempC)));
+        out.println("INFO: Station Temperature set to: " + stationTempC + " C" + "/ Sea Level Temperature set to: " + Math.round(seaLevelTempC) + " C");
 
         mission = mission.replaceAll("(\\[\"qnh\"].*)\n", "[\"qnh\"] = \\$qnh,\n".replace("$qnh", Double.toString(qffMmHg))); // DCS actually uses QFF not QNH!
         out.println("INFO: QFF set to: " + qffMmHg + " mmHg (" + qffMmHg * Constants.MMHG_TO_INHG + " inHg)");
