@@ -9,12 +9,9 @@ public class AltimeterHandler {
     public static double getCorrectedQff(double stationQnhInHg, double stationTempC, AVWXStation station) {
         double stationElevFeet = station.getElevationFt();
         double stationLatitude = station.getLatitude();
-        double seaLevelTempC = stationTempC + Constants.TEMP_LAPSE_RATE_C * (stationElevFeet / 1000);
-
-        double pressureAltitude = stationElevFeet - getPressureAltitude(stationQnhInHg);
-        double correctedQfe = qnhToQfe(stationQnhInHg, pressureAltitude);
-
-        return qfeToQff(correctedQfe, seaLevelTempC, stationLatitude, stationElevFeet);
+        double pressureAltitude = getPressureAltitude(stationQnhInHg) + stationElevFeet;
+        double stationQfeInHg = getQfe(pressureAltitude);
+        return getQff(stationQfeInHg, stationTempC, stationLatitude, stationElevFeet + 33);
     }
 
     private static double getPressureAltitude(Double stationQnhInHg) {
@@ -22,12 +19,24 @@ public class AltimeterHandler {
         return 145366.45 * (1 - Math.pow((stationQnhMb / Constants.ISA_PRESSURE_MB), 0.190284));
     }
 
-    private static double qfeToQff(double qfeInHg, double temperatureInCelsius, double stationLatitude, double stationElevFeet) {
+    private static double getQfe(double pressureAltitude) {
+        // https://en.wikipedia.org/wiki/Atmospheric_pressure
+        double h = pressureAltitude * Constants.FEET_TO_METERS;
+        double p0 = 101325; // Sea Level Standard Atmospheric Pressure (Pa)
+        double t0 = 288.16; // Sea Level Standard Temperature (K)
+        double g = 9.80665; // Acceleration of Gravity (m/s^2)
+        double m = 0.02896968; // Molar Mass of Earth's Air (kg/mol)
+        double r0 = 8.314462618; // Universal Gas Constant (J/mol/K)
+        double cp = 1004.68506; // Specific Heat Capacity of Air (J/kg/K)
+
+        return p0 * Math.pow(1-((g*h)/(cp*t0)),(cp*m)/(r0)) * Constants.PA_TO_INHG;
+    }
+
+    private static double getQff(double qfeInHg, double temperatureInCelsius, double stationLatitude, double stationElevFeet) {
         // https://www.metpod.co.uk/calculators/pressure/ -- Swedish Meteorological and Hydrological Institute Method
         double h = stationElevFeet * Constants.FEET_TO_METERS;
         double t1 = getWinterInversionT1(temperatureInCelsius);
-        double inner = 1 - (0.0026373 * Math.cos(stationLatitude));
-        return qfeInHg * Math.pow(Math.E, ((h * 0.034163 * inner) / t1));
+        return qfeInHg * Math.pow(Math.E,((h * 0.034163 * (1-(0.0026373 * Math.cos(stationLatitude)))) / t1));
     }
 
     private static double getWinterInversionT1(double temperatureInCelsius) {
@@ -38,12 +47,6 @@ public class AltimeterHandler {
         } else {
             return 1.07 * temperatureInCelsius + 274.5;
         }
-    }
-
-    private static double qnhToQfe(double qnhInHg, double stationElevFeet) {
-        double qnhMb = qnhInHg * Constants.INHG_TO_MB;
-        double qfeMb = qnhMb - stationElevFeet / 27.4;
-        return qfeMb * Constants.MB_TO_INHG;
     }
 
 }
