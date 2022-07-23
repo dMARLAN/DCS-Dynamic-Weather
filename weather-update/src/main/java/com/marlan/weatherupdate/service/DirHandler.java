@@ -1,4 +1,4 @@
-package com.marlan.weatherupdate.utilities;
+package com.marlan.weatherupdate.service;
 
 import lombok.experimental.UtilityClass;
 
