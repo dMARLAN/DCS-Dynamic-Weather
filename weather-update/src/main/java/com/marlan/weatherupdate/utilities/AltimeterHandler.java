@@ -48,5 +48,4 @@ public class AltimeterHandler {
             return 1.07 * temperatureInCelsius + 274.5;
         }
     }
-
 }
