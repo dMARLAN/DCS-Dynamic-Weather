@@ -17,6 +17,10 @@ public class AVWXMetar {
     private Visibility visibility;
     private Meta meta;
 
+    public Optional<Temperature> getTemperature() {
+        return Optional.ofNullable(this.temperature);
+    }
+
     public Optional<WindSpeed> getWindSpeed() {
         return Optional.ofNullable(this.windSpeed);
     }
