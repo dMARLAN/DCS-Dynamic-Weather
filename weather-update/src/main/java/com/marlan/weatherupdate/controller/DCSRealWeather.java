@@ -4,13 +4,13 @@ import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.marlan.weatherupdate.model.metar.AVWXMetar;
-import com.marlan.weatherupdate.model.metar.fields.WeatherUpdateData;
+import com.marlan.weatherupdate.model.datafile.WeatherUpdateData;
 import com.marlan.weatherupdate.model.station.AVWXStation;
 import com.marlan.weatherupdate.service.AVWXClient;
 import com.marlan.weatherupdate.service.FileHandler;
 import com.marlan.weatherupdate.service.MissionHandler;
 import com.marlan.weatherupdate.service.MizHandler;
-import com.marlan.weatherupdate.utilities.DirHandler;
+import com.marlan.weatherupdate.service.DirHandler;
 
 import static java.lang.System.out;
 
