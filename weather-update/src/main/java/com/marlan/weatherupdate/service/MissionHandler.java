@@ -79,7 +79,7 @@ public class MissionHandler {
         out.println("INFO: Month set to: " + zonedDateTime.getMonthValue());
 
         mission = mission.replaceAll("(\\[\"temperature\"].*)\n", "[\"temperature\"] = \\$stationTempC,\n".replace("$stationTempC", Double.toString(stationTempC)));
-        out.println("INFO: Station Temperature set to: " + stationTempC + " C" + "/ Sea Level Temperature set to: " + Math.round(seaLevelTempC) + " C");
+        out.println("INFO: Station Temperature set to: " + stationTempC + " C" + " / Sea Level Temperature set to: " + Math.round(seaLevelTempC) + " C");
 
         mission = mission.replaceAll("(\\[\"qnh\"].*)\n", "[\"qnh\"] = \\$qnh,\n".replace("$qnh", Double.toString(qffMmHg))); // DCS actually uses QFF not QNH!
         out.println("INFO: QFF set to: " + qffMmHg + " mmHg (" + qffMmHg * Constants.MMHG_TO_INHG + " inHg)");
