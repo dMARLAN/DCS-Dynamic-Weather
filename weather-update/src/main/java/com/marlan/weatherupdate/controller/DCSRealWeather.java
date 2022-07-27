@@ -25,11 +25,12 @@ public class DCSRealWeather {
         MizHandler mizHandler = new MizHandler();
         FileHandler fileHandler = new FileHandler();
 
-        String dataContent = fileHandler.readFile(dir, "Data.txt");
+        String dataContent = fileHandler.readFile(dir, "Data.json");
         WeatherUpdateData weatherUpdateData = gson.fromJson(dataContent, WeatherUpdateData.class);
 
         AVWXMetar metarAVWX = gson.fromJson(avwxClient.getMetar(weatherUpdateData).body(), AVWXMetar.class);
         AVWXStation stationAVWX = gson.fromJson(avwxClient.getStation(weatherUpdateData, metarAVWX).body(), AVWXStation.class);
+        weatherUpdateData.setIcao(stationAVWX.getIcao());
         if (metarAVWX.getMeta().getWarning() != null) {
             out.println("WARNING: " + metarAVWX.getMeta().getWarning());
         }
