@@ -14,8 +14,8 @@ public class FileHandler {
         try {
             Path filePath = Path.of(dir + fileName);
             return Files.readString(filePath);
-        } catch (Exception ioe) {
-            ioe.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return null;
     }
