@@ -17,7 +17,7 @@ public class AVWXClient {
 
     public HttpResponse<String> getMetar(WeatherUpdateData weatherUpdateData) throws URISyntaxException, IOException, InterruptedException {
         HttpRequest getRequest = HttpRequest.newBuilder()
-                .uri(new URI("https://avwx.rest/api/metar/" + weatherUpdateData.getIcao() + "?onfail=nearest"))
+                .uri(new URI("https://avwx.rest/api/metar/" + weatherUpdateData.getStationLatitude() + "," + weatherUpdateData.getStationLongitude() + "?onfail=nearest"))
                 .header("Authorization", weatherUpdateData.getAvwxApiKey())
                 .build();
 
