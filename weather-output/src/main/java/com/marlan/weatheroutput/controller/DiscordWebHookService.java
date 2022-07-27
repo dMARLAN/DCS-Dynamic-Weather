@@ -7,6 +7,7 @@ import com.marlan.weatheroutput.model.WeatherOutputData;
 import com.marlan.weatheroutput.service.DirHandler;
 import com.marlan.weatheroutput.service.DiscordClient;
 import com.marlan.weatheroutput.service.FileHandler;
+import com.marlan.weatheroutput.service.SheetsUpdateValues;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
