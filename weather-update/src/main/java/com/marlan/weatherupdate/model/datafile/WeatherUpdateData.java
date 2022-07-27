@@ -7,7 +7,9 @@ public class WeatherUpdateData {
     private String avwxApiKey;
     private String icao;
     private String mission;
-    private String weatherType;
+    private String discordApiKey;
+    private String metar;
     private String stationLongitude;
     private String stationLatitude;
+    private String weatherType;
 }

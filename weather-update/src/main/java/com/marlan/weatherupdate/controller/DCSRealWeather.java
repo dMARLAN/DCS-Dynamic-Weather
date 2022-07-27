@@ -29,7 +29,7 @@ public class DCSRealWeather {
         AVWXStation stationAVWX = gson.fromJson(avwxClient.getStation(weatherUpdateData, metarAVWX).body(), AVWXStation.class);
 
         weatherUpdateData.setIcao(stationAVWX.getIcao());
-        fileHandler.writeJSON(dir, DATA_FILE, gson.toJson(weatherUpdateData));
+        fileHandler.writeJSON(dir, DATA_FILE, weatherUpdateData);
 
         if (metarAVWX.getMeta().getWarning() != null) {
             out.println("WARNING: " + metarAVWX.getMeta().getWarning());

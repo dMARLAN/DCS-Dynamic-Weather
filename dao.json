@@ -1,1 +1,10 @@
-"{\n  \"avwx_api_key\": \"fOAwfI1KwVUy82NRHT7wfrTWJBv4W4lrWurVmh4HaY4\",\n  \"icao\": \"KLSV\",\n  \"mission\": \"Air_Wing_Nellis_A.miz\",\n  \"weather_type\": \"real\",\n  \"station_longitude\": \"-115.04380774353\",\n  \"station_latitude\": \"36.225662018016\"\n}"
+{
+  "avwx_api_key": "fOAwfI1KwVUy82NRHT7wfrTWJBv4W4lrWurVmh4HaY4",
+  "icao": "KLSV",
+  "mission": "Air_Wing_Nellis_A.miz",
+  "discord_api_key": "https://discord.com/api/webhooks/999352755414110259/JcNOAbj6aQY63wdeI5FbhDtxQQ878sbhUPU9MGNMXFws_CRo6tI9gDVQZvKIf-sG9FYc",
+  "metar": "? 271500Z 00000KT 10SM  CAVOK 21/M20 A2981",
+  "station_longitude": "-115.04380774353",
+  "station_latitude": "36.225662018016",
+  "weather_type": "real"
+}
