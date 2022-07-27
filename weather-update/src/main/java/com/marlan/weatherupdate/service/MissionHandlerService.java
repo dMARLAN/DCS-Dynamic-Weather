@@ -1,5 +1,6 @@
 package com.marlan.weatherupdate.service;
 
+import com.marlan.weatherupdate.model.datafile.DAO;
 import com.marlan.weatherupdate.model.metar.AVWXMetar;
 import com.marlan.weatherupdate.model.metar.fields.Temperature;
 import com.marlan.weatherupdate.model.metar.fields.WindDirection;
@@ -33,12 +34,12 @@ public class MissionHandlerService {
     private final int month;
     private final String metar;
 
-    public MissionHandlerService(String weatherType, AVWXStation stationAVWX, AVWXMetar metarAVWX) {
+    public MissionHandlerService(DAO dao, AVWXStation stationAVWX, AVWXMetar metarAVWX) {
         ZonedDateTime zonedDateTime = ZonedDateTime.now(ZoneId.of(StationInfoUtility.getZoneId(stationAVWX.getCountry())));
 
-        switch (weatherType) {
+        switch (dao.getWeatherType()) {
             case "real" -> {
-                this.hour = zonedDateTime.getHour();
+                this.hour = zonedDateTime.getHour() + dao.getTimeOffset();
                 this.windSpeed = metarAVWX.getWindSpeed().flatMap(WindSpeed::getValue).orElse(0.0);
                 this.windDirection = metarAVWX.getWindDirection().flatMap(WindDirection::getValue).orElse(0.0);
                 this.stationTempC = metarAVWX.getTemperature().flatMap(Temperature::getValue).orElse(ISA_TEMP_C);
