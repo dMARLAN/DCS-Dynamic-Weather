@@ -21,10 +21,13 @@ public class DiscordWebHookService {
         DirHandler dirHandler = new DirHandler();
         FileHandler fileHandler = new FileHandler();
         DiscordClient discordClient = new DiscordClient();
+        final String spreadsheetId = "1BV7CuDKakK00TYXN_fIH1Vo6HqQUtWkEjMLPYy-CgRw";
+        final String spreadsheetRange = "DATA!C56";
 
         String dataFileContent = fileHandler.readFile(dirHandler.getWorkingDir(args), "dao.json");
 
         WeatherOutputData weatherOutputData = gson.fromJson(dataFileContent, WeatherOutputData.class);
+        final String metar = weatherOutputData.getMetar();
 
         String jsonInput = """
                 {
@@ -35,9 +38,9 @@ public class DiscordWebHookService {
                    }
                   ]
                 }
-                """.replace("$METAR", weatherOutputData.getMetar());
+                """.replace("$METAR", metar);
 
-        SheetsUpdateValues.setSheetValue("1BV7CuDKakK00TYXN_fIH1Vo6HqQUtWkEjMLPYy-CgRw", "DATA!C56", weatherOutputData.getMetar());
+        SheetsUpdateValues.setSheetValue(spreadsheetId, spreadsheetRange, metar);
 
         out.println("Response Code: " + discordClient.postChannel(weatherOutputData, jsonInput).statusCode());
     }
