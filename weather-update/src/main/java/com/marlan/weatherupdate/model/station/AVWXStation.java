@@ -8,4 +8,5 @@ public class AVWXStation {
     private double elevationM;
     private double latitude;
     private String country;
+    private String icao;
 }
