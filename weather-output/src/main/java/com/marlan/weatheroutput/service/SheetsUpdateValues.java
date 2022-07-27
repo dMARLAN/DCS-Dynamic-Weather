@@ -30,6 +30,20 @@ public class SheetsUpdateValues {
     private static final List<String> SCOPES = Collections.singletonList(SheetsScopes.SPREADSHEETS);
     private static final String CREDENTIALS_FILE_PATH = "/credentials.json";
 
+    public static void setSheetValue(final String spreadsheetId, final String range, final String value) throws IOException, GeneralSecurityException {
+        final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
+        Sheets service = new Sheets.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
+                .setApplicationName(APPLICATION_NAME)
+                .build();
+
+        ValueRange requestBody = new ValueRange();
+        requestBody.setValues(List.of(List.of(value)));
+        Sheets.Spreadsheets.Values.Update request = service.spreadsheets().values().update(spreadsheetId, range, requestBody);
+        request.setValueInputOption("RAW");
+        UpdateValuesResponse response = request.execute();
+        System.out.println("Sheets Update Response: " + response.toString());
+    }
+
     private static Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT) throws IOException {
         // Load client secrets.
         InputStream in = SheetsUpdateValues.class.getResourceAsStream(CREDENTIALS_FILE_PATH);
@@ -46,22 +60,5 @@ public class SheetsUpdateValues {
                 .build();
         LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(8888).build();
         return new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
-    }
-
-    public static void main(String... args) throws IOException, GeneralSecurityException {
-        // Build a new authorized API client service.
-        final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
-        final String spreadsheetId = "1BV7CuDKakK00TYXN_fIH1Vo6HqQUtWkEjMLPYy-CgRw";
-        final String range = "DATA!C56";
-        Sheets service = new Sheets.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
-                .setApplicationName(APPLICATION_NAME)
-                .build();
-
-        ValueRange requestBody = new ValueRange();
-        requestBody.setValues(List.of(List.of("Hello World!")));
-        Sheets.Spreadsheets.Values.Update request = service.spreadsheets().values().update(spreadsheetId, range, requestBody);
-        request.setValueInputOption("RAW");
-        UpdateValuesResponse response = request.execute();
-        System.out.println("Update values response: " + response.toString());
     }
 }
