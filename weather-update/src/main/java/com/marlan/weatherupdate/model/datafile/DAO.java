@@ -9,6 +9,7 @@ public class DAO {
     private String spreadsheetId;
     private String spreadsheetRange;
     private String mission;
+    private int timeOffset;
     private String icao;
     private String metar;
     private String stationLongitude;
