@@ -1,11 +1,11 @@
 package com.marlan.weatherupdate.utilities;
 
-import lombok.experimental.UtilityClass;
-
 import static java.lang.System.out;
 
-@UtilityClass
-public class StationInfo {
+public class StationInfoUtility {
+    private StationInfoUtility() {
+    }
+
     public static String getZoneId(String country) {
         if (country.equals("US")) return "America/Los_Angeles"; // Nellis AFB
         if (country.equals("AE")) return "Asia/Dubai"; // Al Dhafra AFB
@@ -16,4 +16,5 @@ public class StationInfo {
         out.println("WARNING: Zone unknown, time conversion set to UTC");
         return "UTC";
     }
+
 }
