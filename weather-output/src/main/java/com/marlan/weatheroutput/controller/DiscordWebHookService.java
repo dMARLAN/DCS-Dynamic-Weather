@@ -11,17 +11,18 @@ import com.marlan.weatheroutput.service.SheetsUpdateValues;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.security.GeneralSecurityException;
 
 import static java.lang.System.out;
 
 public class DiscordWebHookService {
-    public static void main(String[] args) throws IOException, URISyntaxException, InterruptedException {
+    public static void main(String[] args) throws IOException, URISyntaxException, InterruptedException, GeneralSecurityException {
         Gson gson = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
         DirHandler dirHandler = new DirHandler();
         FileHandler fileHandler = new FileHandler();
         DiscordClient discordClient = new DiscordClient();
 
-        String dataFileContent = fileHandler.readFile(dirHandler.getWorkingDir(args), "Data.txt");
+        String dataFileContent = fileHandler.readFile(dirHandler.getWorkingDir(args), "dao.json");
 
         WeatherOutputData weatherOutputData = gson.fromJson(dataFileContent, WeatherOutputData.class);
 
@@ -35,6 +36,8 @@ public class DiscordWebHookService {
                   ]
                 }
                 """.replace("$METAR", weatherOutputData.getMetar());
+
+        SheetsUpdateValues.setSheetValue("1BV7CuDKakK00TYXN_fIH1Vo6HqQUtWkEjMLPYy-CgRw", "DATA!C56", weatherOutputData.getMetar());
 
         out.println("Response Code: " + discordClient.postChannel(weatherOutputData, jsonInput).statusCode());
     }
