@@ -24,7 +24,6 @@ public class DCSRealWeather {
         AVWXClient avwxClient = new AVWXClient();
         MizHandler mizHandler = new MizHandler();
         FileHandler fileHandler = new FileHandler();
-        MissionHandler missionHandler = new MissionHandler();
 
         String dataContent = fileHandler.readFile(dir, "Data.txt");
         WeatherUpdateData weatherUpdateData = gson.fromJson(dataContent, WeatherUpdateData.class);
@@ -39,7 +38,8 @@ public class DCSRealWeather {
         mizHandler.extractMission(dir, weatherUpdateData.getMission());
         String missionContent = fileHandler.readFile(dir, MISSION_FILE_NAME);
 
-        String replacedMissionContent = missionHandler.editMission(missionContent, metarAVWX, stationAVWX);
+        MissionHandler missionHandler = new MissionHandler(weatherUpdateData.getWeatherType(), stationAVWX, metarAVWX);
+        String replacedMissionContent = missionHandler.editMission(missionContent);
 
         fileHandler.overwriteFile(dir, MISSION_FILE_NAME, replacedMissionContent);
 
