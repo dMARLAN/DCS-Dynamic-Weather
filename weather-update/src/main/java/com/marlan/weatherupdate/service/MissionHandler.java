@@ -42,7 +42,7 @@ public class MissionHandler {
                 this.windSpeed = metarAVWX.getWindSpeed().flatMap(WindSpeed::getValue).orElse(0.0);
                 this.windDirection = metarAVWX.getWindDirection().flatMap(WindDirection::getValue).orElse(0.0);
                 this.stationTempC = metarAVWX.getTemperature().flatMap(Temperature::getValue).orElse(ISA_TEMP_C);
-                if (metarAVWX.getUnits().getAltimeter().equals("hPa")){
+                if (metarAVWX.getUnits().getAltimeter().equals("hPa")) {
                     this.stationQnh = metarAVWX.getAltimeter().getValue() / INHG_TO_HPA;
                 } else {
                     this.stationQnh = metarAVWX.getAltimeter().getValue();

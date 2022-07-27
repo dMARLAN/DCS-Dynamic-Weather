@@ -1,7 +1,7 @@
 package com.marlan.weatherupdate.service;
 
-import com.marlan.weatherupdate.model.metar.AVWXMetar;
 import com.marlan.weatherupdate.model.datafile.WeatherUpdateData;
+import com.marlan.weatherupdate.model.metar.AVWXMetar;
 import lombok.NoArgsConstructor;
 
 import java.io.IOException;

@@ -7,7 +7,8 @@ public class AltimeterHandler {
     private static final double PA_TO_INHG = 0.000295299830714;
     private static final double ISA_PRESSURE_MB = 1013.25;
 
-    private AltimeterHandler() {}
+    private AltimeterHandler() {
+    }
 
     public static double getCorrectedQff(double stationQnhInHg, double stationTempC, AVWXStation station) {
         double stationElevFeet = station.getElevationFt();
@@ -35,14 +36,14 @@ public class AltimeterHandler {
         double r0 = 8.314462618; // Universal Gas Constant (J/mol/K)
         double cp = 1004.68506; // Specific Heat Capacity of Air (J/kg/K)
 
-        return p0 * Math.pow(1-((g*h)/(cp*t0)),(cp*m)/(r0)) * PA_TO_INHG;
+        return p0 * Math.pow(1 - ((g * h) / (cp * t0)), (cp * m) / (r0)) * PA_TO_INHG;
     }
 
     private static double getQff(double qfeInHg, double temperatureInCelsius, double stationLatitude, double stationElevFeet) {
         // https://www.metpod.co.uk/calculators/pressure/ -- Swedish Meteorological and Hydrological Institute Method
         double h = stationElevFeet * FEET_TO_METERS;
         double t1 = getWinterInversionT1(temperatureInCelsius);
-        return qfeInHg * Math.pow(Math.E,((h * 0.034163 * (1-(0.0026373 * Math.cos(stationLatitude)))) / t1));
+        return qfeInHg * Math.pow(Math.E, ((h * 0.034163 * (1 - (0.0026373 * Math.cos(stationLatitude)))) / t1));
     }
 
     private static double getWinterInversionT1(double temperatureInCelsius) {
