@@ -1,5 +1,7 @@
 package com.marlan.weatherupdate.service;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import lombok.NoArgsConstructor;
 
 import java.io.File;
@@ -24,6 +26,18 @@ public class FileHandler {
         File file = new File(dir + fileName);
         try (FileWriter fileWriter = new FileWriter(file, false)) {
             fileWriter.write(newContent);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void writeJSON(String dir, String fileName, String jsonObject) {
+        File file = new File(dir + fileName);
+        try (FileWriter fileWriter = new FileWriter(file, false)) {
+            Gson gson = new GsonBuilder()
+                    .setPrettyPrinting()
+                    .create();
+            gson.toJson(jsonObject, fileWriter);
         } catch (Exception e) {
             e.printStackTrace();
         }
