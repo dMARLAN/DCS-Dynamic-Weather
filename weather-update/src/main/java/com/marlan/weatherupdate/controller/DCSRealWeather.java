@@ -41,7 +41,7 @@ public class DCSRealWeather {
         MizUtility.extractMission(dir, dao.getMission());
         String missionContent = FileUtility.readFile(dir, MISSION_FILE);
 
-        MissionHandlerService missionHandlerService = new MissionHandlerService(dao.getWeatherType(), stationAVWX, metarAVWX);
+        MissionHandlerService missionHandlerService = new MissionHandlerService(dao, stationAVWX, metarAVWX);
         String replacedMissionContent = missionHandlerService.editMission(missionContent);
 
         FileUtility.overwriteFile(dir, MISSION_FILE, replacedMissionContent);
