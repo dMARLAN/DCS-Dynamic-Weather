@@ -14,7 +14,6 @@ import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.SheetsScopes;
 import com.google.api.services.sheets.v4.model.UpdateValuesResponse;
 import com.google.api.services.sheets.v4.model.ValueRange;
-import com.marlan.weatheroutput.utilities.FileHandler;
 
 import java.io.*;
 import java.security.GeneralSecurityException;
@@ -24,7 +23,7 @@ import java.util.List;
 public class SheetsClient {
     private static final String APPLICATION_NAME = "dcs-weather-output";
     private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
-    private static final String TOKENS_DIRECTORY_PATH = "tokens";
+    private static final String TOKENS_DIRECTORY_NAME = "tokens";
     private static final List<String> SCOPES = Collections.singletonList(SheetsScopes.SPREADSHEETS);
     private static final String CREDENTIALS_FILE_NAME = "credentials.json";
 
@@ -51,7 +50,7 @@ public class SheetsClient {
 
         // Build flow and trigger user authorization request.
         GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(httpTransport, JSON_FACTORY, clientSecrets, SCOPES)
-                .setDataStoreFactory(new FileDataStoreFactory(new java.io.File(TOKENS_DIRECTORY_PATH)))
+                .setDataStoreFactory(new FileDataStoreFactory(new java.io.File(dir + TOKENS_DIRECTORY_NAME)))
                 .setScopes(SCOPES)
                 .setAccessType("online")
                 .build();
