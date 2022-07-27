@@ -16,6 +16,7 @@ public class AVWXMetar {
     private String station;
     private Visibility visibility;
     private Meta meta;
+    private Units units;
 
     public Optional<Temperature> getTemperature() {
         return Optional.ofNullable(this.temperature);
