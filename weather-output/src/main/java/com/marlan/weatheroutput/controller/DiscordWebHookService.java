@@ -34,10 +34,8 @@ public class DiscordWebHookService {
                   ]
                 }
                 """.replace("$METAR", dao.getMetar());
-
-        SheetsClient.setSheetValue(dao.getSpreadsheetId(), dao.getSpreadsheetRange(), dao.getMetar(), dir);
-
         out.println("Response Code: " + DiscordClient.postChannel(dao, jsonInput).statusCode());
+        SheetsClient.setSheetValue(dao.getSpreadsheetId(), dao.getSpreadsheetRange(), dao.getMetar(), dir);
     }
 
 }
