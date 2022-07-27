@@ -1,0 +1,10 @@
+{
+	"avwx_api_key": "fOAwfI1KwVUy82NRHT7wfrTWJBv4W4lrWurVmh4HaY4",
+	"icao": "KLSV",
+	"mission": "Air_Wing_Nellis_B.miz",
+	"discord_api_key": "https://discord.com/api/webhooks/999352755414110259/JcNOAbj6aQY63wdeI5FbhDtxQQ878sbhUPU9MGNMXFws_CRo6tI9gDVQZvKIf-sG9FYc",
+	"metar": "EMPTY",
+	"station_latitude": "41.6",
+	"station_longitude": "41.6",
+	"weather_type": "real"
+}
