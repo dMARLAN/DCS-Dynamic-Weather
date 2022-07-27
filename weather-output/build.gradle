@@ -10,7 +10,8 @@ repositories {
 }
 
 jar {
-    exclude 'META-INF/*.SF', 'META-INF/*.DSA', 'META-INF/*.RSA', 'META-INF/*.MF'
+
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 
     manifest {
         attributes "Main-Class": "com.marlan.weatheroutput.controller.DiscordWebHookService"
