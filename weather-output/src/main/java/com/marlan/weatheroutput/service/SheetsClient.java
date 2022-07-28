@@ -15,22 +15,39 @@ import com.google.api.services.sheets.v4.SheetsScopes;
 import com.google.api.services.sheets.v4.model.UpdateValuesResponse;
 import com.google.api.services.sheets.v4.model.ValueRange;
 
-import java.io.*;
+import java.io.FileReader;
+import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.*;
 
-public class SheetsClient {
+import static java.lang.System.out;
+
+public class SheetsClient implements Callable<String> {
     private static final String APPLICATION_NAME = "dcs-weather-output";
     private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
     private static final String TOKENS_DIRECTORY_NAME = "tokens";
     private static final List<String> SCOPES = Collections.singletonList(SheetsScopes.SPREADSHEETS);
     private static final String CREDENTIALS_FILE_NAME = "credentials.json";
+    private final String spreadsheetId;
+    private final String range;
+    private final String value;
+    private final String dir;
 
-    private SheetsClient() {
+    public SheetsClient(final String spreadsheetId, final String range, final String value, final String dir) {
+        this.spreadsheetId = spreadsheetId;
+        this.range = range;
+        this.value = value;
+        this.dir = dir;
     }
 
-    public static void setSheetValue(final String spreadsheetId, final String range, final String value, final String dir) throws IOException, GeneralSecurityException {
+    @Override
+    public String call() throws Exception {
+        return setSheetValue();
+    }
+
+    private String setSheetValue() throws IOException, GeneralSecurityException {
         final NetHttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
         Sheets service = new Sheets.Builder(httpTransport, JSON_FACTORY, getCredentials(httpTransport, dir))
                 .setApplicationName(APPLICATION_NAME)
@@ -41,10 +58,10 @@ public class SheetsClient {
         Sheets.Spreadsheets.Values.Update request = service.spreadsheets().values().update(spreadsheetId, range, requestBody);
         request.setValueInputOption("RAW");
         UpdateValuesResponse response = request.execute();
-        System.out.println("Sheets Update Response: " + response.toString());
+        return response.toString();
     }
 
-    private static Credential getCredentials(final NetHttpTransport httpTransport, final String dir) throws IOException {
+    private Credential getCredentials(final NetHttpTransport httpTransport, final String dir) throws IOException {
         FileReader reader = new FileReader(dir + CREDENTIALS_FILE_NAME);
         GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, reader);
 
@@ -52,9 +69,10 @@ public class SheetsClient {
         GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(httpTransport, JSON_FACTORY, clientSecrets, SCOPES)
                 .setDataStoreFactory(new FileDataStoreFactory(new java.io.File(dir + TOKENS_DIRECTORY_NAME)))
                 .setScopes(SCOPES)
-                .setAccessType("online")
+                .setAccessType("offline")
                 .build();
         LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(8888).build();
         return new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
     }
+
 }
