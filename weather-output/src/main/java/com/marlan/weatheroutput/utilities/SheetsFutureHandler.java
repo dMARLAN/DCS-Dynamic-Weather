@@ -1,4 +1,6 @@
-package com.marlan.weatheroutput.service;
+package com.marlan.weatheroutput.utilities;
+
+import com.marlan.weatheroutput.service.SheetsClient;
 
 import java.util.concurrent.*;
 
@@ -23,17 +25,19 @@ public class SheetsFutureHandler {
                     return;
                 }
                 try {
-                    out.println("INFO: Waiting for Google Sheets Authorization...");
-                    futureTask.get(30, TimeUnit.SECONDS);
+                    if (!futureTask.isDone()){
+                        out.println("INFO: Waiting for Google Sheets Authorization...");
+                        futureTask.get(20, TimeUnit.SECONDS);
+                    }
                 } catch (TimeoutException e) {
                     out.println("INFO: Google Sheets Update timed out. Skipping.");
-                    System.exit(0);
+                    e.printStackTrace();
+                    System.exit(69); // TODO - Handle this better.
                 } catch (ExecutionException | InterruptedException e) {
                     Thread.currentThread().interrupt();
                     e.printStackTrace();
                 }
             }
-
         }
     }
 }

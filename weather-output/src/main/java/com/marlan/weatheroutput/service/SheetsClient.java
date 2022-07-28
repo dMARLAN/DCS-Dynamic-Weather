@@ -22,8 +22,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.*;
 
-import static java.lang.System.out;
-
 public class SheetsClient implements Callable<String> {
     private static final String APPLICATION_NAME = "dcs-weather-output";
     private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
@@ -31,13 +29,13 @@ public class SheetsClient implements Callable<String> {
     private static final List<String> SCOPES = Collections.singletonList(SheetsScopes.SPREADSHEETS);
     private static final String CREDENTIALS_FILE_NAME = "credentials.json";
     private final String spreadsheetId;
-    private final String range;
+    private final String spreadsheetRange;
     private final String value;
     private final String dir;
 
-    public SheetsClient(final String spreadsheetId, final String range, final String value, final String dir) {
+    public SheetsClient(final String spreadsheetId, final String spreadsheetRange, final String value, final String dir) {
         this.spreadsheetId = spreadsheetId;
-        this.range = range;
+        this.spreadsheetRange = spreadsheetRange;
         this.value = value;
         this.dir = dir;
     }
@@ -55,7 +53,7 @@ public class SheetsClient implements Callable<String> {
 
         ValueRange requestBody = new ValueRange();
         requestBody.setValues(List.of(List.of(value)));
-        Sheets.Spreadsheets.Values.Update request = service.spreadsheets().values().update(spreadsheetId, range, requestBody);
+        Sheets.Spreadsheets.Values.Update request = service.spreadsheets().values().update(spreadsheetId, spreadsheetRange, requestBody);
         request.setValueInputOption("RAW");
         UpdateValuesResponse response = request.execute();
         return response.toString();

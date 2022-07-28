@@ -1,13 +1,11 @@
 package com.marlan.weatheroutput.controller;
 
-import com.google.api.services.sheets.v4.Sheets;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.marlan.weatheroutput.model.DAO;
 import com.marlan.weatheroutput.service.DiscordClient;
-import com.marlan.weatheroutput.service.SheetsClient;
-import com.marlan.weatheroutput.service.SheetsFutureHandler;
+import com.marlan.weatheroutput.utilities.SheetsFutureHandler;
 import com.marlan.weatheroutput.utilities.DirHandler;
 import com.marlan.weatheroutput.utilities.FileHandler;
 
