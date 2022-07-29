@@ -22,23 +22,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.*;
 
-public class SheetsClient implements Callable<String> {
+public record SheetsClient(String spreadsheetId, String spreadsheetRange, String value,
+                           String dir) implements Callable<String> {
     private static final String APPLICATION_NAME = "dcs-weather-output";
     private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
     private static final String TOKENS_DIRECTORY_NAME = "tokens";
     private static final List<String> SCOPES = Collections.singletonList(SheetsScopes.SPREADSHEETS);
     private static final String CREDENTIALS_FILE_NAME = "credentials.json";
-    private final String spreadsheetId;
-    private final String spreadsheetRange;
-    private final String value;
-    private final String dir;
-
-    public SheetsClient(final String spreadsheetId, final String spreadsheetRange, final String value, final String dir) {
-        this.spreadsheetId = spreadsheetId;
-        this.spreadsheetRange = spreadsheetRange;
-        this.value = value;
-        this.dir = dir;
-    }
 
     @Override
     public String call() throws Exception {
@@ -67,6 +57,7 @@ public class SheetsClient implements Callable<String> {
         GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(httpTransport, JSON_FACTORY, clientSecrets, SCOPES)
                 .setDataStoreFactory(new FileDataStoreFactory(new java.io.File(dir + TOKENS_DIRECTORY_NAME)))
                 .setScopes(SCOPES)
+                .setApprovalPrompt("force")
                 .setAccessType("offline")
                 .build();
         LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(8888).build();
