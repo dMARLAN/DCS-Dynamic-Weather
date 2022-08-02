@@ -17,28 +17,39 @@ import com.google.api.services.sheets.v4.model.ValueRange;
 
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.*;
 
-public record SheetsClient(String spreadsheetId, String spreadsheetRange, String value,
-                           String dir) implements Callable<String> {
-    private static final String APPLICATION_NAME = "dcs-weather-output";
+public class SheetsClient {
+    private final String spreadsheetId;
+    private final String spreadsheetRange;
+    private final String value;
+    private final String dir;
+    private final String applicationName;
     private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
     private static final String TOKENS_DIRECTORY_NAME = "tokens";
     private static final List<String> SCOPES = Collections.singletonList(SheetsScopes.SPREADSHEETS);
     private static final String CREDENTIALS_FILE_NAME = "credentials.json";
 
-    @Override
-    public String call() throws Exception {
-        return setSheetValue();
+    public SheetsClient(String spreadsheetId, String spreadsheetRange, String value, String dir, String applicationName) {
+        this.spreadsheetId = spreadsheetId;
+        this.spreadsheetRange = spreadsheetRange;
+        this.value = value;
+        this.dir = dir;
+        this.applicationName = applicationName;
     }
 
-    private String setSheetValue() throws IOException, GeneralSecurityException {
+    public String setSheetValue() throws IOException, GeneralSecurityException {
+        if (!Files.exists(Paths.get(CREDENTIALS_FILE_NAME))){
+            return "ERROR: Credentials file not found";
+        }
+
         final NetHttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
         Sheets service = new Sheets.Builder(httpTransport, JSON_FACTORY, getCredentials(httpTransport, dir))
-                .setApplicationName(APPLICATION_NAME)
+                .setApplicationName(applicationName)
                 .build();
 
         ValueRange requestBody = new ValueRange();
@@ -51,6 +62,7 @@ public record SheetsClient(String spreadsheetId, String spreadsheetRange, String
 
     private Credential getCredentials(final NetHttpTransport httpTransport, final String dir) throws IOException {
         FileReader reader = new FileReader(dir + CREDENTIALS_FILE_NAME);
+
         GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, reader);
 
         // Build flow and trigger user authorization request.
