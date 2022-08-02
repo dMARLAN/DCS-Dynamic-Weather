@@ -11,7 +11,7 @@ public class SevenZipUtility {
     }
 
     public static void runProcess(ProcessBuilder pb, String dir) throws IOException, InterruptedException {
-        File processOutput = new File(dir + "logs\\SevenZip.txt");
+        File processOutput = new File(dir + "logs\\SevenZip.log");
         try {
             if (processOutput.createNewFile()) {
                 out.println("File created: " + processOutput.getName());
