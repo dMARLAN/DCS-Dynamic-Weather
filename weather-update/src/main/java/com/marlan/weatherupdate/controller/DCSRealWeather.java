@@ -27,8 +27,16 @@ public class DCSRealWeather {
         String dataContent = FileUtility.readFile(dir, DATA_FILE);
         DAO dao = gson.fromJson(dataContent, DAO.class);
 
-        AVWXMetar metarAVWX = gson.fromJson(avwxClient.getMetar(dao).body(), AVWXMetar.class);
-        AVWXStation stationAVWX = gson.fromJson(avwxClient.getStation(dao, metarAVWX).body(), AVWXStation.class);
+        AVWXMetar metarAVWX;
+        AVWXStation stationAVWX;
+
+        try {
+            metarAVWX = gson.fromJson(avwxClient.getMetar(dao).body(), AVWXMetar.class);
+            stationAVWX = gson.fromJson(avwxClient.getStation(dao, metarAVWX).body(), AVWXStation.class);
+        } catch (IllegalArgumentException e) {
+            out.println("ERROR: " + e.getMessage());
+            return;
+        }
 
         dao.setIcao(stationAVWX.getIcao());
         FileUtility.writeJSON(dir, DATA_FILE, dao);
