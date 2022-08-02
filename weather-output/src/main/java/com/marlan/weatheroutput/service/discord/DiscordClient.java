@@ -1,4 +1,4 @@
-package com.marlan.weatheroutput.service;
+package com.marlan.weatheroutput.service.discord;
 
 import com.marlan.weatheroutput.model.DAO;
 
