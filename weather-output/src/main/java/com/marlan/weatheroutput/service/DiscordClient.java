@@ -9,20 +9,25 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
+import static java.lang.System.out;
+
 public class DiscordClient {
     private static final HttpClient httpClient = HttpClient.newHttpClient();
 
     private DiscordClient() {
     }
 
-    public static HttpResponse<String> postChannel(DAO dao, String message) throws URISyntaxException, IOException, InterruptedException {
-        HttpRequest postRequest = HttpRequest.newBuilder()
-                .uri(new URI(dao.getDiscordApiKey()))
-                .header("Content-Type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString(message))
-                .build();
-
-        return httpClient.send(postRequest, HttpResponse.BodyHandlers.ofString());
+    public static void post(DAO dao, String message) throws URISyntaxException, IOException, InterruptedException {
+        if (dao.getDiscordApiKey().length() == 0) {
+            out.println("INFO: Discord API Key is empty, skipping Discord Webhook");
+        } else {
+            HttpRequest postRequest = HttpRequest.newBuilder()
+                    .uri(new URI(dao.getDiscordApiKey()))
+                    .header("Content-Type", "application/json")
+                    .POST(HttpRequest.BodyPublishers.ofString(message))
+                    .build();
+            out.println(httpClient.send(postRequest, HttpResponse.BodyHandlers.ofString()));
+        }
     }
 
 }
