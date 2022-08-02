@@ -10,7 +10,7 @@ public class SheetsFutureHandler {
     private SheetsFutureHandler() {
     }
 
-    public static void tryPutSpreadsheetValue(String spreadsheetId, String spreadsheetRange, String value, String dir) {
+    public static void put(String spreadsheetId, String spreadsheetRange, String value, String dir) {
         SheetsClient sheetsClient = new SheetsClient(spreadsheetId, spreadsheetRange, value, dir);
         if ( spreadsheetId.length() == 0 || spreadsheetRange.length() == 0 ) {
             out.println("INFO: No spreadsheet ID/Range provided. Skipping Google Sheets update.");
