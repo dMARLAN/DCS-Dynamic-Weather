@@ -1,15 +1,16 @@
 package com.marlan.weatherupdate.utilities;
 
 import com.marlan.weatherupdate.model.station.AVWXStation;
-import lombok.experimental.UtilityClass;
 
-@UtilityClass
 public class AltimeterUtility {
     private static final double FEET_TO_METERS = 0.3048;
     private static final double PA_TO_INHG = 0.000295299830714;
     private static final double ISA_PRESSURE_MB = 1013.25;
 
-    public double getCorrectedQff(double stationQnhInHg, double stationTempC, AVWXStation station) {
+    private AltimeterUtility() {
+    }
+
+    public static double getCorrectedQff(double stationQnhInHg, double stationTempC, AVWXStation station) {
         double stationElevFeet = station.getElevationFt();
         double stationLatitude = station.getLatitude();
         double pressureAltitude = getPressureAltitude(stationQnhInHg) + stationElevFeet;
@@ -19,13 +20,13 @@ public class AltimeterUtility {
         return getQff(stationQfeInHg, stationTempC, stationLatitude, stationElevFeet + 50);
     }
 
-    private double getPressureAltitude(Double stationQnhInHg) {
+    private static double getPressureAltitude(Double stationQnhInHg) {
         final double INHG_TO_MB = 33.864;
         double stationQnhMb = stationQnhInHg * INHG_TO_MB;
         return 145366.45 * (1 - Math.pow((stationQnhMb / ISA_PRESSURE_MB), 0.190284));
     }
 
-    private double getQfe(double pressureAltitude) {
+    private static double getQfe(double pressureAltitude) {
         // https://en.wikipedia.org/wiki/Atmospheric_pressure
         double h = pressureAltitude * FEET_TO_METERS;
         double p0 = 101325; // Sea Level Standard Atmospheric Pressure (Pa)
@@ -38,14 +39,14 @@ public class AltimeterUtility {
         return p0 * Math.pow(1 - ((g * h) / (cp * t0)), (cp * m) / (r0)) * PA_TO_INHG;
     }
 
-    private double getQff(double qfeInHg, double temperatureInCelsius, double stationLatitude, double stationElevFeet) {
+    private static double getQff(double qfeInHg, double temperatureInCelsius, double stationLatitude, double stationElevFeet) {
         // https://www.metpod.co.uk/calculators/pressure/ -- Swedish Meteorological and Hydrological Institute Method
         double h = stationElevFeet * FEET_TO_METERS;
         double t1 = getWinterInversionT1(temperatureInCelsius);
         return qfeInHg * Math.pow(Math.E, ((h * 0.034163 * (1 - (0.0026373 * Math.cos(stationLatitude)))) / t1));
     }
 
-    private double getWinterInversionT1(double temperatureInCelsius) {
+    private static double getWinterInversionT1(double temperatureInCelsius) {
         if (temperatureInCelsius <= -7) {
             return 0.5 * temperatureInCelsius + 275;
         } else if (temperatureInCelsius <= 2) {
