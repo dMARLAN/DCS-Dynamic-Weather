@@ -15,21 +15,29 @@ import java.net.http.HttpResponse;
 public class AVWXClient {
     HttpClient httpClient = HttpClient.newHttpClient();
 
-    public HttpResponse<String> getMetar(DAO DAO) throws URISyntaxException, IOException, InterruptedException {
-        HttpRequest getRequest = HttpRequest.newBuilder()
-                .uri(new URI("https://avwx.rest/api/metar/" + DAO.getStationLatitude() + "," + DAO.getStationLongitude() + "?onfail=nearest"))
-                .header("Authorization", DAO.getAvwxApiKey())
-                .build();
+    public HttpResponse<String> getMetar(DAO dao) throws URISyntaxException, IOException, InterruptedException, IllegalArgumentException {
+        if ((dao.getAvwxApiKey().length() == 0) || (dao.getStationLatitude().length() == 0) || (dao.getStationLongitude().length() == 0)) {
+            throw new IllegalArgumentException("Missing required parameters");
+        } else {
+            HttpRequest getRequest = HttpRequest.newBuilder()
+                    .uri(new URI("https://avwx.rest/api/metar/" + dao.getStationLatitude() + "," + dao.getStationLongitude() + "?onfail=nearest"))
+                    .header("Authorization", dao.getAvwxApiKey())
+                    .build();
 
-        return this.httpClient.send(getRequest, HttpResponse.BodyHandlers.ofString());
+            return this.httpClient.send(getRequest, HttpResponse.BodyHandlers.ofString());
+        }
     }
 
-    public HttpResponse<String> getStation(DAO DAO, AVWXMetar weatherAVWX) throws URISyntaxException, IOException, InterruptedException {
-        HttpRequest getRequest = HttpRequest.newBuilder()
-                .uri(new URI("https://avwx.rest/api/station/" + weatherAVWX.getStation()))
-                .header("Authorization", DAO.getAvwxApiKey())
-                .build();
+    public HttpResponse<String> getStation(DAO dao, AVWXMetar weatherAVWX) throws URISyntaxException, IOException, InterruptedException, IllegalArgumentException {
+        if ((dao.getAvwxApiKey().length() == 0) || (weatherAVWX.getStation().length() == 0)) {
+            throw new IllegalArgumentException("Missing required parameters");
+        } else {
+            HttpRequest getRequest = HttpRequest.newBuilder()
+                    .uri(new URI("https://avwx.rest/api/station/" + weatherAVWX.getStation()))
+                    .header("Authorization", dao.getAvwxApiKey())
+                    .build();
 
-        return this.httpClient.send(getRequest, HttpResponse.BodyHandlers.ofString());
+            return this.httpClient.send(getRequest, HttpResponse.BodyHandlers.ofString());
+        }
     }
 }
