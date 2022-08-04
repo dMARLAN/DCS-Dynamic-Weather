@@ -11,7 +11,7 @@ public class MizUtility {
     private MizUtility() {
     }
 
-    public static void extractMission(String dir, String mizName) throws IOException, InterruptedException {
+    public static void extractMission(String dir, String mizName) {
         out.println("INFO: Extracting mission from " + dir + mizName);
         ProcessBuilder pb = new ProcessBuilder(
                 SEVEN_ZIP_PATH,
@@ -25,7 +25,7 @@ public class MizUtility {
         SevenZipUtility.runProcess(pb, dir);
     }
 
-    public static void updateMiz(String dir, String mizName, String missionFile) throws IOException, InterruptedException {
+    public static void updateMiz(String dir, String mizName, String missionFile) {
         out.println("INFO: Updating " + dir + mizName);
         ProcessBuilder pb = new ProcessBuilder(
                 SEVEN_ZIP_PATH,

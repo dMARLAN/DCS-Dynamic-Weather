@@ -20,8 +20,9 @@ public class FileUtility {
             return Files.readString(filePath);
         } catch (IOException e) {
             e.printStackTrace();
-            return null;
+            System.exit(1); // Program can't continue without the file, Lua Script can read error code.
         }
+        return ""; // Unreachable
     }
 
     public static void overwriteFile(String dir, String fileName, String newContent) {
@@ -30,6 +31,7 @@ public class FileUtility {
             fileWriter.write(newContent);
         } catch (IOException e) {
             e.printStackTrace();
+            System.exit(1); // Program is useless without writing to file, Lua Script can read error code.
         }
     }
 
