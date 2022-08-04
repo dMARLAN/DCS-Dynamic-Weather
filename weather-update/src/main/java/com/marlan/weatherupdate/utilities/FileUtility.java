@@ -6,6 +6,7 @@ import com.google.gson.GsonBuilder;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -14,20 +15,20 @@ public class FileUtility {
     }
 
     public static String readFile(String dir, String fileName) {
+        Path filePath = Path.of(dir + fileName);
         try {
-            Path filePath = Path.of(dir + fileName);
             return Files.readString(filePath);
         } catch (Exception e) {
             e.printStackTrace();
+            return null;
         }
-        return null;
     }
 
     public static void overwriteFile(String dir, String fileName, String newContent) {
         File file = new File(dir + fileName);
         try (FileWriter fileWriter = new FileWriter(file, false)) {
             fileWriter.write(newContent);
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -46,8 +47,8 @@ public class FileUtility {
     }
 
     public static void deleteFile(String dir, String fileName) {
+        Path filePath = Path.of(dir + fileName);
         try {
-            Path filePath = Path.of(dir + fileName);
             Files.delete(filePath);
         } catch (Exception e) {
             e.printStackTrace();

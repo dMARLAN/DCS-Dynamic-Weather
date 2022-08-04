@@ -12,11 +12,14 @@ import com.marlan.weatherupdate.utilities.DirUtility;
 import com.marlan.weatherupdate.utilities.FileUtility;
 import com.marlan.weatherupdate.utilities.MizUtility;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+
 import static java.lang.System.out;
 
 public class DCSRealWeather {
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws IOException, InterruptedException, URISyntaxException {
         final Gson gson = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
         final String dir = DirUtility.getWorkingDir(args);
         final String MISSION_FILE = "mission";
@@ -30,13 +33,8 @@ public class DCSRealWeather {
         AVWXMetar metarAVWX;
         AVWXStation stationAVWX;
 
-        try {
-            metarAVWX = gson.fromJson(avwxClient.getMetar(dao).body(), AVWXMetar.class);
-            stationAVWX = gson.fromJson(avwxClient.getStation(dao, metarAVWX).body(), AVWXStation.class);
-        } catch (IllegalArgumentException e) {
-            out.println("ERROR: " + e.getMessage());
-            return;
-        }
+        metarAVWX = gson.fromJson(avwxClient.getMetar(dao).body(), AVWXMetar.class);
+        stationAVWX = gson.fromJson(avwxClient.getStation(dao, metarAVWX).body(), AVWXStation.class);
 
         dao.setIcao(stationAVWX.getIcao());
         FileUtility.writeJSON(dir, DATA_FILE, dao);
@@ -50,6 +48,7 @@ public class DCSRealWeather {
         String missionContent = FileUtility.readFile(dir, MISSION_FILE);
 
         MissionHandlerService missionHandlerService = new MissionHandlerService(dao, stationAVWX, metarAVWX);
+
         String replacedMissionContent = missionHandlerService.editMission(missionContent);
 
         FileUtility.overwriteFile(dir, MISSION_FILE, replacedMissionContent);
