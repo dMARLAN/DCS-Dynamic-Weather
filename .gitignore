@@ -3,7 +3,6 @@ resources
 .idea
 mission
 Air_Wing_Nellis.miz
-Data.txt
 logs/
 
 ### Intellij ###
@@ -136,6 +135,7 @@ gradle-app.setting
 # Cache of project
 .gradletasknamecache
 Air_Wing_Nellis_A.miz
-dao.json
 tokens/StoredCredential
 credentials.json
+dao.json
+
