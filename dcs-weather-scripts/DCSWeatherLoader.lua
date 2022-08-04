@@ -5,7 +5,6 @@ DCSWeather.SCRIPTS_PATH = lfs.writedir() .. "Missions\\" .. DCSWeather.MISSION_F
 DCSWeather.DAO = "dao.json" -- TODO Get from config.json
 
 local LIBRARIES = "libraries"
-local MISSION_SCRIPTS = "mission_scripts"
 local UTILITIES = "utilities"
 local MODEL = "model"
 local WEATHER_OUTPUT = "weatheroutput"
@@ -37,8 +36,6 @@ loadAllLua(MODEL)
 loadLua(WEATHER_OUTPUT, "BuildMetar")
 loadLua(WEATHER_OUTPUT, "SetWeather")
 loadLua(WEATHER_OUTPUT, "Restart")
-
-loadAllLua(MISSION_SCRIPTS)
 
 DCSWeather.Logger.Info(THIS_FILE, "DCSWeather.SCRIPTS_PATH: " .. DCSWeather.SCRIPTS_PATH)
 DCSWeather.Logger.Info(THIS_FILE, "DCSWeather.DATA_FILE: " .. DCSWeather.DAO)
