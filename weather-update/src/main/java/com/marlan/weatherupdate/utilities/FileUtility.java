@@ -18,7 +18,7 @@ public class FileUtility {
         Path filePath = Path.of(dir + fileName);
         try {
             return Files.readString(filePath);
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
             return null;
         }
@@ -41,7 +41,7 @@ public class FileUtility {
                     .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
                     .create();
             gson.toJson(jsonObject, fileWriter);
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -50,7 +50,7 @@ public class FileUtility {
         Path filePath = Path.of(dir + fileName);
         try {
             Files.delete(filePath);
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
