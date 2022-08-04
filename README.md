@@ -9,6 +9,8 @@ Optionally outputs METAR to Discord Webhook or Google Sheets Cell for KBC's (Kne
 - Can manually select "Clear Day" or "Clear Night" weather from DCS F10 menu.
 - Can output DCS Mission METAR to Discord Webhook or Google Sheets.
 - Accounts for DCS inherent QFF -> QNH conversion error.
+- Automatically desanitizes `\Program Files\Eagle Dynamics\DCS World OpenBeta\Scripts\MissionScripting.lua`
+  - Be aware of running other untrusted DCS scripts when `MissionScripting.lua` is desanitized.
 
 I'm a new programmer, if you notice any bugs or have any suggestions, please let me know! Would also appreciate any GitHub stars which may help me in my job pursuit!
 
