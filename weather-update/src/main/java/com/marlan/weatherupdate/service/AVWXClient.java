@@ -1,6 +1,6 @@
 package com.marlan.weatherupdate.service;
 
-import com.marlan.weatherupdate.model.datafile.DAO;
+import com.marlan.weatherupdate.model.dao.DAO;
 import com.marlan.weatherupdate.model.metar.AVWXMetar;
 import lombok.NoArgsConstructor;
 

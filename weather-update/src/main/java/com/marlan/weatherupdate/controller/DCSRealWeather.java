@@ -3,7 +3,7 @@ package com.marlan.weatherupdate.controller;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.marlan.weatherupdate.model.datafile.DAO;
+import com.marlan.weatherupdate.model.dao.DAO;
 import com.marlan.weatherupdate.model.metar.AVWXMetar;
 import com.marlan.weatherupdate.model.station.AVWXStation;
 import com.marlan.weatherupdate.service.AVWXClient;

@@ -1,4 +1,4 @@
-package com.marlan.weatherupdate.model.datafile;
+package com.marlan.weatherupdate.model.dao;
 
 import lombok.Data;
 
