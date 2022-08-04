@@ -16,7 +16,7 @@ public class AVWXClient {
     HttpClient httpClient = HttpClient.newHttpClient();
 
     public HttpResponse<String> getMetar(DAO dao) throws URISyntaxException, IOException, InterruptedException, IllegalArgumentException {
-        if ((dao.getAvwxApiKey().length() == 0) || (dao.getStationLatitude().length() == 0) || (dao.getStationLongitude().length() == 0)) {
+        if ((dao.getAvwxApiKey().isEmpty()) || (dao.getStationLatitude().isEmpty()) || (dao.getStationLongitude().isEmpty())) {
             throw new IllegalArgumentException("Missing required parameters");
         } else {
             HttpRequest getRequest = HttpRequest.newBuilder()
