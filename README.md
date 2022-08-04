@@ -49,7 +49,7 @@ Donations are welcome since I'm currently self-teaching full time 😅
 ### Discord Webhook Setup:
 - Acquire your [Discord Webhook API Key](https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks) (Free) and paste into `dao.json`
 
-###Google Sheets Setup:
+### Google Sheets Setup:
 - Create a [Google Cloud OAuth 2.0 Client ID](https://console.developers.google.com/) (Free)
 - Paste the downloaded credentials into your `missions\mymission` folder and name the credentials `credentials.json`.
 - Paste your [Spreadsheet ID](https://developers.google.com/sheets/api/guides/concepts) into `config.json`
