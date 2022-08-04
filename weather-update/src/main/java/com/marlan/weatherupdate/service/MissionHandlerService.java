@@ -36,7 +36,7 @@ public class MissionHandlerService {
 
     public MissionHandlerService(DAO dao, AVWXStation stationAVWX, AVWXMetar metarAVWX) {
         ZonedDateTime zonedDateTime = ZonedDateTime.now(ZoneId.of(StationInfoUtility.getZoneId(stationAVWX.getCountry())));
-        
+
         if (metarAVWX.getMeta().getWarning() != null) {
             out.println("WARNING: " + metarAVWX.getMeta().getWarning());
         }
