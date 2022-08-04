@@ -39,11 +39,6 @@ public class DCSRealWeather {
         dao.setIcao(stationAVWX.getIcao());
         FileUtility.writeJSON(dir, DATA_FILE, dao);
 
-        if (metarAVWX.getMeta().getWarning() != null) {
-            out.println("WARNING: " + metarAVWX.getMeta().getWarning());
-        }
-        out.println("INFO: METAR: " + metarAVWX.getSanitized());
-
         MizUtility.extractMission(dir, dao.getMission());
         String missionContent = FileUtility.readFile(dir, MISSION_FILE);
 
