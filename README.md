@@ -41,7 +41,7 @@ Donations are welcome since I'm currently self-teaching full time 😅
 
 - Run your DCS Server
     - The DCS Mission invokes the application automatically.
-      - `weather-output.jar` is run first, and because `weather-update.jar` has not yet run, the first run will use the weather you manually set, and the Discord/Google Output will indicate the station is "UNKN"
+      - `weather-output.jar` is run first, and because `weather-update.jar` has not yet run, the first run will use the weather you manually set, and the Discord/Google Output will indicate the station is "UNKN".
       - This can be avoided by running `weather-update.jar` manually once.
         - TODO: I will probably fix this before the first public release.
     - Discord Webhook and Google Sheets set up is optional.
@@ -51,7 +51,7 @@ Donations are welcome since I'm currently self-teaching full time 😅
 
 ### Google Sheets Setup:
 - Create a [Google Cloud OAuth 2.0 Client ID](https://console.developers.google.com/) (Free)
-- Paste the downloaded credentials into your `missions\mymission` folder and name the credentials `credentials.json`.
+- Paste the downloaded credentials into your `missions\mymission` folder and name the credentials `credentials.json`
 - Paste your [Spreadsheet ID](https://developers.google.com/sheets/api/guides/concepts) into `config.json`
 - Paste your [Spreadsheet Range](https://developers.google.com/sheets/api/guides/concepts) into `config.json`
 - Execute `weather-output.jar` and authorize the Google Sheets API.
