@@ -30,14 +30,14 @@ Donations are welcome since I'm currently self-teaching full time 😅
     - This will be the reference station where weather will be polled. For example, if you place it at Nellis, the application will retrieve the weather from Nellis.
 - Acquire a [AVWX API Key](https://avwx.rest/) (Free) and paste into `config.json`
 - Create the following triggers in your DCS Mission. (See [Example Mission](https://github.com/dMARLAN/dcs-weather))
+    - "MISSION START" -> -> "DO SCRIPT" -> Paste the Code below, and edit "mymission" to match your desired folder name.
+        ```lua
+        local folder = "mymission"
+        DCSWeather = {}
+        DCSWeather.MISSION_FOLDER = folder
+        ```
     - "MISSION START" -> -> "DO SCRIPT FILE" -> Load `DCSWeatherLoader.lua`
-    - "MISSION START" -> -> "DO SCRIPT FILE" -> Paste the Code below, and edit "mymission" to match your desired folder name.
-
-    ```lua
-    local folder = "mymission"
-    DCSWeather = {}
-    DCSWeather.MISSION_FOLDER = folder
-    ```
+      - This should be AFTER the `DO SCRIPT` mentioned above.
 
 - Run your DCS Server
     - The DCS Mission invokes the application automatically.
