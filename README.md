@@ -1,5 +1,4 @@
-# DCS-Dynamic-Weather
-
+![](images/DCSDynamicWeatherLogo.png)
 **_WORK IN PROGRESS - NOT READY FOR PUBLIC RELEASE YET..._**
 
 Automated DCS Mission Weather editor to set DCS mission to match real world environment conditions (temperarture, clouds, visibility, time, pressure, wind) based on the METAR data obtained from the AVWX API.
