@@ -8,7 +8,7 @@ Optionally outputs METAR to Discord Webhook or Google Sheets Cell for KBC's (Kne
 - Sets DCS mission weather to match real world weather conditions.
 - Weather cannot be set while the mission is still live, this application works by setting the next mission's weather and then restarting every hour to that updated weather.
   - The mission will not restart while clients are connected to the mission, effectively "freezing" weather in place until clients disconnect.
-  - This means this application is not suitable for public servers that will typically always have clients connected, it is designed for private servers.
+  - This means this application is not suitable for public servers that have little to no down time with no clients connected, it is designed for private servers.
 - Can manually select "Clear Day" or "Clear Night" weather from DCS F10 menu.
 - Can output DCS Mission METAR to Discord Webhook or Google Sheets.
 - Accounts for DCS inherent QFF -> QNH conversion error.
