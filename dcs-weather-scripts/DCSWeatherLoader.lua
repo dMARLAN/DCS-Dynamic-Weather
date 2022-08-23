@@ -2,7 +2,7 @@ require "lfs"
 
 DCSWeather.MODULE_NAME = "DCSWeather"
 DCSWeather.SCRIPTS_PATH = lfs.writedir() .. "Missions\\" .. DCSWeather.MISSION_FOLDER
-DCSWeather.DAO = "dao.json" -- TODO Get from config.json
+DCSWeather.DTO = "dto.json" -- TODO Get from config.json
 
 local LIBRARIES = "libraries"
 local UTILITIES = "utilities"
@@ -38,6 +38,6 @@ loadLua(WEATHER_OUTPUT, "SetWeather")
 loadLua(WEATHER_OUTPUT, "Restart")
 
 DCSWeather.Logger.Info(THIS_FILE, "DCSWeather.SCRIPTS_PATH: " .. DCSWeather.SCRIPTS_PATH)
-DCSWeather.Logger.Info(THIS_FILE, "DCSWeather.DATA_FILE: " .. DCSWeather.DAO)
+DCSWeather.Logger.Info(THIS_FILE, "DCSWeather.DATA_FILE: " .. DCSWeather.DTO)
 DCSWeather.Logger.Info(THIS_FILE, "DCSWeather.MODULE_NAME: " .. DCSWeather.MODULE_NAME)
 DCSWeather.Logger.Info(THIS_FILE, "Loaded.")
