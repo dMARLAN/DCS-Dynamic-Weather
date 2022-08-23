@@ -16,10 +16,10 @@ import java.security.GeneralSecurityException;
 public class DiscordWebHookService {
     public static void main(String[] args) throws IOException, URISyntaxException, InterruptedException, GeneralSecurityException {
         Gson gson = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
-        final String DAO_NAME = "dao.json";
+        final String DTO_NAME = "dto.json";
         final String dir = DirHandler.getWorkingDir(args);
 
-        String dataFileContent = FileHandler.readFile(dir, DAO_NAME);
+        String dataFileContent = FileHandler.readFile(dir, DTO_NAME);
         DAO dao = gson.fromJson(dataFileContent, DAO.class);
 
         String jsonInput = """
