@@ -51,7 +51,7 @@ Donations are welcome since I'm currently self-teaching full time 😅
     - Discord Webhook and Google Sheets set up is optional.
 
 ### Discord Webhook Setup:
-- Acquire your [Discord Webhook API Key](https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks) (Free) and paste into `dao.json`
+- Acquire your [Discord Webhook API Key](https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks) (Free) and paste into `dto.json`
 
 ### Google Sheets Setup:
 - Create a [Google Cloud OAuth 2.0 Client ID](https://console.developers.google.com/) (Free)
