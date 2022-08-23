@@ -1,9 +1,9 @@
-package com.marlan.weatherupdate.model.dao;
+package com.marlan.weatherupdate.model.dto;
 
 import lombok.Data;
 
 @Data
-public class DAO {
+public class DTO {
     private String avwxApiKey;
     private String discordApiKey;
     private String spreadsheetId;
