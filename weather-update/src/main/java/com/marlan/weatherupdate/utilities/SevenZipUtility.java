@@ -20,8 +20,13 @@ public class SevenZipUtility {
         }
         pb.redirectOutput(processOutput);
         try {
-            pb.start();
+            Process p = pb.start();
+            p.waitFor();
         } catch (IOException e) {
+            e.printStackTrace();
+            System.exit(1); // Program is useless without writing to file, Lua Script can read error code.
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
             e.printStackTrace();
             System.exit(1); // Program is useless without writing to file, Lua Script can read error code.
         }
