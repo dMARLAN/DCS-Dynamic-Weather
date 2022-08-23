@@ -6,7 +6,7 @@ local fileExists
 function DCSWeather.JSON.setValue(key, value, fileName)
     local THIS_METHOD = THIS_FILE .. ".setValue"
     local filePath = DCSWeather.SCRIPTS_PATH .. "\\" .. fileName
-    local dataFilePath = DCSWeather.SCRIPTS_PATH .. "\\" .. DCSWeather.DAO
+    local dataFilePath = DCSWeather.SCRIPTS_PATH .. "\\" .. DCSWeather.DTO
 
     if not (fileExists(filePath) and fileExists(dataFilePath)) then
         if not fileExists(filePath) then
