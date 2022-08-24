@@ -2,7 +2,6 @@ DCSWeather.Mission = {}
 
 local THIS_FILE = DCSWeather.MODULE_NAME .. ".Mission"
 local invertMissionIdentifier
-local MISSION_NAME = DCSWeather.MISSION_NAME
 
 function DCSWeather.Mission.loadNextMission(mission)
     local THIS_METHOD = THIS_FILE .. ".loadNextMission()"
@@ -12,10 +11,10 @@ end
 
 function DCSWeather.Mission.getNextMissionName()
     local THIS_METHOD = THIS_FILE .. ".getNextMissionName"
-    if (string.match(string.sub(MISSION_NAME, #MISSION_NAME - 1), "_%a")) then
-        local invertedMissionIdentifier = invertMissionIdentifier(MISSION_NAME)
+    if (string.match(string.sub(DCS_WEATHER_MISSION_NAME, #DCS_WEATHER_MISSION_NAME - 1), "_%a")) then
+        local invertedMissionIdentifier = invertMissionIdentifier(DCS_WEATHER_MISSION_NAME)
         if (invertedMissionIdentifier ~= 0) then
-            local nextMissionName = string.sub(MISSION_NAME, 0, #MISSION_NAME - 1) .. invertedMissionIdentifier
+            local nextMissionName = string.sub(DCS_WEATHER_MISSION_NAME, 0, #DCS_WEATHER_MISSION_NAME - 1) .. invertedMissionIdentifier
             DCSWeather.Logger.Info(THIS_METHOD, "Next Mission: " .. nextMissionName)
             return nextMissionName
         end
