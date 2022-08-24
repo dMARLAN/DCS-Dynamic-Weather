@@ -1,6 +1,6 @@
 package com.marlan.weatheroutput.service.discord;
 
-import com.marlan.weatheroutput.model.DAO;
+import com.marlan.weatheroutput.model.DTO;
 
 import java.io.IOException;
 import java.net.URI;
@@ -17,12 +17,12 @@ public class DiscordClient {
     private DiscordClient() {
     }
 
-    public static void post(DAO dao, String message) throws URISyntaxException, IOException, InterruptedException {
-        if (dao.getDiscordApiKey().length() == 0) {
+    public static void post(DTO dto, String message) throws URISyntaxException, IOException, InterruptedException {
+        if (dto.getDiscordApiKey().length() == 0) {
             out.println("INFO: Discord API Key is empty, skipping Discord Webhook");
         } else {
             HttpRequest postRequest = HttpRequest.newBuilder()
-                    .uri(new URI(dao.getDiscordApiKey()))
+                    .uri(new URI(dto.getDiscordApiKey()))
                     .header("Content-Type", "application/json")
                     .POST(HttpRequest.BodyPublishers.ofString(message))
                     .build();
