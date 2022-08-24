@@ -14,7 +14,7 @@ import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.SheetsScopes;
 import com.google.api.services.sheets.v4.model.ValueRange;
-import com.marlan.weatheroutput.model.DAO;
+import com.marlan.weatheroutput.model.DTO;
 
 import java.io.File;
 import java.io.FileReader;
@@ -26,22 +26,22 @@ import java.util.Collections;
 import java.util.List;
 
 public record SheetsClient(String spreadsheetId, String spreadsheetRange, String value, String dir,
-                           String applicationName, DAO dao) {
+                           String applicationName, DTO dto) {
     private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
     private static final String TOKENS_DIRECTORY_NAME = "tokens";
     private static final List<String> SCOPES = Collections.singletonList(SheetsScopes.SPREADSHEETS);
     private static final String CREDENTIALS_FILE_NAME = "credentials.json";
 
     public void setSheetValue() throws IOException, GeneralSecurityException {
-        if (!Files.exists(Paths.get(CREDENTIALS_FILE_NAME))) {
-            System.out.println("ERROR: Credentials file not found: " + CREDENTIALS_FILE_NAME);
+        if (!Files.exists(Paths.get(dir + CREDENTIALS_FILE_NAME))) {
+            System.out.println("ERROR: Credentials file not found: " + dir + CREDENTIALS_FILE_NAME);
             return;
         }
-        if (dao.getSpreadsheetId().isEmpty()) {
+        if (dto.getSpreadsheetId().isEmpty()) {
             System.out.println("ERROR: Spreedsheet ID empty.");
             return;
         }
-        if (dao.getSpreadsheetRange().isEmpty()) {
+        if (dto.getSpreadsheetRange().isEmpty()) {
             System.out.println("ERROR: Spreedsheet Range empty.");
             return;
         }
@@ -82,7 +82,7 @@ public record SheetsClient(String spreadsheetId, String spreadsheetRange, String
         LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(8888).build();
 
         // Timeout if credentials can't be acquired (cache/user input)
-        TimeoutTimer timer = new TimeoutTimer(receiver, 5000);
+        TimeoutTimer timer = new TimeoutTimer(receiver, 60000);
         timer.start();
         credential = new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
         timer.interrupt();
