@@ -3,7 +3,7 @@ package com.marlan.weatheroutput.controller;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.marlan.weatheroutput.model.DAO;
+import com.marlan.weatheroutput.model.DTO;
 import com.marlan.weatheroutput.service.discord.DiscordClient;
 import com.marlan.weatheroutput.service.sheets.SheetsClient;
 import com.marlan.weatheroutput.utilities.DirHandler;
@@ -20,7 +20,7 @@ public class DiscordWebHookService {
         final String dir = DirHandler.getWorkingDir(args);
 
         String dataFileContent = FileHandler.readFile(dir, DTO_NAME);
-        DAO dao = gson.fromJson(dataFileContent, DAO.class);
+        DTO dto = gson.fromJson(dataFileContent, DTO.class);
 
         String jsonInput = """
                 {
@@ -31,10 +31,10 @@ public class DiscordWebHookService {
                    }
                   ]
                 }
-                """.replace("$METAR", dao.getMetar());
+                """.replace("$METAR", dto.getMetar());
 
-        DiscordClient.post(dao, jsonInput);
-        SheetsClient sheetsClient = new SheetsClient(dao.getSpreadsheetId(), dao.getSpreadsheetRange(), dao.getMetar(), dir, "dcs-weather-output", dao);
+        DiscordClient.post(dto, jsonInput);
+        SheetsClient sheetsClient = new SheetsClient(dto.getSpreadsheetId(), dto.getSpreadsheetRange(), dto.getMetar(), dir, "dcs-weather-output", dto);
         sheetsClient.setSheetValue();
     }
 }
