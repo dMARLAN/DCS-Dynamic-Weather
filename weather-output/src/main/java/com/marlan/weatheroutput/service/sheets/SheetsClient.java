@@ -66,11 +66,11 @@ public record SheetsClient(String spreadsheetId, String spreadsheetRange, String
             return false;
         }
         if (dto.getSpreadsheetId().isEmpty()) {
-            out.println("ERROR: Spreedsheet ID empty.");
+            out.println("ERROR: Spreadsheet ID empty.");
             return false;
         }
         if (dto.getSpreadsheetRange().isEmpty()) {
-            out.println("ERROR: Spreedsheet Range empty.");
+            out.println("ERROR: Spreadsheet Range empty.");
             return false;
         }
         return true;
