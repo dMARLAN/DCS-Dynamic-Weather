@@ -10,10 +10,10 @@ function DCSWeatherCallbacks.onMissionLoadEnd()
     local THIS_METHOD = "DCSWeatherCallbacks.onMissionLoadEnd"
     local missionName = DCS.getMissionName()
 
-    local code = [[a_do_script("DCS_WEATHER_MISSION_NAME = \"]] .. missionName .. [[\"")]]
+    local code = [[a_do_script("DCSWeather.MISSION_NAME = \"]] .. missionName .. [[\"")]]
     net.dostring_in("mission", code)
 
-    DCSWeatherHook.Logger.Info(THIS_METHOD, "Injected DCS_WEATHER_MISSION_NAME = " .. missionName)
+    DCSWeatherHook.Logger.Info(THIS_METHOD, "Injected DCSWeather.MISSION_NAME = " .. missionName)
 end
 
 function DCSWeatherCallbacks.onTriggerMessage(message, _, _)
