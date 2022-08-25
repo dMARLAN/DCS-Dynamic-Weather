@@ -34,7 +34,7 @@ public class DiscordWebHookService {
                 """.replace("$METAR", dto.getMetar());
 
         DiscordClient.post(dto, jsonInput);
-        SheetsClient sheetsClient = new SheetsClient(dto.getSpreadsheetId(), dto.getSpreadsheetRange(), dto.getMetar(), dir, "dcs-weather-output", dto);
+        SheetsClient sheetsClient = new SheetsClient(dto.getSpreadsheetId(), dto.getSpreadsheetRange(), dto.getMetar(), dir, dto);
         sheetsClient.setSheetValue();
     }
 }
