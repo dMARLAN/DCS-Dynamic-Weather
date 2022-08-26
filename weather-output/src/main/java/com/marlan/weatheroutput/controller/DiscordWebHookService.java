@@ -8,6 +8,7 @@ import com.marlan.weatheroutput.service.discord.DiscordClient;
 import com.marlan.weatheroutput.service.sheets.SheetsClient;
 import com.marlan.weatheroutput.utilities.DirHandler;
 import com.marlan.weatheroutput.utilities.FileHandler;
+import jdk.jshell.tool.JavaShellToolBuilder;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -34,7 +35,6 @@ public class DiscordWebHookService {
                 """.replace("$METAR", dto.getMetar());
 
         DiscordClient.post(dto, jsonInput);
-        SheetsClient sheetsClient = new SheetsClient(dto.getSpreadsheetId(), dto.getSpreadsheetRange(), dto.getMetar(), dir, dto);
-        sheetsClient.setSheetValue();
+        SheetsClient.setSheetValue(dto.getSpreadsheetId(), dto.getSpreadsheetRange(), dto.getMetar(), dir, dto);
     }
 }
