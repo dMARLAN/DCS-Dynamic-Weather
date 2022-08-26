@@ -39,7 +39,7 @@ function DCSDynamicWeather.JSON.getValue(key, fileName)
     local filePath = DCSDynamicWeather.SCRIPTS_PATH .. "\\" .. fileName
 
     if not fileExists(filePath) then
-        DCSWeather.Logger.error(THIS_METHOD, "File: \"" .. filePath .. "\" does not exist.")
+        DCSDynamicWeather.Logger.error(THIS_METHOD, "File: \"" .. filePath .. "\" does not exist.")
         return
     end
 
@@ -48,7 +48,7 @@ function DCSDynamicWeather.JSON.getValue(key, fileName)
     io.close(readFile)
 
     local value = string.match(fileContents, key .. "\":%s+\"(%w*)")
-    DCSWeather.Logger.info(THIS_METHOD, "Key: \"" .. key .. "\" Value: \"" .. value .. "\" in File: \"" .. fileName .. "\" retrieved.")
+    DCSDynamicWeather.Logger.info(THIS_METHOD, "Key: \"" .. key .. "\" Value: \"" .. value .. "\" in File: \"" .. fileName .. "\" retrieved.")
     return value
 end
 
