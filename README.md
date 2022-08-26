@@ -37,10 +37,10 @@ Donations are welcome since I'm currently self-teaching full time 😅
     - "MISSION START" -> -> "DO SCRIPT" -> Paste the Code below, and edit "mymission" to match your desired folder name.
         ```lua
         local folder = "mymission"
-        DCSWeather = {}
-        DCSWeather.MISSION_FOLDER = folder
+        DCSDynamicWeather = {}
+        DCSDynamicWeather.MISSION_FOLDER = folder
         ```
-    - "MISSION START" -> -> "DO SCRIPT FILE" -> Load `DCSWeatherLoader.lua`
+    - "MISSION START" -> -> "DO SCRIPT FILE" -> Load `DCSDynamicWeatherLoader.lua`
       - This should be AFTER the `DO SCRIPT` mentioned above.
 
 - Run your DCS Server
