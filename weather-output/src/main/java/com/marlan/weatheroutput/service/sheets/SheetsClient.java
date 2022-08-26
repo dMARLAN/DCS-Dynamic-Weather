@@ -24,15 +24,19 @@ import java.util.List;
 
 import static java.lang.System.out;
 
-public record SheetsClient(String spreadsheetId, String spreadsheetRange, String value, String dir, DTO dto) {
+public class SheetsClient {
     private static final String APPLICATION_NAME = "DCS-Dynamic-Weather";
     private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
     private static final List<String> SCOPES = Collections.singletonList(SheetsScopes.SPREADSHEETS);
     private static final String CREDENTIALS_FILE_NAME = "credentials.json";
+    private SheetsClient() {
+    }
 
-    public void setSheetValue() throws IOException, GeneralSecurityException {
+    public static void setSheetValue(final String spreadsheetId, final String spreadsheetRange,
+                                     final String value, final String dir, final DTO dto)
+            throws IOException, GeneralSecurityException {
 
-        if (!validParameters()) return;
+        if (!validParameters(dir, dto)) return;
 
         final NetHttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
 
@@ -60,7 +64,7 @@ public record SheetsClient(String spreadsheetId, String spreadsheetRange, String
 
     }
 
-    private boolean validParameters() {
+    private static boolean validParameters(final String dir, final DTO dto) {
         if (!Files.exists(Paths.get(dir + CREDENTIALS_FILE_NAME))) {
             out.println("ERROR: Credentials file not found: " + dir + CREDENTIALS_FILE_NAME);
             return false;
