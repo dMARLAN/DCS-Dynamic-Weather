@@ -42,15 +42,15 @@ function DCSDynamicWeatherHook.fileExists(file)
 end
 
 function DCSDynamicWeatherHook.desanitizeMissionScripting()
-    local THIS_METHOD = "DCSWeatherHook.desanitizeMissionScripting"
-    DCSWeatherHook.Logger.info(THIS_METHOD, "Desanitizing Mission Scripting...")
+    local THIS_METHOD = "DCSDynamicWeatherHook.desanitizeMissionScripting"
+    DCSDynamicWeatherHook.Logger.info(THIS_METHOD, "Desanitizing Mission Scripting...")
     local missionScriptingFileName = "MissionScripting.lua"
     local missionScriptingFilePath = DCS_ROOT .. "Scripts\\" .. missionScriptingFileName
     local uncommentedLineFound = false
     local newMissionScriptingContent = ""
 
-    if not (DCSWeatherHook.fileExists(missionScriptingFilePath)) then
-        DCSWeatherHook.Logger.error(THIS_METHOD, "File: " .. missionScriptingFilePath .. " does not exist.")
+    if not (DCSDynamicWeatherHook.fileExists(missionScriptingFilePath)) then
+        DCSDynamicWeatherHook.Logger.error(THIS_METHOD, "File: " .. missionScriptingFilePath .. " does not exist.")
         return
     end
 
@@ -70,25 +70,25 @@ function DCSDynamicWeatherHook.desanitizeMissionScripting()
         io.write(writeMissionScriptingFile, newMissionScriptingContent)
         io.flush(writeMissionScriptingFile)
         io.close(writeMissionScriptingFile)
-        DCSWeatherHook.Logger.info(THIS_METHOD, "Desanitized Mission Scripting.")
+        DCSDynamicWeatherHook.Logger.info(THIS_METHOD, "Desanitized Mission Scripting.")
     else
-        DCSWeatherHook.Logger.info(THIS_METHOD, "Mission Scripting is already desanitized.")
+        DCSDynamicWeatherHook.Logger.info(THIS_METHOD, "Mission Scripting is already desanitized.")
     end
 end
 
-function DCSWeatherHook.Logger.info(logSource, message)
-    DCSWeatherHook.Logger.printLog(logSource, message, "INFO    ")
+function DCSDynamicWeatherHook.Logger.info(logSource, message)
+    DCSDynamicWeatherHook.Logger.printLog(logSource, message, "INFO    ")
 end
 
-function DCSWeatherHook.Logger.warning(logSource, message)
-    DCSWeatherHook.Logger.printLog(logSource, message, "WARNING ")
+function DCSDynamicWeatherHook.Logger.warning(logSource, message)
+    DCSDynamicWeatherHook.Logger.printLog(logSource, message, "WARNING ")
 end
 
-function DCSWeatherHook.Logger.error(logSource, message)
-    DCSWeatherHook.Logger.printLog(logSource, message, "ERROR   ")
+function DCSDynamicWeatherHook.Logger.error(logSource, message)
+    DCSDynamicWeatherHook.Logger.printLog(logSource, message, "ERROR   ")
 end
 
-function DCSWeatherHook.Logger.printLog(logSource, message, level)
+function DCSDynamicWeatherHook.Logger.printLog(logSource, message, level)
     local time = os.date("%Y-%m-%d %H:%M:%S ")
     local logFile = io.open(DCS_SG .. "Logs\\" .. THIS_FILE .. ".log", "a")
     io.write(logFile, time .. level .. "[" .. logSource .. "]: " .. message .. "\n")
@@ -97,13 +97,13 @@ function DCSWeatherHook.Logger.printLog(logSource, message, level)
 end
 
 local function main()
-    DCSWeatherHook.Logger.info(THIS_FILE, "Loading...")
-    DCSWeatherHook.Logger.info(THIS_FILE, "DCS_ROOT: " .. DCS_ROOT)
-    DCSWeatherHook.Logger.info(THIS_FILE, "DCS_SG: " .. DCS_SG)
+    DCSDynamicWeatherHook.Logger.info(THIS_FILE, "Loading...")
+    DCSDynamicWeatherHook.Logger.info(THIS_FILE, "DCS_ROOT: " .. DCS_ROOT)
+    DCSDynamicWeatherHook.Logger.info(THIS_FILE, "DCS_SG: " .. DCS_SG)
 
-    DCSWeatherHook.desanitizeMissionScripting()
-    DCS.setUserCallbacks(DCSWeatherCallbacks)
+    DCSDynamicWeatherHook.desanitizeMissionScripting()
+    DCS.setUserCallbacks(DCSDynamicWeatherCallbacks)
 
-    DCSWeatherHook.Logger.info(THIS_FILE, "Loaded.")
+    DCSDynamicWeatherHook.Logger.info(THIS_FILE, "Loaded.")
 end
 main()
