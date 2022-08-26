@@ -25,7 +25,7 @@ import java.util.List;
 import static java.lang.System.out;
 
 public record SheetsClient(String spreadsheetId, String spreadsheetRange, String value, String dir, DTO dto) {
-    private static final String APPLICATION_NAME = "DCS-Weather";
+    private static final String APPLICATION_NAME = "DCS-Dynamic-Weather";
     private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
     private static final List<String> SCOPES = Collections.singletonList(SheetsScopes.SPREADSHEETS);
     private static final String CREDENTIALS_FILE_NAME = "credentials.json";
