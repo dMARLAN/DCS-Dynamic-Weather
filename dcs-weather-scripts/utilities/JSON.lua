@@ -1,18 +1,18 @@
-DCSWeather.JSON = {}
+DCSDynamicWeather.JSON = {}
 
-local THIS_FILE = DCSWeather.MODULE_NAME .. ".JSON"
+local THIS_FILE = DCSDynamicWeather.MODULE_NAME .. ".JSON"
 local fileExists
 
-function DCSWeather.JSON.setValue(key, value, fileName)
+function DCSDynamicWeather.JSON.setValue(key, value, fileName)
     local THIS_METHOD = THIS_FILE .. ".setValue"
-    local filePath = DCSWeather.SCRIPTS_PATH .. "\\" .. fileName
-    local dataFilePath = DCSWeather.SCRIPTS_PATH .. "\\" .. DCSWeather.DTO
+    local filePath = DCSDynamicWeather.SCRIPTS_PATH .. "\\" .. fileName
+    local dataFilePath = DCSDynamicWeather.SCRIPTS_PATH .. "\\" .. DCSDynamicWeather.DTO
 
     if not (fileExists(filePath) and fileExists(dataFilePath)) then
         if not fileExists(filePath) then
-            DCSWeather.Logger.Error(THIS_METHOD, "File: \"" .. filePath .. "\" does not exist.")
+            DCSDynamicWeather.Logger.error(THIS_METHOD, "File: \"" .. filePath .. "\" does not exist.")
         else
-            DCSWeather.Logger.Error(THIS_METHOD, "File: \"" .. dataFilePath .. "\" does not exist.")
+            DCSDynamicWeather.Logger.error(THIS_METHOD, "File: \"" .. dataFilePath .. "\" does not exist.")
         end
         return
     end
@@ -31,15 +31,15 @@ function DCSWeather.JSON.setValue(key, value, fileName)
     io.write(writeFile, fileContents)
     io.flush(writeFile)
     io.close(writeFile)
-    DCSWeather.Logger.Info(THIS_METHOD, "Key: \"" .. key .. "\" Set to: \"" .. value .. "\" in File: \"" .. fileName .. "\"")
+    DCSDynamicWeather.Logger.info(THIS_METHOD, "Key: \"" .. key .. "\" Set to: \"" .. value .. "\" in File: \"" .. fileName .. "\"")
 end
 
-function DCSWeather.JSON.getValue(key, fileName)
+function DCSDynamicWeather.JSON.getValue(key, fileName)
     local THIS_METHOD = THIS_FILE .. ".getValue"
-    local filePath = DCSWeather.SCRIPTS_PATH .. "\\" .. fileName
+    local filePath = DCSDynamicWeather.SCRIPTS_PATH .. "\\" .. fileName
 
     if not fileExists(filePath) then
-        DCSWeather.Logger.Error(THIS_METHOD, "File: \"" .. filePath .. "\" does not exist.")
+        DCSWeather.Logger.error(THIS_METHOD, "File: \"" .. filePath .. "\" does not exist.")
         return
     end
 
@@ -48,14 +48,10 @@ function DCSWeather.JSON.getValue(key, fileName)
     io.close(readFile)
 
     local value = string.match(fileContents, key .. "\":%s+\"(%w*)")
-    DCSWeather.Logger.Info(THIS_METHOD, "Key: \"" .. key .. "\" Value: \"" .. value .. "\" in File: \"" .. fileName .. "\" retrieved.")
+    DCSWeather.Logger.info(THIS_METHOD, "Key: \"" .. key .. "\" Value: \"" .. value .. "\" in File: \"" .. fileName .. "\" retrieved.")
     return value
 end
 
 function fileExists(file)
-    local f = io.open(file, "rb")
-    if f then
-        io.close(f)
-    end
-    return f ~= nil
+    DCSDynamicWeather.File.exists(file)
 end
