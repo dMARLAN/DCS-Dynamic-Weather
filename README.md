@@ -33,7 +33,7 @@ Donations are welcome since I'm currently self-teaching full time 😅
 - Create a zone in your DCS Mission and name it `StationReference` (this can be changed in `config.json`)
     - This will be the reference station where weather will be polled. For example, if you place it at Nellis, the application will retrieve the weather from Nellis.
 - Acquire a [AVWX API Key](https://avwx.rest/) (Free) and paste into `config.json`
-- Create the following triggers in your DCS Mission. (See [Example Mission](https://github.com/dMARLAN/dcs-weather))
+- Create the following triggers in your DCS Mission. (See [Example Mission](https://github.com/dMARLAN/DCS-Dynamic-Weather))
     - "MISSION START" -> -> "DO SCRIPT" -> Paste the Code below, and edit "mymission" to match your desired folder name.
         ```lua
         local folder = "mymission"
