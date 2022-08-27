@@ -24,6 +24,13 @@ end
 function getNextMissionName()
     local THIS_METHOD = THIS_FILE .. ".getNextMissionName"
     local missionName = DCSDynamicWeather.MISSION_NAME
+
+    if not missionName then
+        DCSDynamicWeather.Logger.error(THIS_METHOD, "DCSDynamicWeather.MISSION_NAME is nil")
+    else
+        DCSDynamicWeather.Logger.info(THIS_METHOD, "DCSDynamicWeather.MISSION_NAME is " .. missionName)
+    end
+
     local missionNameLast2Chars = string.sub(missionName, #missionName - 1)
 
     if (string.match(missionNameLast2Chars, "_A") or string.match(missionNameLast2Chars, "_B")) then
