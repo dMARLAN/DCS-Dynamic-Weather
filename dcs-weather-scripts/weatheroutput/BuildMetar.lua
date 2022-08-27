@@ -1,6 +1,6 @@
 local BuildMetar = {}
 
-local THIS_FILE = DCSWeather.MODULE_NAME .. ".BuildMetar"
+local THIS_FILE = DCSDynamicWeather.MODULE_NAME .. ".BuildMetar"
 local STATION_REFERENCE_ZONE_NAME = "StationReference"
 
 local STANDARD_PRESSURE_PASCAL = 101325
@@ -27,7 +27,7 @@ function BuildMetar.getNearestAirbasePoint()
 
     local airbase
     local located = function(located)
-        DCSWeather.Logger.Info(THIS_METHOD, "Nearest airbase point found.")
+        DCSDynamicWeather.Logger.info(THIS_METHOD, "Nearest airbase point found.")
         airbase = located
     end
     world.searchObjects(Object.Category.BASE, searchVolume, located)
@@ -35,7 +35,7 @@ function BuildMetar.getNearestAirbasePoint()
         return airbase:getPoint()
     end
 
-    DCSWeather.Logger.Info(THIS_METHOD, "No nearest airbase point found, setting reference to StationReference.")
+    DCSDynamicWeather.Logger.info(THIS_METHOD, "No nearest airbase point found, setting reference to StationReference.")
     return stationReference.point
 end
 
@@ -46,7 +46,7 @@ function BuildMetar.getWind(referencePoint)
     localReferencePoint.x = referencePoint.x
     localReferencePoint.y = (land.getHeight({ x = localReferencePoint.x, z = localReferencePoint.z })) -- Wind will return 0 within 10m of ground
     localReferencePoint.z = referencePoint.z
-    DCSWeather.Logger.Info(THIS_METHOD, "Wind Reference point: { x = " .. localReferencePoint.x .. ", y = " .. localReferencePoint.y .. ", z = " .. localReferencePoint.z .. " }")
+    DCSDynamicWeather.Logger.info(THIS_METHOD, "Wind Reference point: { x = " .. localReferencePoint.x .. ", y = " .. localReferencePoint.y .. ", z = " .. localReferencePoint.z .. " }")
 
     local windVec = atmosphere.getWind(localReferencePoint)
     local windSpeed = math.sqrt((windVec.z) ^ 2 + (windVec.x) ^ 2)
@@ -68,8 +68,8 @@ function BuildMetar.getWind(referencePoint)
 
     windSpeed = math.floor(windSpeed + 0.5)
     windDirection = math.floor(windDirection + 0.5)
-    DCSWeather.Logger.Info(THIS_METHOD, "Wind Speed: " .. windSpeed)
-    DCSWeather.Logger.Info(THIS_METHOD, "Wind Direction: " .. windDirection)
+    DCSDynamicWeather.Logger.info(THIS_METHOD, "Wind Speed: " .. windSpeed)
+    DCSDynamicWeather.Logger.info(THIS_METHOD, "Wind Direction: " .. windDirection)
 
     -- Add leading zeroes
     local windDirectionLeadingZeroes
@@ -97,13 +97,13 @@ function BuildMetar.getDayAndTimeZulu()
     local THIS_METHOD = THIS_FILE .. ".getDayAndTime24UTC"
 
     local theatre = env.mission.theatre
-    DCSWeather.Logger.Info(THIS_METHOD, "Theatre: " .. theatre)
+    DCSDynamicWeather.Logger.info(THIS_METHOD, "Theatre: " .. theatre)
 
     local time = timer.getAbsTime()
     local day = env.mission.date.Day
     local hours = math.floor(time / 3600)
     local minutes = (time / 60) - (hours * 60)
-    DCSWeather.Logger.Info(THIS_METHOD, "Local Time: Day: " .. day .. " Hour: " .. hours .. " Minute: " .. minutes)
+    DCSDynamicWeather.Logger.info(THIS_METHOD, "Local Time: Day: " .. day .. " Hour: " .. hours .. " Minute: " .. minutes)
 
     local timeChangeToZulu
     local timeChangeToZuluTbl = {}
@@ -117,10 +117,10 @@ function BuildMetar.getDayAndTimeZulu()
     if timeChangeToZuluTbl[theatre] then
         timeChangeToZulu = timeChangeToZuluTbl[theatre]
     else
-        DCSWeather.Logger.Warning(THIS_METHOD, "Theatre not detected, no time conversion set.")
+        DCSDynamicWeather.Logger.warning(THIS_METHOD, "Theatre not detected, no time conversion set.")
         timeChangeToZulu = 0
     end
-    DCSWeather.Logger.Info(THIS_METHOD, "Zulu Time: Day: " .. day .. " Hour: " .. hours .. " Minute: " .. minutes)
+    DCSDynamicWeather.Logger.info(THIS_METHOD, "Zulu Time: Day: " .. day .. " Hour: " .. hours .. " Minute: " .. minutes)
 
     hours = math.abs(hours + timeChangeToZulu)
     if hours >= 24 then
@@ -234,7 +234,7 @@ function BuildMetar.getPressureAltitude(referencePoint)
     local qfeMB = qfeHPA * PASCAL_TO_MILLIBAR
     local pressureAltitude = 145366.45 * (1 - math.pow((qfeMB / STD_PRESSURE_MILLIBAR), 0.190284))
 
-    DCSWeather.Logger.Info(THIS_METHOD, "Pressure Altitude: " .. pressureAltitude)
+    DCSDynamicWeather.Logger.info(THIS_METHOD, "Pressure Altitude: " .. pressureAltitude)
     return pressureAltitude
 end
 
@@ -255,7 +255,7 @@ function BuildMetar.getTempDew(referencePoint)
     localReferencePoint.x = referencePoint.x
     localReferencePoint.y = 0
     localReferencePoint.z = referencePoint.z
-    DCSWeather.Logger.Info(THIS_METHOD, "Temp/Dew Reference point: { x = " .. localReferencePoint.x .. ", y = " .. localReferencePoint.y .. ", z = " .. localReferencePoint.z .. " }")
+    DCSDynamicWeather.Logger.info(THIS_METHOD, "Temp/Dew Reference point: { x = " .. localReferencePoint.x .. ", y = " .. localReferencePoint.y .. ", z = " .. localReferencePoint.z .. " }")
 
     local clouds = env.mission.weather.clouds
     local temperature, _ = atmosphere.getTemperatureAndPressure(localReferencePoint)
@@ -280,23 +280,11 @@ function BuildMetar.getTempDew(referencePoint)
     return temperature .. "/" .. dew
 end
 
-function BuildMetar.outputMetar(metar)
-    local THIS_METHOD = THIS_FILE .. ".outputMetar"
-    DCSWeather.JSON.setValue("metar", metar, DCSWeather.DTO)
-    DCSWeather.JSON.setValue("weather_type", "real", DCSWeather.DTO)
-
-    if (DCSWeather.JSON.getValue("discord_api_key", DCSWeather.DTO) == "") then
-        DCSWeather.Logger.Warning(THIS_METHOD, "No Discord API Key found, not sending METAR to Discord.")
-        return
-    end
-    DCSWeather.JAR.execute("weather-output") -- TODO: Split out Sheets to a different Program
-end
-
 function BuildMetar.getStationId()
     local THIS_METHOD = THIS_FILE .. ".getStationId"
-    local icao = DCSWeather.JSON.getValue("icao", DCSWeather.DTO)
+    local icao = DCSDynamicWeather.JSON.getValue("icao", DCSDynamicWeather.DTO)
     if (icao == "") then
-        DCSWeather.Logger.Warning(THIS_METHOD, "ICAO not found.")
+        DCSDynamicWeather.Logger.warning(THIS_METHOD, "ICAO not found.")
         return "UNKN"
     else
         return icao
@@ -307,8 +295,14 @@ function BuildMetar.writeAirbaseCoordinatesToDataFile(referencePoint)
     local THIS_METHOD = THIS_FILE .. ".writeAirbaseCoordinatesToDataFile"
 
     local stationLatitude, stationLongitude, _ = coord.LOtoLL(referencePoint)
-    DCSWeather.JSON.setValue("station_latitude", stationLatitude, DCSWeather.DTO)
-    DCSWeather.JSON.setValue("station_longitude", stationLongitude, DCSWeather.DTO)
+    DCSDynamicWeather.JSON.setValue("station_latitude", stationLatitude, DCSDynamicWeather.DTO)
+    DCSDynamicWeather.JSON.setValue("station_longitude", stationLongitude, DCSDynamicWeather.DTO)
+end
+
+function BuildMetar.outputMetar(metar)
+    local THIS_METHOD = THIS_FILE .. ".outputMetar"
+    DCSDynamicWeather.JSON.setValue("metar", metar, DCSDynamicWeather.DTO)
+    DCSDynamicWeather.JAR.execute("weather-output")
 end
 
 function BuildMetar.main()
@@ -316,28 +310,28 @@ function BuildMetar.main()
     BuildMetar.writeAirbaseCoordinatesToDataFile(referencePoint)
 
     local stationId = BuildMetar.getStationId()
-    DCSWeather.Logger.Info(THIS_FILE, "Station ID: " .. stationId)
+    DCSDynamicWeather.Logger.info(THIS_FILE, "Station ID: " .. stationId)
 
     local dayAndTimeZulu = BuildMetar.getDayAndTimeZulu()
-    DCSWeather.Logger.Info(THIS_FILE, "Day and Time Zulu: " .. dayAndTimeZulu)
+    DCSDynamicWeather.Logger.info(THIS_FILE, "Day and Time Zulu: " .. dayAndTimeZulu)
 
     local wind = BuildMetar.getWind(referencePoint)
-    DCSWeather.Logger.Info(THIS_FILE, "Wind: " .. wind)
+    DCSDynamicWeather.Logger.info(THIS_FILE, "Wind: " .. wind)
 
     local visibility = BuildMetar.getVisibility()
-    DCSWeather.Logger.Info(THIS_FILE, "Visibility: " .. visibility)
+    DCSDynamicWeather.Logger.info(THIS_FILE, "Visibility: " .. visibility)
 
     local weatherMods = BuildMetar.getWeatherMods()
-    DCSWeather.Logger.Info(THIS_FILE, "Weather Mods: " .. weatherMods)
+    DCSDynamicWeather.Logger.info(THIS_FILE, "Weather Mods: " .. weatherMods)
 
     local cloudCover = BuildMetar.getCloudCover()
-    DCSWeather.Logger.Info(THIS_FILE, "Cloud Cover: " .. cloudCover)
+    DCSDynamicWeather.Logger.info(THIS_FILE, "Cloud Cover: " .. cloudCover)
 
     local tempDew = BuildMetar.getTempDew(referencePoint)
-    DCSWeather.Logger.Info(THIS_FILE, "Temp/Dew: " .. tempDew)
+    DCSDynamicWeather.Logger.info(THIS_FILE, "Temp/Dew: " .. tempDew)
 
     local qnh = BuildMetar.getQnh(referencePoint)
-    DCSWeather.Logger.Info(THIS_FILE, "QNH: " .. qnh)
+    DCSDynamicWeather.Logger.info(THIS_FILE, "QNH: " .. qnh)
 
     local metar = stationId .. " " ..
             dayAndTimeZulu .. " " ..
@@ -348,7 +342,12 @@ function BuildMetar.main()
             tempDew .. " " ..
             qnh
 
-    DCSWeather.Logger.Info(THIS_FILE, "METAR: " .. metar)
-    BuildMetar.outputMetar(metar)
+    DCSDynamicWeather.Logger.info(THIS_FILE, "METAR: " .. metar)
+
+    if stationId ~= "UNKN" then
+        BuildMetar.outputMetar(metar) -- TODO: check time of last update instead?
+    else
+        DCSDynamicWeather.Mission.loadNextMission()
+    end
 end
 BuildMetar.main()
