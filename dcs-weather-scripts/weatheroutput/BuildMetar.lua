@@ -280,7 +280,7 @@ function BuildMetar.getTempDew(referencePoint)
     return temperature .. "/" .. dew
 end
 
-function BuildMetar.getStationId()
+function BuildMetar.getICAO()
     local THIS_METHOD = THIS_FILE .. ".getStationId"
     local icao = DCSDynamicWeather.JSON.getValue("icao", DCSDynamicWeather.DTO)
     if (icao == "") then
@@ -309,8 +309,8 @@ function BuildMetar.main()
     local referencePoint = BuildMetar.getNearestAirbasePoint()
     BuildMetar.writeAirbaseCoordinatesToDataFile(referencePoint)
 
-    local stationId = BuildMetar.getStationId()
-    DCSDynamicWeather.Logger.info(THIS_FILE, "Station ID: " .. stationId)
+    local icao = BuildMetar.getICAO()
+    DCSDynamicWeather.Logger.info(THIS_FILE, "ICAO: " .. icao)
 
     local dayAndTimeZulu = BuildMetar.getDayAndTimeZulu()
     DCSDynamicWeather.Logger.info(THIS_FILE, "Day and Time Zulu: " .. dayAndTimeZulu)
@@ -333,7 +333,7 @@ function BuildMetar.main()
     local qnh = BuildMetar.getQnh(referencePoint)
     DCSDynamicWeather.Logger.info(THIS_FILE, "QNH: " .. qnh)
 
-    local metar = stationId .. " " ..
+    local metar = icao .. " " ..
             dayAndTimeZulu .. " " ..
             wind .. " " ..
             visibility .. " " ..
@@ -344,7 +344,7 @@ function BuildMetar.main()
 
     DCSDynamicWeather.Logger.info(THIS_FILE, "METAR: " .. metar)
 
-    if stationId ~= "UNKN" then
+    if icao ~= "UNKN" then
         BuildMetar.outputMetar(metar) -- TODO: check time of last update instead?
     else
         DCSDynamicWeather.Mission.loadNextMission()
