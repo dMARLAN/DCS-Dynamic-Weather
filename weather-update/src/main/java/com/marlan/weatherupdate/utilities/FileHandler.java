@@ -9,9 +9,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
 
-public class FileUtility {
-    private FileUtility() {
+public class FileHandler {
+    private FileHandler() {
     }
 
     public static String readFile(String dir, String fileName) {
@@ -19,7 +20,7 @@ public class FileUtility {
         try {
             return Files.readString(filePath);
         } catch (IOException e) {
-            e.printStackTrace();
+            Logger.error(Arrays.toString(e.getStackTrace()));
             System.exit(1); // Program can't continue without the file, Lua Script can read error code.
         }
         return ""; // Unreachable
@@ -30,7 +31,7 @@ public class FileUtility {
         try (FileWriter fileWriter = new FileWriter(file, false)) {
             fileWriter.write(newContent);
         } catch (IOException e) {
-            e.printStackTrace();
+            Logger.error(Arrays.toString(e.getStackTrace()));
             System.exit(1); // Program is useless without writing to file, Lua Script can read error code.
         }
     }
@@ -44,7 +45,7 @@ public class FileUtility {
                     .create();
             gson.toJson(jsonObject, fileWriter);
         } catch (IOException e) {
-            e.printStackTrace();
+            Logger.error(Arrays.toString(e.getStackTrace()));
         }
     }
 
@@ -52,7 +53,7 @@ public class FileUtility {
         try (FileWriter fw = new FileWriter(dir + fileName, true)) {
             fw.write(content);
         } catch (IOException e) {
-            e.printStackTrace();
+            Logger.error(Arrays.toString(e.getStackTrace()));
         }
     }
 
@@ -61,7 +62,7 @@ public class FileUtility {
         try {
             Files.delete(filePath);
         } catch (IOException e) {
-            e.printStackTrace();
+            Logger.error(Arrays.toString(e.getStackTrace()));
         }
     }
 
