@@ -2,6 +2,7 @@ package com.marlan.weatherupdate.service;
 
 import com.marlan.weatherupdate.model.dto.DTO;
 import com.marlan.weatherupdate.model.metar.AVWXMetar;
+import com.marlan.weatherupdate.utilities.Logger;
 import lombok.NoArgsConstructor;
 
 import java.io.IOException;
@@ -17,7 +18,9 @@ public class AVWXClient {
 
     public HttpResponse<String> getMetar(DTO dto) throws URISyntaxException, IOException, InterruptedException, IllegalArgumentException {
         if ((dto.getAvwxApiKey().isEmpty()) || (dto.getStationLatitude().isEmpty()) || (dto.getStationLongitude().isEmpty())) {
-            throw new IllegalArgumentException("Missing required parameters");
+            String errorMessage = "AVWX API Key, Station Latitude and Station Longitude are required";
+            Logger.error(errorMessage);
+            throw new IllegalArgumentException(errorMessage);
         } else {
             HttpRequest getRequest = HttpRequest.newBuilder()
                     .uri(new URI("https://avwx.rest/api/metar/" + dto.getStationLatitude() + "," + dto.getStationLongitude() + "?onfail=nearest"))
@@ -30,7 +33,9 @@ public class AVWXClient {
 
     public HttpResponse<String> getStation(DTO dto, AVWXMetar weatherAVWX) throws URISyntaxException, IOException, InterruptedException, IllegalArgumentException {
         if ((dto.getAvwxApiKey().length() == 0) || (weatherAVWX.getStation().length() == 0)) {
-            throw new IllegalArgumentException("Missing required parameters");
+            String errorMessage = "AVWX API Key and Station are required";
+            Logger.error(errorMessage);
+            throw new IllegalArgumentException(errorMessage);
         } else {
             HttpRequest getRequest = HttpRequest.newBuilder()
                     .uri(new URI("https://avwx.rest/api/station/" + weatherAVWX.getStation()))
