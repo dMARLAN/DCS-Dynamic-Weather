@@ -351,7 +351,7 @@ function BuildMetar.main()
     if icao ~= "UNKN" then
         BuildMetar.outputMetar(metar) -- TODO: check time of last update instead?
     else
-        timer.scheduleFunction(resetMission, {}, timer.getTime() + 3)
+        timer.scheduleFunction(resetMission, {}, timer.getTime() + 2)
     end
 end
 BuildMetar.main()
