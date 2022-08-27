@@ -2,7 +2,7 @@ local DCSDynamicWeatherHook = {}
 local DCSDynamicWeatherCallbacks = {}
 DCSDynamicWeatherHook.Logger = {}
 
-local THIS_FILE = "DCS-Dynamic-Weather-Hook"
+local THIS_FILE = "DCSDynamicWeatherHook"
 local DCS_ROOT = lfs.currentdir()
 local DCS_SG = lfs.writedir()
 
@@ -13,7 +13,7 @@ function DCSDynamicWeatherCallbacks.onMissionLoadEnd()
     local code = [[a_do_script("DCSDynamicWeather.MISSION_NAME = \"]] .. missionName .. [[\"")]]
     local succesful, err = pcall(net.dostring_in("mission", code))
     if not succesful then
-        DCSDynamicWeatherHook.Logger.error(THIS_METHOD, "DCSDynamicWeather.MISSION_NAME failed to inject.")
+        DCSDynamicWeatherHook.Logger.error(THIS_METHOD, "DCSDynamicWeather.MISSION_NAME failed to inject: " .. err)
     else
         DCSDynamicWeatherHook.Logger.info(THIS_METHOD, "Injected DCSDynamicWeather.MISSION_NAME = " .. missionName)
     end
