@@ -8,15 +8,10 @@ function DCSDynamicWeather.JSON.setValue(key, value, fileName)
     local filePath = DCSDynamicWeather.SCRIPTS_PATH .. "\\" .. fileName
     local dataFilePath = DCSDynamicWeather.SCRIPTS_PATH .. "\\" .. DCSDynamicWeather.DTO
 
-    env.info("set value check file exists start")
     if not fileExists(filePath) then
-        env.info("fileExists: ")
-        env.info(fileExists(filePath))
-        env.info("set value check file inside")
         DCSDynamicWeather.Logger.error(THIS_METHOD, "File: \"" .. filePath .. "\" can not be read.")
         return
     end
-    env.info("set value check file exists done")
 
     local readFile = io.open(filePath, "rb")
     local fileContents = io.read(readFile, "*all")
