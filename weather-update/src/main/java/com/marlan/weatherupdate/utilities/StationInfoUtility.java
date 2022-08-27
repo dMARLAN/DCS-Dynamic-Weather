@@ -1,7 +1,5 @@
 package com.marlan.weatherupdate.utilities;
 
-import static java.lang.System.out;
-
 public class StationInfoUtility {
     private StationInfoUtility() {
     }
@@ -13,7 +11,7 @@ public class StationInfoUtility {
         if (country.equals("GE")) return "Asia/Tbilisi"; // Batumi AFB
         if (country.equals("TR")) return "Asia/Damascus"; // Incirlik AFB
         if (country.equals("FK")) return "Atlantic/Stanley"; // Mount Pleasant AFB
-        out.println("WARNING: Zone unknown, time conversion set to UTC");
+        Logger.warning("Unknown Country: " + country + " - using default zoneId: UTC");
         return "UTC";
     }
 
