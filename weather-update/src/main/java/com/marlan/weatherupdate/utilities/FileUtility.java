@@ -48,6 +48,14 @@ public class FileUtility {
         }
     }
 
+    public static void appendFile(String dir, String fileName, String content) {
+        try (FileWriter fw = new FileWriter(dir + fileName, true)) {
+            fw.write(content);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void deleteFile(String dir, String fileName) {
         Path filePath = Path.of(dir + fileName);
         try {
