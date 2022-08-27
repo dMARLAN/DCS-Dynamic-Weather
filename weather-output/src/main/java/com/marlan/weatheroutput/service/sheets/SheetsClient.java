@@ -13,6 +13,7 @@ import com.google.auth.http.HttpCredentialsAdapter;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.auth.oauth2.ServiceAccountCredentials;
 import com.marlan.weatheroutput.model.DTO;
+import com.marlan.weatheroutput.utilities.Logger;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -22,13 +23,12 @@ import java.security.GeneralSecurityException;
 import java.util.Collections;
 import java.util.List;
 
-import static java.lang.System.out;
-
 public class SheetsClient {
     private static final String APPLICATION_NAME = "DCS-Dynamic-Weather";
     private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
     private static final List<String> SCOPES = Collections.singletonList(SheetsScopes.SPREADSHEETS);
     private static final String CREDENTIALS_FILE_NAME = "credentials.json";
+
     private SheetsClient() {
     }
 
@@ -60,21 +60,20 @@ public class SheetsClient {
         } catch (GoogleJsonResponseException e) {
             response = e.toString();
         }
-        out.println(response);
-
+        Logger.info("Sheets Update Response: " + response);
     }
 
     private static boolean validParameters(final String dir, final DTO dto) {
         if (!Files.exists(Paths.get(dir + CREDENTIALS_FILE_NAME))) {
-            out.println("ERROR: Credentials file not found: " + dir + CREDENTIALS_FILE_NAME);
+            Logger.warning("Credentials file not found: " + dir + CREDENTIALS_FILE_NAME);
             return false;
         }
         if (dto.getSpreadsheetId().isEmpty()) {
-            out.println("ERROR: Spreadsheet ID empty.");
+            Logger.warning("Spreadsheet ID empty");
             return false;
         }
         if (dto.getSpreadsheetRange().isEmpty()) {
-            out.println("ERROR: Spreadsheet Range empty.");
+            Logger.warning("Spreadsheet Range empty");
             return false;
         }
         return true;
