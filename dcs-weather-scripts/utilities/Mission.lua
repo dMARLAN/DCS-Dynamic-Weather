@@ -8,9 +8,8 @@ function DCSDynamicWeather.Mission.loadNextMission(weatherType)
 
     weatherType = weatherType or "real"
     DCSDynamicWeather.JSON.setValue("weather_type", weatherType, DCSDynamicWeather.DTO)
-    DCSDynamicWeather.JAR.execute("weather-update")
-
     DCSDynamicWeather.JSON.setValue("mission", getNextMissionName() .. ".miz", DCSDynamicWeather.DTO)
+    DCSDynamicWeather.JAR.execute("weather-update")
 
     loadMission(getNextMissionName())
 end
@@ -70,5 +69,5 @@ function invertIdentifier(identifier)
 end
 
 function fileExists(file)
-    DCSDynamicWeather.File.exists(file)
+    return DCSDynamicWeather.File.exists(file)
 end
