@@ -10,7 +10,9 @@ public class DirHandler {
         if (args.length != 0) {
             System.setProperty("user.dir", args[0]);
         }
-        return getProperty("user.dir") + "\\";
+        String workingDir = getProperty("user.dir") + "\\";
+        Logger.info("Working directory: " + workingDir);
+        return workingDir;
     }
 
 }
