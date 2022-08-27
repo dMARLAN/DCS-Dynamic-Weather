@@ -305,6 +305,10 @@ function BuildMetar.outputMetar(metar)
     DCSDynamicWeather.JAR.execute("weather-output")
 end
 
+local function resetMission()
+    DCSDynamicWeather.Mission.loadNextMission()
+end
+
 function BuildMetar.main()
     local referencePoint = BuildMetar.getNearestAirbasePoint()
     BuildMetar.writeAirbaseCoordinatesToDataFile(referencePoint)
@@ -347,7 +351,7 @@ function BuildMetar.main()
     if icao ~= "UNKN" then
         BuildMetar.outputMetar(metar) -- TODO: check time of last update instead?
     else
-        DCSDynamicWeather.Mission.loadNextMission()
+        timer.scheduleFunction(resetMission, {}, timer.getTime() + 3)
     end
 end
 BuildMetar.main()
