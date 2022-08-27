@@ -1,9 +1,6 @@
 package com.marlan.weatherupdate.utilities;
 
-import java.io.IOException;
-
 import static java.lang.System.getenv;
-import static java.lang.System.out;
 
 public class MizUtility {
     private static final String SEVEN_ZIP_PATH = getenv("ProgramFiles") + "\\7-Zip\\7z.exe";
@@ -12,7 +9,7 @@ public class MizUtility {
     }
 
     public static void extractMission(String dir, String mizName) {
-        out.println("INFO: Extracting mission from " + dir + mizName);
+        Logger.info("Extracting mission: " + dir + mizName);
         ProcessBuilder pb = new ProcessBuilder(
                 SEVEN_ZIP_PATH,
                 "x",
@@ -26,7 +23,7 @@ public class MizUtility {
     }
 
     public static void updateMiz(String dir, String mizName, String missionFile) {
-        out.println("INFO: Updating " + dir + mizName);
+        Logger.info("Updating mission: " + dir + mizName);
         ProcessBuilder pb = new ProcessBuilder(
                 SEVEN_ZIP_PATH,
                 "a",
