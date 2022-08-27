@@ -8,12 +8,8 @@ function DCSDynamicWeather.JSON.setValue(key, value, fileName)
     local filePath = DCSDynamicWeather.SCRIPTS_PATH .. "\\" .. fileName
     local dataFilePath = DCSDynamicWeather.SCRIPTS_PATH .. "\\" .. DCSDynamicWeather.DTO
 
-    if not (fileExists(filePath) and fileExists(dataFilePath)) then
-        if not fileExists(filePath) then
-            DCSDynamicWeather.Logger.error(THIS_METHOD, "File: \"" .. filePath .. "\" does not exist.")
-        else
-            DCSDynamicWeather.Logger.error(THIS_METHOD, "File: \"" .. dataFilePath .. "\" does not exist.")
-        end
+    if not fileExists(filePath) then
+        DCSDynamicWeather.Logger.error(THIS_METHOD, "File: \"" .. filePath .. "\" can not be read.")
         return
     end
 
