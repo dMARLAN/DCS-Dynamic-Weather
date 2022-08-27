@@ -18,7 +18,7 @@ public class FileHandler {
         try (FileWriter fw = new FileWriter(dir + fileName, true)) {
             fw.write(content);
         } catch (IOException e) {
-            // TODO: handle exception
+            e.printStackTrace();
         }
     }
 
