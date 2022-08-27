@@ -1,19 +1,10 @@
 local menuHandler = {}
 local setWeather, createGroupSpecificMenus, createAllGroupsMenus
-local THIS_FILE = DCSWeather.MODULE_NAME .. ".SetWeather"
+local THIS_FILE = DCSDynamicWeather.MODULE_NAME .. ".SetWeather"
 local setWeatherMenu
 
 function setWeather(weatherType)
-    DCSWeather.JSON.setValue("weather_type", weatherType, DCSWeather.DTO)
-
-    local nextMissionToLoad = DCSWeather.Mission.getNextMissionName()
-    if (nextMissionToLoad ~= 0) then
-        trigger.action.outText("[DCSWeather.SetWeather]: Loading: " .. weatherType .. "\\" .. nextMissionToLoad .. "...", 10)
-        DCSWeather.JSON.setValue("mission", nextMissionToLoad .. ".miz", DCSWeather.DTO)
-        DCSWeather.JAR.execute("weather-update")
-        DCSWeather.JSON.setValue("weather_type", "real", DCSWeather.DTO)
-        DCSWeather.Mission.loadNextMission(nextMissionToLoad)
-    end
+    DCSDynamicWeather.Mission.loadNextMission(weatherType)
 end
 
 function menuHandler:onEvent(event)
@@ -38,7 +29,7 @@ function createGroupSpecificMenus(adminGroupID, ADMIN_GROUP_NAME)
 
     local clearNightConfirm = missionCommands.addSubMenuForGroup(adminGroupID, "Clear Night", setWeatherMenu)
     missionCommands.addCommandForGroup(adminGroupID, "Confirm", clearNightConfirm, setWeather, "clearNight")
-    DCSWeather.Logger.Info(THIS_FILE, "Created Set Weather Menus for " .. ADMIN_GROUP_NAME)
+    DCSDynamicWeather.Logger.info(THIS_FILE, "Created Set Weather Menus for " .. ADMIN_GROUP_NAME)
 end
 
 function createAllGroupsMenus()
@@ -49,7 +40,7 @@ function createAllGroupsMenus()
 
     local clearNightConfirm = missionCommands.addSubMenu("Clear Night", setWeatherMenu)
     missionCommands.addCommand("Confirm", clearNightConfirm, setWeather, "clearNight")
-    DCSWeather.Logger.Info(THIS_FILE, "Created Set Weather Menus for all groups.")
+    DCSDynamicWeather.Logger.info(THIS_FILE, "Created Set Weather Menus for all groups.")
 end
 
 local function main()
