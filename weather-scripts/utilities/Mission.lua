@@ -7,11 +7,12 @@ function DCSDynamicWeather.Mission.loadNextMission(weatherType)
     local THIS_METHOD = THIS_FILE .. ".loadNextMission()"
 
     weatherType = weatherType or "real"
+    local nextMissionName = getNextMissionName()
     DCSDynamicWeather.JSON.setValue("weather_type", weatherType, DCSDynamicWeather.DTO)
-    DCSDynamicWeather.JSON.setValue("mission", getNextMissionName() .. ".miz", DCSDynamicWeather.DTO)
+    DCSDynamicWeather.JSON.setValue("mission", nextMissionName .. ".miz", DCSDynamicWeather.DTO)
     DCSDynamicWeather.JAR.execute("weather-update")
 
-    loadMission(getNextMissionName())
+    loadMission(nextMissionName)
 end
 
 function loadMission(mission)
