@@ -20,7 +20,7 @@ public class DCSRealWeatherController {
 
     public static void main(String[] args) throws IOException, InterruptedException, URISyntaxException {
         final String dir = DirHandler.getWorkingDir(args);
-        Logger.setDir(dir);
+        Logger.setDIR(dir);
         final Gson gson = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
         final String MISSION_FILE = "mission";
         final String DATA_FILE = "dto.json";
