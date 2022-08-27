@@ -26,9 +26,10 @@ function getNextMissionName()
     local missionName = DCSDynamicWeather.MISSION_NAME
 
     if not missionName then
-        DCSDynamicWeather.Logger.error(THIS_METHOD, "DCSDynamicWeather.MISSION_NAME is nil")
+        DCSDynamicWeather.Logger.error(THIS_METHOD, "missionName is nil")
+        return
     else
-        DCSDynamicWeather.Logger.info(THIS_METHOD, "DCSDynamicWeather.MISSION_NAME is " .. missionName)
+        DCSDynamicWeather.Logger.info(THIS_METHOD, "missionName is " .. missionName)
     end
 
     local missionNameLast2Chars = string.sub(missionName, #missionName - 1)
