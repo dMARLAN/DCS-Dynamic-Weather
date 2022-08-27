@@ -7,14 +7,13 @@ import com.marlan.weatherupdate.model.metar.fields.WindDirection;
 import com.marlan.weatherupdate.model.metar.fields.WindSpeed;
 import com.marlan.weatherupdate.model.station.AVWXStation;
 import com.marlan.weatherupdate.utilities.AltimeterUtility;
+import com.marlan.weatherupdate.utilities.Logger;
 import com.marlan.weatherupdate.utilities.StationInfoUtility;
 
 import java.security.SecureRandom;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Random;
-
-import static java.lang.System.out;
 
 public class MissionHandlerService {
     private static final double KNOTS_TO_METERS = 0.51444444444;
@@ -38,9 +37,9 @@ public class MissionHandlerService {
         ZonedDateTime zonedDateTime = ZonedDateTime.now(ZoneId.of(StationInfoUtility.getZoneId(stationAVWX.getCountry())));
 
         if (metarAVWX.getMeta().getWarning() != null) {
-            out.println("WARNING: " + metarAVWX.getMeta().getWarning());
+            Logger.warning(metarAVWX.getMeta().getWarning());
         }
-        out.println("INFO: METAR: " + metarAVWX.getSanitized());
+        Logger.info("METAR: " + metarAVWX.getSanitized());
 
         switch (dto.getWeatherType()) {
             case "real" -> {
@@ -116,40 +115,40 @@ public class MissionHandlerService {
                     "[\"preset\"] = \"\\$cloudsPreset\",\n"
                             .replace("$cloudsPreset", cloudsPreset));
         }
-        out.println("INFO: Clouds Preset set to: " + cloudsPreset);
+        Logger.info("Clouds Preset: " + cloudsPreset);
 
         mission = mission.replaceAll("\\[\"at8000\"]\\s+=\\s+\\{([^}]*)",
                 "[\"at8000\"] =\n            {\n                [\"speed\"] = $wind8000Speed,\n                [\"dir\"] = $wind8000Dir,\n            "
                         .replace("$wind8000Speed", Double.toString(windSpeed8000))
                         .replace("$wind8000Dir", Double.toString(windDirection8000)));
-        out.println("INFO: Wind at 8000 set to: " + Math.round(windSpeed8000) + " m/s (" + Math.round(windSpeed8000 / KNOTS_TO_METERS) + " kts)" + " at " + Math.floor(invertWindDirection(windDirection8000)) + "°");
+        Logger.info("Wind at 8000 set to: " + Math.round(windSpeed8000) + " m/s (" + Math.round(windSpeed8000 / KNOTS_TO_METERS) + " kts)" + " at " + Math.floor(invertWindDirection(windDirection8000)) + "°");
 
         mission = mission.replaceAll("\\[\"at2000\"]\\s+=\\s+\\{([^}]*)",
                 "[\"at2000\"] =\n            {\n                [\"speed\"] = $wind2000Speed,\n                [\"dir\"] = $wind2000Dir,\n            "
                         .replace("$wind2000Speed", Double.toString(windSpeed2000))
                         .replace("$wind2000Dir", Double.toString(windDirection2000)));
-        out.println("INFO: Wind at 2000 set to: " + Math.round(windSpeed2000) + " m/s (" + Math.round(windSpeed2000 / KNOTS_TO_METERS) + " kts)" + " at " + Math.floor(invertWindDirection(windDirection2000)) + "°");
+        Logger.info("Wind at 2000 set to: " + Math.round(windSpeed2000) + " m/s (" + Math.round(windSpeed2000 / KNOTS_TO_METERS) + " kts)" + " at " + Math.floor(invertWindDirection(windDirection2000)) + "°");
 
         mission = mission.replaceAll("\\[\"atGround\"]\\s+=\\s+\\{([^}]*)",
                 "[\"atGround\"] =\n            {\n                [\"speed\"] = $windGroundSpeed,\n                [\"dir\"] = $windGroundDir,\n            "
                         .replace("$windGroundSpeed", Double.toString(windSpeedGround))
                         .replace("$windGroundDir", Double.toString(windDirectionGround)));
-        out.println("INFO: Wind at Ground set to: " + Math.round(windSpeedGround) + " m/s (" + Math.round(windSpeedGround / KNOTS_TO_METERS) + " kts)" + " at " + Math.floor(invertWindDirection(windDirectionGround)) + "°");
+        Logger.info("Wind at Ground set to: " + Math.round(windSpeedGround) + " m/s (" + Math.round(windSpeedGround / KNOTS_TO_METERS) + " kts)" + " at " + Math.floor(invertWindDirection(windDirectionGround)) + "°");
 
         mission = mission.replaceAll("(?<=\\[\"currentKey\"]\\s{1,5}=\\s{1,5}.{1,100}\n)(.*)", "    [\"start_time\"] = $startTime,".replace("$startTime", Integer.toString(hour * 3600)));
-        out.println("INFO: Start Time set to: " + hour * 3600 + "s (" + hour + "h)");
+        Logger.info("Start Time set to: " + hour * 3600 + "s (" + hour + "h)");
 
         mission = mission.replaceAll("(\\[\"Day\"].*)\n", "[\"Day\"] = \\$day,\n".replace("$day", Integer.toString(day)));
-        out.println("INFO: Day set to: " + day);
+        Logger.info("Day set to: " + day);
 
         mission = mission.replaceAll("(\\[\"Month\"].*)\n", "[\"Month\"] = \\$month,\n".replace("$month", Integer.toString(month)));
-        out.println("INFO: Month set to: " + month);
+        Logger.info("Month set to: " + month);
 
         mission = mission.replaceAll("(\\[\"temperature\"].*)\n", "[\"temperature\"] = \\$stationTempC,\n".replace("$stationTempC", Double.toString(stationTempC)));
-        out.println("INFO: Station Temperature set to: " + stationTempC + " C" + " / Sea Level Temperature set to: " + Math.round(seaLevelTempC) + " C");
+        Logger.info("Station Temperature set to: " + stationTempC + " C" + " / Sea Level Temperature set to: " + Math.round(seaLevelTempC) + " C");
 
         mission = mission.replaceAll("(\\[\"qnh\"].*)\n", "[\"qnh\"] = \\$qnh,\n".replace("$qnh", Double.toString(qffMmHg))); // DCS actually uses QFF not QNH!
-        out.println("INFO: QFF set to: " + qffMmHg + " mmHg (" + qffMmHg / INHG_TO_MMHG + " inHg)");
+        Logger.info("QFF set to: " + qffMmHg + " mmHg (" + qffMmHg / INHG_TO_MMHG + " inHg)");
 
         return mission;
     }
