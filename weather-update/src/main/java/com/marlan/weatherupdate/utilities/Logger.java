@@ -8,8 +8,9 @@ public class Logger {
     private static final String INFO = "INFO";
     private static final String WARNING = "WARNING";
     private static final String ERROR = "ERROR";
+
     @Setter
-    private static String dir;
+    private static String DIR;
 
     private Logger() {
     }
@@ -31,7 +32,7 @@ public class Logger {
 
     private static void log(String type, String message) {
         getDateTime();
-        FileHandler.appendFile(dir + "logs\\", "DCSDynamicWeather-Weather-Update.log", getDateTime() + " " + type + "    " + message + "\n");
+        FileHandler.appendFile(DIR + "logs\\", "DCSDynamicWeather-Weather-Output.log", getDateTime() + " " + type + "    " + message + "\n");
     }
 
     private static String getDateTime() {
