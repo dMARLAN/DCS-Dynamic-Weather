@@ -9,13 +9,13 @@ local DCS_SG = lfs.writedir()
 function DCSDynamicWeatherCallbacks.onMissionLoadEnd()
     local THIS_METHOD = "DCSDynamicWeatherCallbacks.onMissionLoadEnd"
     local missionName = DCS.getMissionName()
-
     local code = [[a_do_script("DCSDynamicWeather.MISSION_NAME = \"]] .. missionName .. [[\"")]]
-    local succesful, err = pcall(net.dostring_in("mission", code))
-    if not succesful then
-        DCSDynamicWeatherHook.Logger.error(THIS_METHOD, "DCSDynamicWeather.MISSION_NAME failed to inject: " .. err)
+
+    local successful, err = pcall(net.dostring_in, "mission", code)
+    if not successful then
+        DCSDynamicWeatherHook.Logger.error(THIS_METHOD, "Failed to inject: \"" .. code .. "\" with error: " .. err)
     else
-        DCSDynamicWeatherHook.Logger.info(THIS_METHOD, "Injected DCSDynamicWeather.MISSION_NAME = " .. missionName)
+        DCSDynamicWeatherHook.Logger.info(THIS_METHOD, "Injected: \"" .. code .. "\"")
     end
 end
 
@@ -23,6 +23,7 @@ function DCSDynamicWeatherCallbacks.onTriggerMessage(message, _, _)
     local THIS_METHOD = "DCSDynamicWeatherCallbacks.onTriggerMessage"
 
     if not DCS.isServer() then
+        DCSDynamicWeatherHook.Logger.warning(THIS_METHOD, "Only a server can load a mission.")
         return
     end
 
