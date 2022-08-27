@@ -44,7 +44,11 @@ public class MissionHandlerService {
 
         switch (dto.getWeatherType()) {
             case "real" -> {
-                this.hour = zonedDateTime.getHour() + dto.getTimeOffset();
+                if (zonedDateTime.getHour() + dto.getTimeOffset() < 0) {
+                    this.hour = 24 + zonedDateTime.getHour() + dto.getTimeOffset();
+                } else {
+                    this.hour = zonedDateTime.getHour() + dto.getTimeOffset();
+                }
                 this.windSpeed = metarAVWX.getWindSpeed().flatMap(WindSpeed::getValue).orElse(0.0);
                 this.windDirection = metarAVWX.getWindDirection().flatMap(WindDirection::getValue).orElse(0.0);
                 this.stationTempC = metarAVWX.getTemperature().flatMap(Temperature::getValue).orElse(ISA_TEMP_C);
