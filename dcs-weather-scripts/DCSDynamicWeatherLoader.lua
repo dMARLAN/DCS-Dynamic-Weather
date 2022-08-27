@@ -25,7 +25,9 @@ local function loadLua(folder, fileName)
     DCSDynamicWeather.Logger.info(THIS_FILE, "Loaded: " .. folder .. "\\" .. fileName .. ".lua")
 end
 
-loadLua(UTILITIES, "Logger")
+loadLua(UTILITIES, "Logger") -- Must be first
+
+loadLua(UTILITIES, "File")
 loadLua(UTILITIES, "JAR")
 loadLua(UTILITIES, "JSON")
 loadLua(UTILITIES, "Mission")
