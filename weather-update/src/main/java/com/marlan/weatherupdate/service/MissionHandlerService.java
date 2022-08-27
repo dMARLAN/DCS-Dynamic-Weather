@@ -116,24 +116,26 @@ public class MissionHandlerService {
                             .replace("$cloudsPreset", cloudsPreset));
         }
         Logger.info("Clouds Preset: " + cloudsPreset);
-
+        
+        String ms = " m/s (";
+        String kts = " kts)";
         mission = mission.replaceAll("\\[\"at8000\"]\\s+=\\s+\\{([^}]*)",
                 "[\"at8000\"] =\n            {\n                [\"speed\"] = $wind8000Speed,\n                [\"dir\"] = $wind8000Dir,\n            "
                         .replace("$wind8000Speed", Double.toString(windSpeed8000))
                         .replace("$wind8000Dir", Double.toString(windDirection8000)));
-        Logger.info("Wind at 8000 set to: " + Math.round(windSpeed8000) + " m/s (" + Math.round(windSpeed8000 / KNOTS_TO_METERS) + " kts)" + " at " + Math.floor(invertWindDirection(windDirection8000)) + "°");
+        Logger.info("Wind at 8000 set to: " + Math.round(windSpeed8000) + ms + Math.round(windSpeed8000 / KNOTS_TO_METERS) + kts + Math.floor(invertWindDirection(windDirection8000)) + "°");
 
         mission = mission.replaceAll("\\[\"at2000\"]\\s+=\\s+\\{([^}]*)",
                 "[\"at2000\"] =\n            {\n                [\"speed\"] = $wind2000Speed,\n                [\"dir\"] = $wind2000Dir,\n            "
                         .replace("$wind2000Speed", Double.toString(windSpeed2000))
                         .replace("$wind2000Dir", Double.toString(windDirection2000)));
-        Logger.info("Wind at 2000 set to: " + Math.round(windSpeed2000) + " m/s (" + Math.round(windSpeed2000 / KNOTS_TO_METERS) + " kts)" + " at " + Math.floor(invertWindDirection(windDirection2000)) + "°");
+        Logger.info("Wind at 2000 set to: " + Math.round(windSpeed2000) + ms + Math.round(windSpeed2000 / KNOTS_TO_METERS) + kts + Math.floor(invertWindDirection(windDirection2000)) + "°");
 
         mission = mission.replaceAll("\\[\"atGround\"]\\s+=\\s+\\{([^}]*)",
                 "[\"atGround\"] =\n            {\n                [\"speed\"] = $windGroundSpeed,\n                [\"dir\"] = $windGroundDir,\n            "
                         .replace("$windGroundSpeed", Double.toString(windSpeedGround))
                         .replace("$windGroundDir", Double.toString(windDirectionGround)));
-        Logger.info("Wind at Ground set to: " + Math.round(windSpeedGround) + " m/s (" + Math.round(windSpeedGround / KNOTS_TO_METERS) + " kts)" + " at " + Math.floor(invertWindDirection(windDirectionGround)) + "°");
+        Logger.info("Wind at Ground set to: " + Math.round(windSpeedGround) + ms + Math.round(windSpeedGround / KNOTS_TO_METERS) + kts + Math.floor(invertWindDirection(windDirectionGround)) + "°");
 
         mission = mission.replaceAll("(?<=\\[\"currentKey\"]\\s{1,5}=\\s{1,5}.{1,100}\n)(.*)", "    [\"start_time\"] = $startTime,".replace("$startTime", Integer.toString(hour * 3600)));
         Logger.info("Start Time set to: " + hour * 3600 + "s (" + hour + "h)");
