@@ -1,7 +1,7 @@
 DCSDynamicWeather.Mission = {}
 
 local THIS_FILE = DCSDynamicWeather.MODULE_NAME .. ".Mission"
-local invertMissionIdentifier, getNextMissionName, loadMission, fileExists, copyFileWithIdentifier, invertIdentifier
+local invertMissionIdentifier, getNextMissionName, loadMission, fileExists, copyFileWithNewIdentifier, invertIdentifier
 
 function DCSDynamicWeather.Mission.loadNextMission(weatherType)
     local THIS_METHOD = THIS_FILE .. ".loadNextMission()"
@@ -38,7 +38,7 @@ function getNextMissionName()
     if (string.match(missionNameLast2Chars, "_A") or string.match(missionNameLast2Chars, "_B")) then
         local missionNameWithInvertedIdentifier = invertMissionIdentifier(missionName)
         if not fileExists(DCSDynamicWeather.SCRIPTS_PATH .. "\\" .. missionNameWithInvertedIdentifier .. ".miz") then
-            copyFileWithIdentifier(invertIdentifier(string.sub(missionName, #missionName)))
+            copyFileWithNewIdentifier(invertIdentifier(string.sub(missionName, #missionName)))
         end
         DCSDynamicWeather.Logger.info(THIS_METHOD, "Next Mission: " .. missionNameWithInvertedIdentifier)
         return missionNameWithInvertedIdentifier
@@ -46,20 +46,29 @@ function getNextMissionName()
         DCSDynamicWeather.Logger.warning(THIS_METHOD, "Can't match identifier on current mission.")
         if not fileExists(DCSDynamicWeather.SCRIPTS_PATH .. "\\" .. missionName .. "_A.miz") then
             DCSDynamicWeather.Logger.warning(THIS_METHOD, "_A identifier not found, generating new file.")
-            copyFileWithIdentifier("A")
+            copyFileWithNewIdentifier("A")
         end
         if not fileExists(DCSDynamicWeather.SCRIPTS_PATH .. "\\" .. missionName .. "_B.miz") then
             DCSDynamicWeather.Logger.warning(THIS_METHOD, "_B identifier not found, generating new file.")
-            copyFileWithIdentifier("B")
+            copyFileWithNewIdentifier("B")
         end
         return missionName .. "_A"
     end
 end
 
-function copyFileWithIdentifier(identifier)
-    local missionNamePath = DCSDynamicWeather.SCRIPTS_PATH .. "\\" .. DCSDynamicWeather.MISSION_NAME
-    local originalFilePath = missionNamePath .. ".miz"
-    local newFilePath = missionNamePath .. "_" .. identifier .. ".miz"
+function copyFileWithNewIdentifier(newIdentifier)
+    local originalMissionName = DCSDynamicWeather.MISSION_NAME
+    local newMissionName
+    local missionNameLast2Chars = string.sub(originalMissionName, #originalMissionName - 1)
+
+    if (string.match(missionNameLast2Chars, "_A") or string.match(missionNameLast2Chars, "_B")) then
+        newMissionName = string.sub(originalMissionName,0, #originalMissionName - 2)
+    else
+        newMissionName = originalMissionName
+    end
+
+    local originalFilePath = DCSDynamicWeather.SCRIPTS_PATH .. "\\" .. originalMissionName .. ".miz"
+    local newFilePath = DCSDynamicWeather.SCRIPTS_PATH .. "\\" .. newMissionName .. "_" .. newIdentifier .. ".miz"
     os.execute("copy \"" .. originalFilePath .. "\" \"" .. newFilePath .. "\"")
 end
 
