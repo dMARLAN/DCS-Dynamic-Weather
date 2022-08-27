@@ -8,7 +8,7 @@ import com.marlan.weatheroutput.service.discord.DiscordClient;
 import com.marlan.weatheroutput.service.sheets.SheetsClient;
 import com.marlan.weatheroutput.utilities.DirHandler;
 import com.marlan.weatheroutput.utilities.FileHandler;
-import jdk.jshell.tool.JavaShellToolBuilder;
+import com.marlan.weatheroutput.utilities.Logger;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -16,9 +16,10 @@ import java.security.GeneralSecurityException;
 
 public class DiscordWebHookService {
     public static void main(String[] args) throws IOException, URISyntaxException, InterruptedException, GeneralSecurityException {
+        final String dir = DirHandler.getWorkingDir(args);
+        Logger.setDir(dir);
         Gson gson = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
         final String DTO_NAME = "dto.json";
-        final String dir = DirHandler.getWorkingDir(args);
 
         String dataFileContent = FileHandler.readFile(dir, DTO_NAME);
         DTO dto = gson.fromJson(dataFileContent, DTO.class);
