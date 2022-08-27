@@ -11,7 +11,8 @@ public class DirHandler {
             System.setProperty("user.dir", args[0]);
         }
         String workingDir = getProperty("user.dir") + "\\";
-        Logger.info("Working directory: " + workingDir);
+        Logger.setDIR(workingDir);
+        Logger.info("Working Directory: " + workingDir);
         return workingDir;
     }
 
