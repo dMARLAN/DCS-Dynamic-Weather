@@ -31,7 +31,7 @@ public class Logger {
     }
 
     private static void log(String type, String message) {
-        getDateTime();
+        System.out.println(getDateTime() + " " + type + "    " + message);
         FileHandler.appendFile(dir + "logs\\", "DCSDynamicWeather-Weather-Output.log", getDateTime() + " " + type + "    " + message + "\n");
     }
 
