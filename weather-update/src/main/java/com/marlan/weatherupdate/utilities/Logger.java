@@ -32,7 +32,7 @@ public class Logger {
 
     private static void log(String type, String message) {
         getDateTime();
-        FileHandler.appendFile(dir + "logs\\", "DCSDynamicWeather-Weather-Output.log", getDateTime() + " " + type + "    " + message + "\n");
+        FileHandler.appendFile(dir + "logs\\", "DCSDynamicWeather-Weather-Update.log", getDateTime() + " " + type + "    " + message + "\n");
     }
 
     private static String getDateTime() {
