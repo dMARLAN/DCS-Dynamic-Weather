@@ -28,7 +28,7 @@ Donations are welcome :)
 
 ## Installation
 #### Initial Set-up
-1) Download the latest release from [GitHub]()
+1) Download the latest release from [GitHub](https://github.com/dMARLAN/DCS-Dynamic-Weather/releases)
 2) Extract the contents of the zip file into the `missions` folder.
     - e.g. `C:\Users\yourname\Saved Games\DCS.openbeta\Missions\mymission`
     - `mymission` can be renamed as you desire (this must be matched in a later step).
