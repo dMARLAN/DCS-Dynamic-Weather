@@ -8,6 +8,7 @@ function DCSDynamicWeather.Mission.loadNextMission(weatherType)
 
     weatherType = weatherType or "real"
     local nextMissionName = getNextMissionName()
+    trigger.action.outText("[DCSDynamicWeather]: Preparing to load next mission...", 10)
     DCSDynamicWeather.JSON.setValue("weather_type", weatherType, DCSDynamicWeather.DTO)
     DCSDynamicWeather.JSON.setValue("mission", nextMissionName .. ".miz", DCSDynamicWeather.DTO)
     DCSDynamicWeather.JAR.execute("weather-update")
