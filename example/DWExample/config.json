@@ -1,0 +1,9 @@
+{
+  "adminMenuForEveryone": false,
+  "adminGroupName": "ADMIN/DEBUG",
+  "stationReferenceZoneName": "StationReference",
+  "hoursForEachRestart": "1",
+  "maximumHoursForEachRestart": "8",
+  "spreadsheet_id": "",
+  "spreadsheet_range": ""
+}
