@@ -66,7 +66,7 @@ Donations are welcome :)
 - Acquire your Discord Webhook API Key (Free) and paste into `mymission\secrets\discord.json` inside the `discord_key` value, replacing "YOUR_API_KEY".
    ```json
     {
-        "discord_key": "https://discord.com/api/webhooks/999352755414110259/943c120b27fb49580766808103d3db6943c120b27fb4_951807DeFdAsd668-08103d"
+        "discord_key": "https://discord.com/api/webhooks/012345678901234567/943c120b27fb49580766808103d3db6943c120b27fb4_951807DeFdAsd668-08103d"
     }
     ```
 ![](https://support.discord.com/hc/article_attachments/1500000463501/Screen_Shot_2020-12-15_at_4.41.53_PM.png)
