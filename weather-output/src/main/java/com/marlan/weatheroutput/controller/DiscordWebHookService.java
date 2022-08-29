@@ -17,9 +17,9 @@ public class DiscordWebHookService {
     public static void main(String[] args) throws IOException, URISyntaxException, InterruptedException, GeneralSecurityException {
         final String dir = DirHandler.getWorkingDir(args);
         Gson gson = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
-        final String DTO_NAME = "dto.json";
+        final String DTO_PATH = "data\\dto.json";
 
-        String dataFileContent = FileHandler.readFile(dir, DTO_NAME);
+        String dataFileContent = FileHandler.readFile(dir, DTO_PATH);
         DTO dto = gson.fromJson(dataFileContent, DTO.class);
 
         String jsonInput = """

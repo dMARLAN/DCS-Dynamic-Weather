@@ -23,11 +23,11 @@ public class DCSRealWeatherController {
         Logger.setDir(dir);
         final Gson gson = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
         final String MISSION_FILE = "mission";
-        final String DATA_FILE = "dto.json";
+        final String DTO_PATH = "data\\dto.json";
 
         AVWXClient avwxClient = new AVWXClient();
 
-        String dataContent = FileHandler.readFile(dir, DATA_FILE);
+        String dataContent = FileHandler.readFile(dir, DTO_PATH);
         DTO dto = gson.fromJson(dataContent, DTO.class);
 
         AVWXMetar metarAVWX;
@@ -37,7 +37,7 @@ public class DCSRealWeatherController {
         stationAVWX = gson.fromJson(avwxClient.getStation(dto, metarAVWX).body(), AVWXStation.class);
 
         dto.setIcao(stationAVWX.getIcao());
-        FileHandler.writeJSON(dir, DATA_FILE, dto);
+        FileHandler.writeJSON(dir, DTO_PATH, dto);
 
         MizUtility.extractMission(dir, dto.getMission());
         String missionContent = FileHandler.readFile(dir, MISSION_FILE);
