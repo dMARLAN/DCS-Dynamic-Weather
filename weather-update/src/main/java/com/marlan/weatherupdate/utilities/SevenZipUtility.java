@@ -9,7 +9,7 @@ public class SevenZipUtility {
     }
 
     public static void runProcess(ProcessBuilder pb, String dir) {
-        File processOutput = new File(dir + "logs\\SevenZip.log");
+        File processOutput = new File(dir + "logs\\DCSDynamicWeather-SevenZip.log");
         try {
             if (processOutput.createNewFile()) {
                 Logger.info("Created new file: " + processOutput.getName());
