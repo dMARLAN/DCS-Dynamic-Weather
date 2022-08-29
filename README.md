@@ -1,4 +1,5 @@
 ![](images/DCSDynamicWeatherLogo.png)
+
 **_WORK IN PROGRESS - NOT READY FOR PUBLIC RELEASE YET..._**
 
 Automated DCS Mission Weather editor to set DCS mission to match real world environment conditions (temperarture, clouds, visibility, time, pressure, wind) based on the METAR data obtained from the AVWX API.
@@ -74,12 +75,20 @@ Donations are welcome since I'm currently self-teaching full time 😅
 ![](https://support.discord.com/hc/article_attachments/1500000455142/Screen_Shot_2020-12-15_at_4.45.52_PM.png)
 
 ### Google Sheets Setup:
-- Go to [Google API Console](https://console.developers.google.com/)
-- Go to `Credentials`
-- Click `Manage service accounts` under `Service Accounts`
-- Click `Create Service Account`
-- Create a name/description as desired.
-- Grant it the `Service Account User` role
-- Click the 3-dot menu and select `Manage Keys`
-- Click `Add Key` and `Create New Key` using `JSON` format.
-- Paste into `mymission\secrets\` and name the file `googlesheets.json`
+1) Go to [Google API Console](https://console.developers.google.com/)
+2) Go to `Credentials`
+3) Click `Manage service accounts` under `Service Accounts`
+4) Click `Create Service Account`
+5) Create a name/description as desired.
+6) Grant it the `Service Account User` role
+7) Click the 3-dot menu and select `Manage Keys`
+8) Click `Add Key` and `Create New Key` using `JSON` format.
+9) Paste into `mymission\secrets\` and name the file `googlesheets.json`
+10) Configure `config.json` and include your spreadsheet_id and spreadsheet_range:
+```json
+    {
+        "spreadsheet_id": "3bd76bf6d6f64c94b0c0a4278e7000c96bf6d6f64c94b0c",
+        "spreadsheet_range": "MySheet!C69"
+    }
+```
+- See [Google Sheets API Overview](https://developers.google.com/sheets/api/guides/concepts) for more information on finding your spreadsheet ID or range.
