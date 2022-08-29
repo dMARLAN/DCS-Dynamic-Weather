@@ -44,7 +44,7 @@ function BuildMetar.getWind(referencePoint)
 
     local localReferencePoint = {}
     localReferencePoint.x = referencePoint.x
-    localReferencePoint.y = (land.getHeight({ x = localReferencePoint.x, z = localReferencePoint.z })) -- Wind will return 0 within 10m of ground
+    localReferencePoint.y = land.getHeight({ x = localReferencePoint.x, z = localReferencePoint.z }) + 10 -- Wind will return 0 within 10m of ground
     localReferencePoint.z = referencePoint.z
     DCSDynamicWeather.Logger.info(THIS_METHOD, "Wind Reference point: { x = " .. localReferencePoint.x .. ", y = " .. localReferencePoint.y .. ", z = " .. localReferencePoint.z .. " }")
 
