@@ -22,8 +22,8 @@ end
 function DCSDynamicWeatherCallbacks.onTriggerMessage(message, _, _)
     local THIS_METHOD = "DCSDynamicWeatherCallbacks.onTriggerMessage"
 
-    if not DCS.isServer() then
-        DCSDynamicWeatherHook.Logger.warning(THIS_METHOD, "Only a server can load a mission.")
+    if not (DCS.isServer() and DCS.isMultiplayer()) then
+        DCSDynamicWeatherHook.Logger.warning(THIS_METHOD, "Only a multiplayer server can load a mission.")
         return
     end
 
