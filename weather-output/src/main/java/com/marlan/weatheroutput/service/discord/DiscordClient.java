@@ -25,14 +25,14 @@ public class DiscordClient {
         Gson gson = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
 
         String discordKeyFile = FileHandler.readFile(dir, DISCORD_KEY_PATH);
-        DiscordWebhookAPI discordWebhookAPI = gson.fromJson(discordKeyFile, DiscordWebhookAPI.class);
-        String discordApiKey = discordWebhookAPI.getDiscordApiKey();
+        DiscordWebhookAPI discordApiKey = gson.fromJson(discordKeyFile, DiscordWebhookAPI.class);
+        String discordKey = discordApiKey.getDiscordApiKey();
 
-        if (discordApiKey.length() == 0) {
+        if (discordKey.length() == 0) {
             Logger.warning("Discord API key is empty");
         } else {
             HttpRequest postRequest = HttpRequest.newBuilder()
-                    .uri(new URI(discordApiKey))
+                    .uri(new URI(discordKey))
                     .header("Content-Type", "application/json")
                     .POST(HttpRequest.BodyPublishers.ofString(message))
                     .build();

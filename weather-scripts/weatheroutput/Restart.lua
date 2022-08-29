@@ -39,8 +39,8 @@ function restartMission(maxOverTime)
 end
 
 local function main()
-    local restartTimeInHours = 1
-    local maximumOverTimeInHours = 8
+    local restartTimeInHours = DCSDynamicWeather.JSON.getValue("hoursForEachRestart", DCSDynamicWeather.CONFIG_PATH)
+    local maximumOverTimeInHours = DCSDynamicWeather.JSON.getValue("maximumHoursForEachRestart", DCSDynamicWeather.CONFIG_PATH)
     local restartTimeInSeconds = restartTimeInHours * 3600
     local maximumOverTimeInSeconds = maximumOverTimeInHours * 3600
     local relativeRestartTimeInSeconds = timer.getTime() + restartTimeInSeconds

@@ -1,7 +1,7 @@
 local BuildMetar = {}
 
 local THIS_FILE = DCSDynamicWeather.MODULE_NAME .. ".BuildMetar"
-local STATION_REFERENCE_ZONE_NAME = "StationReference"
+local STATION_REFERENCE_ZONE_NAME = DCSDynamicWeather.JSON.getValue("stationReferenceZoneName", DCSDynamicWeather.CONFIG_PATH)
 
 local STANDARD_PRESSURE_PASCAL = 101325
 local PASCALS_TO_INHG = 0.0295299830714
@@ -282,7 +282,7 @@ end
 
 function BuildMetar.getICAO()
     local THIS_METHOD = THIS_FILE .. ".getStationId"
-    local icao = DCSDynamicWeather.JSON.getValue("icao", DCSDynamicWeather.DTO)
+    local icao = DCSDynamicWeather.JSON.getValue("icao", DCSDynamicWeather.DTO_PATH)
     if (icao == "") then
         DCSDynamicWeather.Logger.warning(THIS_METHOD, "ICAO not found.")
         return "UNKN"
@@ -295,13 +295,13 @@ function BuildMetar.writeAirbaseCoordinatesToDataFile(referencePoint)
     local THIS_METHOD = THIS_FILE .. ".writeAirbaseCoordinatesToDataFile"
 
     local stationLatitude, stationLongitude, _ = coord.LOtoLL(referencePoint)
-    DCSDynamicWeather.JSON.setValue("station_latitude", stationLatitude, DCSDynamicWeather.DTO)
-    DCSDynamicWeather.JSON.setValue("station_longitude", stationLongitude, DCSDynamicWeather.DTO)
+    DCSDynamicWeather.JSON.setValue("station_latitude", stationLatitude, DCSDynamicWeather.DTO_PATH)
+    DCSDynamicWeather.JSON.setValue("station_longitude", stationLongitude, DCSDynamicWeather.DTO_PATH)
 end
 
 function BuildMetar.outputMetar(metar)
     local THIS_METHOD = THIS_FILE .. ".outputMetar"
-    DCSDynamicWeather.JSON.setValue("metar", metar, DCSDynamicWeather.DTO)
+    DCSDynamicWeather.JSON.setValue("metar", metar, DCSDynamicWeather.DTO_PATH)
     DCSDynamicWeather.JAR.execute("weather-output")
 end
 
