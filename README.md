@@ -6,11 +6,11 @@ Automated DCS Mission Weather editor to set DCS mission to match real world envi
 Optionally outputs METAR to Discord Webhook or Google Sheets Cell for KBC's (Kneeboard Card) stored on a Google Drive to aid in mission planning or KBC creation.
 
 - Sets DCS mission weather to match real world weather conditions.
-- Weather cannot be set while the mission is still live, this application works by setting the next mission's weather and then restarting every hour to that updated weather.
+- Weather cannot currently be set while the mission is still live due to DCS limitations, this application works by setting the next mission's weather and then restarting every hour to that updated weather.
   - The mission will not restart while clients are connected to the mission, effectively "freezing" weather in place until clients disconnect.
-  - This means this application is not suitable for public servers that have little to no down time with no clients connected, it is designed for private servers.
-- Can manually select "Clear Day" or "Clear Night" weather from DCS F10 menu.
-- Can output DCS Mission METAR to Discord Webhook or Google Sheets.
+  - That means this application is not suitable for public servers that have little to no down time with no clients connected.
+- Can manually force clear weather or preset times from the DCS F10 menu while in an admin slot.
+- Can optionally output DCS Mission METAR to Discord Webhook or a Google Sheets cell for easy access during mission planning.
 - Accounts for DCS inherent QFF -> QNH conversion error.
 - Automatically desanitizes `\Program Files\Eagle Dynamics\DCS World OpenBeta\Scripts\MissionScripting.lua`
   - Be aware of running other untrusted DCS scripts when `MissionScripting.lua` is desanitized.
@@ -22,41 +22,64 @@ Donations are welcome since I'm currently self-teaching full time 😅
 [![](https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_37x23.jpg)](https://www.paypal.com/paypalme/CPenarsky?country.x=CA&locale.x=en_US)
 
 ## Requirements:
-- 7zip (https://www.7-zip.org/)
-- JDK Class File Version 61.0 or newer (Java 17)
+- [7zip](https://www.7-zip.org/)
+- [Java 17](https://www.oracle.com/java/technologies/downloads/#jdk17-windows) (JDK Class File Version 61.0 or newer)
+- [Dedicated DCS Server](https://www.digitalcombatsimulator.com/en/downloads/world/server_beta/)
 
 ## Installation
-- Download the latest release from [GitHub]()
-- Extract the contents of the zip file into the `missions` folder.
+#### Initial Set-up
+1) Download the latest release from [GitHub]()
+2) Extract the contents of the zip file into the `missions` folder.
     - e.g. `C:\Users\yourname\Saved Games\DCS.openbeta\Missions\mymission`
-    - `mymission` can be renamed as you desire, but will be matched in a later step.
-- Create a zone in your DCS Mission and name it `StationReference` (this can be changed in `config.json`)
-    - This will be the reference station where weather will be polled. For example, if you place it at Nellis, the application will retrieve the weather from Nellis.
-- Acquire a [AVWX API Key](https://avwx.rest/) (Free) and paste into `config.json`
-- Create the following triggers in your DCS Mission. (See [Example Mission](https://github.com/dMARLAN/DCS-Dynamic-Weather))
-    - "MISSION START" -> -> "DO SCRIPT" -> Paste the Code below, and edit "mymission" to match your desired folder name.
-        ```lua
-        local folder = "mymission"
+    - `mymission` can be renamed as you desire (this must be matched in a later step).
+3) Copy `mymission\hooks\DCSDynamicWeatherHook.lua` to your Saved Games Hooks folder.
+    - e.g. `C:\Users\yourname\Saved Games\DCS.openbeta\Hooks\DCSDynamicWeatherHook.lua`
+4) Acquire a [AVWX API Key](https://avwx.rest/) (Free) and paste into `mymission\secrets\avwx.json` inside the `avwx_key` value, replacing "YOUR_API_KEY".
+   ```json
+    {
+        "avwx_key": "a3jd923ns983fk30TeWWFGjaf329aCutFj2Ask4Js31"
+    }
+    ```
+
+#### Miz Set-up
+5) Create a zone in your DCS Mission using the DCS Mission Editor and name it `StationReference`.
+    - Place the zone at the location of your station.
+    - This will be the reference station where weather will be polled. For example, if you place it at Nellis, the application will retrieve the weather from Nellis Station.
+6) Create the following triggers in your DCS Mission. (See [Example Mission](https://github.com/dMARLAN/DCS-Dynamic-Weather))
+      - "MISSION START" -> -> "DO SCRIPT" -> Paste the Code below, and edit "mymission" to match your desired folder name.
+          ```lua
+          local folder
+        folder = "mymission" -- <-- Edit this
+        ---- DO NOT EDIT BELOW ------------
         DCSDynamicWeather = {}
         DCSDynamicWeather.MISSION_FOLDER = folder
-        ```
-    - "MISSION START" -> -> "DO SCRIPT FILE" -> Load `DCSDynamicWeatherLoader.lua`
-      - This should be AFTER the `DO SCRIPT` mentioned above.
-
-- Run your DCS Server
-    - The DCS Mission invokes the application automatically.
-      - `weather-output.jar` is run first, and because `weather-update.jar` has not yet run, the first run will use the weather you manually set, and the Discord/Google Output will indicate the station is "UNKN".
-      - This can be avoided by running `weather-update.jar` manually once.
-        - TODO: I will probably fix this before the first public release.
-    - Discord Webhook and Google Sheets set up is optional.
+          ```
+      - "MISSION START" -> -> "DO SCRIPT FILE" -> Load `DCSDynamicWeatherLoader.lua`
+        - This should be AFTER the `DO SCRIPT` mentioned above.
+      - ![](images/DCSDynamicWeatherLogo.png/DCSDynamicWeatherMissionEditor.png)
+7) Inside your Mission Briefing, include `DCSDW` somewhere inside `Situation`
+   - ![](images/DCSDynamicWeatherLogo.png/DCSDynamicWeatherMissionEditorSituation.png)
+8) Start your DCS Server
+9) Discord Webhook and Google Sheets set up is optional, see below.
 
 ### Discord Webhook Setup:
-- Acquire your [Discord Webhook API Key](https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks) (Free) and paste into `dto.json`
+- Acquire your Discord Webhook API Key (Free) and paste into `mymission\secrets\discord.json` inside the `discord_key` value, replacing "YOUR_API_KEY".
+   ```json
+    {
+        "discord_key": "https://discord.com/api/webhooks/999352755414110259/943c120b27fb49580766808103d3db6943c120b27fb4_951807DeFdAsd668-08103d"
+    }
+    ```
+![](https://support.discord.com/hc/article_attachments/1500000463501/Screen_Shot_2020-12-15_at_4.41.53_PM.png)
+![](https://support.discord.com/hc/article_attachments/360101553853/Screen_Shot_2020-12-15_at_4.51.38_PM.png)
+![](https://support.discord.com/hc/article_attachments/1500000455142/Screen_Shot_2020-12-15_at_4.45.52_PM.png)
 
 ### Google Sheets Setup:
-- Create a [Google Cloud OAuth 2.0 Client ID](https://console.developers.google.com/) (Free)
-- Paste the downloaded credentials into your `missions\mymission` folder and name the credentials `credentials.json`
-- Paste your [Spreadsheet ID](https://developers.google.com/sheets/api/guides/concepts) into `config.json`
-- Paste your [Spreadsheet Range](https://developers.google.com/sheets/api/guides/concepts) into `config.json`
-- Execute `weather-output.jar` and authorize the Google Sheets API.
-    - This _should_ save the refresh token and it can continue to be used for future executions without re-authorization.
+- Go to [Google API Console](https://console.developers.google.com/)
+- Go to `Credentials`
+- Click `Manage service accounts` under `Service Accounts`
+- Click `Create Service Account`
+- Create a name/description as desired.
+- Grant it the `Service Account User` role
+- Click the 3-dot menu and select `Manage Keys`
+- Click `Add Key` and `Create New Key` using `JSON` format.
+- Paste into `mymission\secrets\` and name the file `googlesheets.json`
