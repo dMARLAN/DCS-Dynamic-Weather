@@ -17,7 +17,7 @@ Optionally outputs METAR to Discord Webhook or Google Sheets Cell for KBC's (Kne
 
 I'm a new programmer, if you notice any bugs or have any suggestions, please let me know! Would also appreciate any GitHub stars which may help me in my job pursuit!
 
-Donations are welcome 😅
+Donations are welcome :)
 
 [![](https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_37x23.jpg)](https://www.paypal.com/paypalme/CPenarsky?country.x=CA&locale.x=en_US)
 
