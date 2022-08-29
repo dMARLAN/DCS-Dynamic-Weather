@@ -11,14 +11,13 @@ Optionally outputs METAR to Discord Webhook or Google Sheets Cell for KBC's (Kne
   - The mission will not restart while clients are connected to the mission, effectively "freezing" weather in place until clients disconnect.
   - That means this application is not suitable for public servers that have little to no down time with no clients connected.
 - Can manually force clear weather or preset times from the DCS F10 menu while in an admin slot.
-- Can optionally output DCS Mission METAR to Discord Webhook or a Google Sheets cell for easy access during mission planning.
 - Accounts for DCS inherent QFF -> QNH conversion error.
 - Automatically desanitizes `\Program Files\Eagle Dynamics\DCS World OpenBeta\Scripts\MissionScripting.lua`
   - Be aware of running other untrusted DCS scripts when `MissionScripting.lua` is desanitized.
 
 I'm a new programmer, if you notice any bugs or have any suggestions, please let me know! Would also appreciate any GitHub stars which may help me in my job pursuit!
 
-Donations are welcome since I'm currently self-teaching full time 😅
+Donations are welcome 😅
 
 [![](https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_37x23.jpg)](https://www.paypal.com/paypalme/CPenarsky?country.x=CA&locale.x=en_US)
 
@@ -35,7 +34,7 @@ Donations are welcome since I'm currently self-teaching full time 😅
     - `mymission` can be renamed as you desire (this must be matched in a later step).
 3) Copy `mymission\hooks\DCSDynamicWeatherHook.lua` to your Saved Games Hooks folder.
     - e.g. `C:\Users\yourname\Saved Games\DCS.openbeta\Hooks\DCSDynamicWeatherHook.lua`
-4) Acquire a [AVWX API Key](https://avwx.rest/) (Free) and paste into `mymission\secrets\avwx.json` inside the `avwx_key` value, replacing "YOUR_API_KEY".
+4) Acquire an [AVWX API Key](https://avwx.rest/) (Free) and paste into `mymission\secrets\avwx.json` inside the `avwx_key` value, replacing "YOUR_API_KEY".
    ```json
     {
         "avwx_key": "a3jd923ns983fk30TeWWFGjaf329aCutFj2Ask4Js31"
