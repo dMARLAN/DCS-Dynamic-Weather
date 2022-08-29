@@ -1,3 +1,4 @@
+local DCS_DYNAMIC_WEATHER_HOOK_VERSION = "1.0.0"
 local DCSDynamicWeatherHook = {}
 local DCSDynamicWeatherCallbacks = {}
 DCSDynamicWeatherHook.Logger = {}
@@ -106,7 +107,7 @@ function DCSDynamicWeatherHook.Logger.printLog(logSource, message, level)
 end
 
 local function main()
-    DCSDynamicWeatherHook.Logger.info(THIS_FILE, "Loading...")
+    DCSDynamicWeatherHook.Logger.info(THIS_FILE, "Loading DCS Dynamic Weather Version: " .. DCS_DYNAMIC_WEATHER_HOOK_VERSION .. "...")
     DCSDynamicWeatherHook.Logger.info(THIS_FILE, "DCS_ROOT: " .. DCS_ROOT)
     DCSDynamicWeatherHook.Logger.info(THIS_FILE, "DCS_SG: " .. DCS_SG)
 
