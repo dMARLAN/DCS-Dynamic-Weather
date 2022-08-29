@@ -34,7 +34,7 @@ Donations are welcome :)
     - `mymission` can be renamed as you desire (this must be matched in a later step).
 3) Copy `mymission\hooks\DCSDynamicWeatherHook.lua` to your Saved Games Hooks folder.
     - e.g. `C:\Users\yourname\Saved Games\DCS.openbeta\Hooks\DCSDynamicWeatherHook.lua`
-4) Acquire an [AVWX API Key](https://account.avwx.rest/getting-started) (Free) and paste into `mymission\secrets\avwx.json` inside the `avwx_key` value, replacing "YOUR_API_KEY".
+4) Acquire an [AVWX API Key](https://account.avwx.rest/getting-started) (Free) and paste into `mymission\secrets\avwx_api_key.json`, replacing "YOUR_API_KEY".
    ```json
     {
         "avwx_key": "a3jd923ns983fk30TeWWFGjaf329aCutFj2Ask4Js31"
@@ -56,14 +56,14 @@ Donations are welcome :)
           ```
       - "MISSION START" -> -> "DO SCRIPT FILE" -> Load `DCSDynamicWeatherLoader.lua`
         - This should be AFTER the `DO SCRIPT` mentioned above.
-      - ![](images/DCSDynamicWeatherLogo.png/DCSDynamicWeatherMissionEditor.png)
+      - ![](images/DCSDynamicWeatherMissionEditor.png)
 7) Inside your Mission Briefing, include `DCSDW` somewhere inside `Situation`
-   - ![](images/DCSDynamicWeatherLogo.png/DCSDynamicWeatherMissionEditorSituation.png)
+   - ![](images/DCSDynamicWeatherMissionEditorSituation.png)
 8) Start your DCS Server
 9) Discord Webhook and Google Sheets set up is optional, see below.
 
 ### Discord Webhook Setup:
-- Acquire your Discord Webhook API Key (Free) and paste into `mymission\secrets\discord.json` inside the `discord_key` value, replacing "YOUR_API_KEY".
+- Acquire your Discord Webhook API Key (Free) and paste into `mymission\secrets\discord_api_key.json`, replacing "YOUR_API_KEY".
    ```json
     {
         "discord_key": "https://discord.com/api/webhooks/012345678901234567/943c120b27fb49580766808103d3db6943c120b27fb4_951807DeFdAsd668-08103d"

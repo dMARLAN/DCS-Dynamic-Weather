@@ -1,6 +1,10 @@
 package com.marlan.weatheroutput.service.discord;
 
-import com.marlan.weatheroutput.model.DTO;
+import com.google.gson.FieldNamingPolicy;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.marlan.weatheroutput.model.DiscordWebhookAPI;
+import com.marlan.weatheroutput.utilities.FileHandler;
 import com.marlan.weatheroutput.utilities.Logger;
 
 import java.io.IOException;
@@ -16,12 +20,19 @@ public class DiscordClient {
     private DiscordClient() {
     }
 
-    public static void post(DTO dto, String message) throws URISyntaxException, IOException, InterruptedException {
-        if (dto.getDiscordApiKey().length() == 0) {
+    public static void post(String dir, String message) throws URISyntaxException, IOException, InterruptedException {
+        final String DISCORD_KEY_PATH = "secrets\\discord_api_key.json";
+        Gson gson = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
+
+        String discordKeyFile = FileHandler.readFile(dir, DISCORD_KEY_PATH);
+        DiscordWebhookAPI discordWebhookAPI = gson.fromJson(discordKeyFile, DiscordWebhookAPI.class);
+        String discordApiKey = discordWebhookAPI.getDiscordApiKey();
+
+        if (discordApiKey.length() == 0) {
             Logger.warning("Discord API key is empty");
         } else {
             HttpRequest postRequest = HttpRequest.newBuilder()
-                    .uri(new URI(dto.getDiscordApiKey()))
+                    .uri(new URI(discordApiKey))
                     .header("Content-Type", "application/json")
                     .POST(HttpRequest.BodyPublishers.ofString(message))
                     .build();

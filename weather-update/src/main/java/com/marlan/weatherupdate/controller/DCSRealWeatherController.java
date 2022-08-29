@@ -19,38 +19,40 @@ import java.net.URISyntaxException;
 public class DCSRealWeatherController {
 
     public static void main(String[] args) throws IOException, InterruptedException, URISyntaxException {
-        final String dir = DirHandler.getWorkingDir(args);
-        Logger.setDir(dir);
+        final String DIR = DirHandler.getWorkingDir(args);
+        Logger.setDir(DIR);
+
         final Gson gson = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
+
         final String MISSION_FILE = "mission";
         final String DTO_PATH = "data\\dto.json";
 
-        AVWXClient avwxClient = new AVWXClient();
+        String dataContent = FileHandler.readFile(DIR, DTO_PATH);
 
-        String dataContent = FileHandler.readFile(dir, DTO_PATH);
         DTO dto = gson.fromJson(dataContent, DTO.class);
 
         AVWXMetar metarAVWX;
         AVWXStation stationAVWX;
 
+        AVWXClient avwxClient = new AVWXClient();
         metarAVWX = gson.fromJson(avwxClient.getMetar(dto).body(), AVWXMetar.class);
         stationAVWX = gson.fromJson(avwxClient.getStation(dto, metarAVWX).body(), AVWXStation.class);
 
         dto.setIcao(stationAVWX.getIcao());
-        FileHandler.writeJSON(dir, DTO_PATH, dto);
+        FileHandler.writeJSON(DIR, DTO_PATH, dto);
 
-        MizUtility.extractMission(dir, dto.getMission());
-        String missionContent = FileHandler.readFile(dir, MISSION_FILE);
+        MizUtility.extractMission(DIR, dto.getMission());
+        String missionContent = FileHandler.readFile(DIR, MISSION_FILE);
 
         MissionEditor missionEditor = new MissionEditor(dto, stationAVWX, metarAVWX);
 
         String replacedMissionContent = missionEditor.editMission(missionContent);
 
-        FileHandler.overwriteFile(dir, MISSION_FILE, replacedMissionContent);
+        FileHandler.overwriteFile(DIR, MISSION_FILE, replacedMissionContent);
 
-        MizUtility.updateMiz(dir, dto.getMission(), MISSION_FILE);
+        MizUtility.updateMiz(DIR, dto.getMission(), MISSION_FILE);
 
-        FileHandler.deleteFile(dir, MISSION_FILE);
+        FileHandler.deleteFile(DIR, MISSION_FILE);
     }
 
 }

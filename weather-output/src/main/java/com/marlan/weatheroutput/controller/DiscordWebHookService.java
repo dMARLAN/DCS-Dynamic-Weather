@@ -3,6 +3,7 @@ package com.marlan.weatheroutput.controller;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.marlan.weatheroutput.model.Config;
 import com.marlan.weatheroutput.model.DTO;
 import com.marlan.weatheroutput.service.discord.DiscordClient;
 import com.marlan.weatheroutput.service.sheets.SheetsClient;
@@ -15,12 +16,17 @@ import java.security.GeneralSecurityException;
 
 public class DiscordWebHookService {
     public static void main(String[] args) throws IOException, URISyntaxException, InterruptedException, GeneralSecurityException {
-        final String dir = DirHandler.getWorkingDir(args);
+        final String DIR = DirHandler.getWorkingDir(args);
         Gson gson = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
-        final String DTO_PATH = "data\\dto.json";
 
-        String dataFileContent = FileHandler.readFile(dir, DTO_PATH);
+        final String DTO_PATH = "data\\dto.json";
+        final String CONFIG_PATH = "config.json";
+
+        String dataFileContent = FileHandler.readFile(DIR, DTO_PATH);
+        String configFileContent = FileHandler.readFile(DIR, CONFIG_PATH);
+
         DTO dto = gson.fromJson(dataFileContent, DTO.class);
+        Config config = gson.fromJson(configFileContent, Config.class);
 
         String jsonInput = """
                 {
@@ -33,7 +39,7 @@ public class DiscordWebHookService {
                 }
                 """.replace("$METAR", dto.getMetar());
 
-        DiscordClient.post(dto, jsonInput);
-        SheetsClient.setSheetValue(dto.getSpreadsheetId(), dto.getSpreadsheetRange(), dto.getMetar(), dir, dto);
+        DiscordClient.post(DIR, jsonInput);
+        SheetsClient.setSheetValue(config.getSpreadsheetId(), config.getSpreadsheetRange(), dto.getMetar(), DIR, config);
     }
 }
