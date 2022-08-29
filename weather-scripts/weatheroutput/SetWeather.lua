@@ -27,7 +27,7 @@ function createGroupSpecificMenus(adminGroupID, ADMIN_GROUP_NAME)
     local clearDayConfirm = missionCommands.addSubMenuForGroup(adminGroupID, "Clear: 1200L", setWeatherMenu)
     missionCommands.addCommandForGroup(adminGroupID, "Confirm", clearDayConfirm, setWeather, "clearDay")
 
-    local clearNightConfirm = missionCommands.addSubMenuForGroup(adminGroupID, "Clear: 0000L)", setWeatherMenu)
+    local clearNightConfirm = missionCommands.addSubMenuForGroup(adminGroupID, "Clear: 0000L", setWeatherMenu)
     missionCommands.addCommandForGroup(adminGroupID, "Confirm", clearNightConfirm, setWeather, "clearNight")
 
     local real0400Confirm = missionCommands.addSubMenuForGroup(adminGroupID, "Real: 0400L", setWeatherMenu)
