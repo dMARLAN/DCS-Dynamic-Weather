@@ -9,6 +9,14 @@ local DCS_SG = lfs.writedir()
 function DCSDynamicWeatherCallbacks.onMissionLoadEnd()
     local THIS_METHOD = "DCSDynamicWeatherCallbacks.onMissionLoadEnd"
     local missionName = DCS.getMissionName()
+    local missionDesc = DCS.getMissionDescription()
+
+    if not string.find(missionDesc, "DCSDW") then
+        DCSDynamicWeatherHook.Logger.info(THIS_METHOD, "\"DCSDW\" not found in mission description (situation), skipping mission name injection.")
+        return
+    end
+    DCSDynamicWeatherHook.Logger.info(THIS_METHOD, "Mission Description: " .. missionDesc)
+
     local code = [[a_do_script("DCSDynamicWeather.MISSION_NAME = \"]] .. missionName .. [[\"")]]
 
     local successful, err = pcall(net.dostring_in, "mission", code)
