@@ -16,16 +16,16 @@ import java.security.GeneralSecurityException;
 
 public class DiscordWebHookService {
     public static void main(String[] args) throws IOException, URISyntaxException, InterruptedException, GeneralSecurityException {
-        final String DIR = DirHandler.getWorkingDir(args);
+        final String WORKING_DIR = DirHandler.getWorkingDir(args);
         Gson gson = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
 
         final String DTO_PATH = "data\\dto.json";
         final String CONFIG_PATH = "config.json";
 
-        String dataFileContent = FileHandler.readFile(DIR, DTO_PATH);
-        String configFileContent = FileHandler.readFile(DIR, CONFIG_PATH);
+        String dtoFileContent = FileHandler.readFile(WORKING_DIR, DTO_PATH);
+        String configFileContent = FileHandler.readFile(WORKING_DIR, CONFIG_PATH);
 
-        DTO dto = gson.fromJson(dataFileContent, DTO.class);
+        DTO dto = gson.fromJson(dtoFileContent, DTO.class);
         Config config = gson.fromJson(configFileContent, Config.class);
 
         String jsonInput = """
@@ -39,7 +39,7 @@ public class DiscordWebHookService {
                 }
                 """.replace("$METAR", dto.getMetar());
 
-        DiscordClient.post(DIR, jsonInput);
-        SheetsClient.setSheetValue(config.getSpreadsheetId(), config.getSpreadsheetRange(), dto.getMetar(), DIR, config);
+        DiscordClient.post(WORKING_DIR, jsonInput);
+        SheetsClient.setSheetValue(config.getSpreadsheetId(), config.getSpreadsheetRange(), dto.getMetar(), WORKING_DIR, config);
     }
 }

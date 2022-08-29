@@ -20,11 +20,11 @@ public class DiscordClient {
     private DiscordClient() {
     }
 
-    public static void post(String dir, String message) throws URISyntaxException, IOException, InterruptedException {
+    public static void post(String workingDir, String message) throws URISyntaxException, IOException, InterruptedException {
         final String DISCORD_KEY_PATH = "secrets\\discord_api_key.json";
         Gson gson = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
 
-        String discordKeyFile = FileHandler.readFile(dir, DISCORD_KEY_PATH);
+        String discordKeyFile = FileHandler.readFile(workingDir, DISCORD_KEY_PATH);
         DiscordWebhookAPI discordApiKey = gson.fromJson(discordKeyFile, DiscordWebhookAPI.class);
         String discordKey = discordApiKey.getDiscordApiKey();
 

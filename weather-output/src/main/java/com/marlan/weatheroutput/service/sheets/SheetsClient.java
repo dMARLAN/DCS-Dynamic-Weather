@@ -33,15 +33,15 @@ public class SheetsClient {
     }
 
     public static void setSheetValue(final String spreadsheetId, final String spreadsheetRange,
-                                     final String value, final String dir, final Config config)
+                                     final String value, final String workingDir, final Config config)
             throws IOException, GeneralSecurityException {
 
-        if (!validParameters(dir, config)) return;
+        if (!validParameters(workingDir, config)) return;
 
         final NetHttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
 
         final GoogleCredentials googleCredentials = ServiceAccountCredentials
-                .fromStream(new FileInputStream(dir + CREDENTIALS_FILE_NAME))
+                .fromStream(new FileInputStream(workingDir + CREDENTIALS_FILE_NAME))
                 .createScoped(SCOPES);
         HttpRequestInitializer requestInitializer = new HttpCredentialsAdapter(googleCredentials);
 
@@ -63,9 +63,9 @@ public class SheetsClient {
         Logger.info("Sheets Update Response: " + response);
     }
 
-    private static boolean validParameters(final String dir, final Config config) {
-        if (!Files.exists(Paths.get(dir + CREDENTIALS_FILE_NAME))) {
-            Logger.warning("Credentials file not found: " + dir + CREDENTIALS_FILE_NAME);
+    private static boolean validParameters(final String workingDir, final Config config) {
+        if (!Files.exists(Paths.get(workingDir + CREDENTIALS_FILE_NAME))) {
+            Logger.warning("Credentials file not found: " + workingDir + CREDENTIALS_FILE_NAME);
             return false;
         }
         if (config.getSpreadsheetId().isEmpty()) {

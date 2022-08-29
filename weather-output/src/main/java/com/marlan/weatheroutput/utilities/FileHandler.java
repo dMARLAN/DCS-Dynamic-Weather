@@ -9,13 +9,13 @@ public class FileHandler {
     private FileHandler() {
     }
 
-    public static String readFile(String dir, String fileName) throws IOException {
-        Path dataFilePath = Path.of(dir + fileName);
+    public static String readFile(String workingDir, String fileName) throws IOException {
+        Path dataFilePath = Path.of(workingDir + fileName);
         return Files.readString(dataFilePath);
     }
 
-    public static void appendFile(String dir, String fileName, String content) {
-        try (FileWriter fw = new FileWriter(dir + fileName, true)) {
+    public static void appendFile(String workingDir, String fileName, String content) {
+        try (FileWriter fw = new FileWriter(workingDir + fileName, true)) {
             fw.write(content);
         } catch (IOException e) {
             e.printStackTrace();
