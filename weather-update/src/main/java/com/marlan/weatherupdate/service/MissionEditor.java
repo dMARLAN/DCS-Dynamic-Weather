@@ -15,7 +15,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Random;
 
-public class MissionHandlerService {
+public class MissionEditor {
     private static final double KNOTS_TO_METERS = 0.51444444444;
     private static final double INHG_TO_MMHG = 25.4;
     private static final double ISA_TEMP_C = 15;
@@ -23,80 +23,33 @@ public class MissionHandlerService {
     private static final double TEMP_LAPSE_RATE_C = 1.98;
     private static final double INHG_TO_HPA = 33.86389;
 
-    private final int hour;
-    private final double windSpeed;
-    private final double windDirection;
+    private final DTO dto;
     private final AVWXStation stationAVWX;
-    private final double stationTempC;
-    private final double stationQnh;
-    private final int day;
-    private final int month;
-    private final String metar;
+    private final AVWXMetar metarAVWX;
 
-    public MissionHandlerService(DTO dto, AVWXStation stationAVWX, AVWXMetar metarAVWX) {
-        ZonedDateTime zonedDateTime = ZonedDateTime.now(ZoneId.of(StationInfoUtility.getZoneId(stationAVWX.getCountry())));
-
-        if (metarAVWX.getMeta().getWarning() != null) {
-            Logger.warning(metarAVWX.getMeta().getWarning());
-        }
-        Logger.info("METAR: " + metarAVWX.getSanitized());
-
-        switch (dto.getWeatherType()) {
-            case "real" -> {
-                if (zonedDateTime.getHour() + dto.getTimeOffset() < 0) {
-                    this.hour = 24 + zonedDateTime.getHour() + dto.getTimeOffset();
-                } else {
-                    this.hour = zonedDateTime.getHour() + dto.getTimeOffset();
-                }
-                this.windSpeed = metarAVWX.getWindSpeed().flatMap(WindSpeed::getValue).orElse(0.0);
-                this.windDirection = metarAVWX.getWindDirection().flatMap(WindDirection::getValue).orElse(0.0);
-                this.stationTempC = metarAVWX.getTemperature().flatMap(Temperature::getValue).orElse(ISA_TEMP_C);
-                if (metarAVWX.getUnits().getAltimeter().equals("hPa")) {
-                    this.stationQnh = metarAVWX.getAltimeter().getValue() / INHG_TO_HPA;
-                } else {
-                    this.stationQnh = metarAVWX.getAltimeter().getValue();
-                }
-                this.metar = metarAVWX.getSanitized();
-            }
-            case "clearDay" -> {
-                this.hour = 12;
-                this.windSpeed = 0.0;
-                this.windDirection = 0.0;
-                this.stationTempC = metarAVWX.getTemperature().flatMap(Temperature::getValue).orElse(ISA_TEMP_C);
-                this.stationQnh = ISA_PRESSURE_INHG;
-                this.metar = "";
-            }
-            case "clearNight" -> {
-                this.hour = 0;
-                this.windSpeed = 0.0;
-                this.windDirection = 0.0;
-                this.stationTempC = metarAVWX.getTemperature().flatMap(Temperature::getValue).orElse(ISA_TEMP_C);
-                this.stationQnh = ISA_PRESSURE_INHG;
-                this.metar = "";
-            }
-            default -> {
-                this.hour = 12;
-                this.windSpeed = 0.0;
-                this.windDirection = 0.0;
-                this.stationTempC = ISA_TEMP_C;
-                this.stationQnh = ISA_PRESSURE_INHG;
-                this.metar = "";
-            }
-        }
-        this.day = zonedDateTime.getDayOfMonth();
-        this.month = zonedDateTime.getMonthValue();
+    public MissionEditor(DTO dto, AVWXStation stationAVWX, AVWXMetar metarAVWX) {
+        this.dto = dto;
         this.stationAVWX = stationAVWX;
+        this.metarAVWX = metarAVWX;
     }
 
     public String editMission(String mission) {
-
-        double windSpeedGround = getCorrectedGroundWindSpeed(windSpeed, stationAVWX.getElevationM()); // "Ground" Wind is 10m/33ft but also sets ~500m/1660ft
-        double windSpeed2000 = getModifiedWindSpeed(2000, windSpeed); // "2000" Wind is 2000m/6600ft
-        double windSpeed8000 = getModifiedWindSpeed(8000, windSpeed); // "8000" Wind is 8000m/26000ft
+        double windSpeed = setWindSpeed();
+        double windDirection = setWindDirection();
+        double stationTempC = setStationTempC();
+        double stationQnh = setStationQnh();
+        String metar = setMetar();
+        int day = setDay();
+        int month = setMonth();
+        int hour = setHour();
 
         double seaLevelTempC = stationTempC + TEMP_LAPSE_RATE_C * (stationAVWX.getElevationFt() / 1000);
         double correctedQffInHg = AltimeterUtility.getCorrectedQff(stationQnh, stationTempC, stationAVWX);
         double qffMmHg = correctedQffInHg * INHG_TO_MMHG;
+
+        double windSpeedGround = getCorrectedGroundWindSpeed(windSpeed, stationAVWX.getElevationM()); // "Ground" Wind is 10m/33ft but also sets ~500m/1660ft
+        double windSpeed2000 = getModifiedWindSpeed(2000, windSpeed); // "2000" Wind is 2000m/6600ft
+        double windSpeed8000 = getModifiedWindSpeed(8000, windSpeed); // "8000" Wind is 8000m/26000ft
 
         double windDirectionGround = invertWindDirection(windDirection); // Wind Direction is backwards in DCS.
         double windDirection2000 = randomizeWindDirection(windDirection);
@@ -116,9 +69,9 @@ public class MissionHandlerService {
                             .replace("$cloudsPreset", cloudsPreset));
         }
         Logger.info("Clouds Preset: " + cloudsPreset);
-        
+
         String ms = " m/s (";
-        String kts = " kts)";
+        String kts = " kts) ";
         mission = mission.replaceAll("\\[\"at8000\"]\\s+=\\s+\\{([^}]*)",
                 "[\"at8000\"] =\n            {\n                [\"speed\"] = $wind8000Speed,\n                [\"dir\"] = $wind8000Dir,\n            "
                         .replace("$wind8000Speed", Double.toString(windSpeed8000))
@@ -153,6 +106,94 @@ public class MissionHandlerService {
         Logger.info("QFF set to: " + qffMmHg + " mmHg (" + qffMmHg / INHG_TO_MMHG + " inHg)");
 
         return mission;
+    }
+
+    private double setWindSpeed() {
+        String dtoWeatherType = dto.getWeatherType();
+        if (dtoWeatherType.contains("real")) {
+            return metarAVWX.getWindSpeed().flatMap(WindSpeed::getValue).orElse(0.0);
+        } else {
+            return 0.0;
+        }
+    }
+
+    private double setWindDirection() {
+        String dtoWeatherType = dto.getWeatherType();
+        if (dtoWeatherType.contains("real")) {
+            return metarAVWX.getWindDirection().flatMap(WindDirection::getValue).orElse(0.0);
+        } else {
+            return 0.0;
+        }
+    }
+
+    private double setStationTempC() {
+        String dtoWeatherType = dto.getWeatherType();
+        if (dtoWeatherType.contains("real")) {
+            return metarAVWX.getTemperature().flatMap(Temperature::getValue).orElse(ISA_TEMP_C);
+        } else {
+            return ISA_TEMP_C;
+        }
+    }
+
+    private double setStationQnh() {
+        String dtoWeatherType = dto.getWeatherType();
+        if (dtoWeatherType.contains("real")) {
+            if (metarAVWX.getUnits().getAltimeter().equals("hPa")) {
+                return metarAVWX.getAltimeter().getValue() / INHG_TO_HPA;
+            } else {
+                return metarAVWX.getAltimeter().getValue();
+            }
+        } else {
+            return ISA_PRESSURE_INHG;
+        }
+    }
+
+    private String setMetar() {
+        String dtoWeatherType = dto.getWeatherType();
+        if (dtoWeatherType.contains("clear")){
+            Logger.info("METAR set clear");
+            return "";
+        } else {
+            if (metarAVWX.getMeta().getWarning() != null) {
+                Logger.warning(metarAVWX.getMeta().getWarning());
+            }
+            String metar = metarAVWX.getSanitized();
+            Logger.info("METAR: " + metar);
+            return metar;
+        }
+    }
+
+    private int setDay() {
+        ZonedDateTime zonedDateTime = ZonedDateTime.now(ZoneId.of(StationInfoUtility.getZoneId(stationAVWX.getCountry())));
+        return zonedDateTime.getDayOfMonth();
+    }
+
+    private int setMonth() {
+        ZonedDateTime zonedDateTime = ZonedDateTime.now(ZoneId.of(StationInfoUtility.getZoneId(stationAVWX.getCountry())));
+        return zonedDateTime.getMonthValue();
+    }
+
+    private int setHour() {
+        int hour;
+        String dtoWeatherType = dto.getWeatherType();
+        if (dtoWeatherType.equals("real")) {
+            ZonedDateTime zonedDateTime = ZonedDateTime.now(ZoneId.of(StationInfoUtility.getZoneId(stationAVWX.getCountry())));
+            if (zonedDateTime.getHour() + dto.getTimeOffset() < 0) {
+                hour = 24 + zonedDateTime.getHour() + dto.getTimeOffset();
+            } else {
+                hour = zonedDateTime.getHour() + dto.getTimeOffset();
+            }
+        } else {
+            switch (dtoWeatherType) {
+                case "real0400" -> hour = 4;
+                case "real0600" -> hour = 6;
+                case "real1800" -> hour = 18;
+                case "real2200" -> hour = 22;
+                case "real0000", "clearNight" -> hour = 0;
+                default -> hour = 12;
+            }
+        }
+        return hour;
     }
 
     private double getCorrectedGroundWindSpeed(double windSpeedKnots, double stationAltitude) {

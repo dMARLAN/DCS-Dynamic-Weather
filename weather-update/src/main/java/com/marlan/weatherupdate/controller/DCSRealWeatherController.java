@@ -7,7 +7,7 @@ import com.marlan.weatherupdate.model.dto.DTO;
 import com.marlan.weatherupdate.model.metar.AVWXMetar;
 import com.marlan.weatherupdate.model.station.AVWXStation;
 import com.marlan.weatherupdate.service.AVWXClient;
-import com.marlan.weatherupdate.service.MissionHandlerService;
+import com.marlan.weatherupdate.service.MissionEditor;
 import com.marlan.weatherupdate.utilities.DirHandler;
 import com.marlan.weatherupdate.utilities.FileHandler;
 import com.marlan.weatherupdate.utilities.Logger;
@@ -42,9 +42,9 @@ public class DCSRealWeatherController {
         MizUtility.extractMission(dir, dto.getMission());
         String missionContent = FileHandler.readFile(dir, MISSION_FILE);
 
-        MissionHandlerService missionHandlerService = new MissionHandlerService(dto, stationAVWX, metarAVWX);
+        MissionEditor missionEditor = new MissionEditor(dto, stationAVWX, metarAVWX);
 
-        String replacedMissionContent = missionHandlerService.editMission(missionContent);
+        String replacedMissionContent = missionEditor.editMission(missionContent);
 
         FileHandler.overwriteFile(dir, MISSION_FILE, replacedMissionContent);
 

@@ -24,11 +24,30 @@ function createGroupSpecificMenus(adminGroupID, ADMIN_GROUP_NAME)
     end
     setWeatherMenu = missionCommands.addSubMenuForGroup(adminGroupID, "Set Weather")
 
-    local clearDayConfirm = missionCommands.addSubMenuForGroup(adminGroupID, "Clear Day", setWeatherMenu)
+    local clearDayConfirm = missionCommands.addSubMenuForGroup(adminGroupID, "Clear: 1200L", setWeatherMenu)
     missionCommands.addCommandForGroup(adminGroupID, "Confirm", clearDayConfirm, setWeather, "clearDay")
 
-    local clearNightConfirm = missionCommands.addSubMenuForGroup(adminGroupID, "Clear Night", setWeatherMenu)
+    local clearNightConfirm = missionCommands.addSubMenuForGroup(adminGroupID, "Clear: 0000L)", setWeatherMenu)
     missionCommands.addCommandForGroup(adminGroupID, "Confirm", clearNightConfirm, setWeather, "clearNight")
+
+    local real0400Confirm = missionCommands.addSubMenuForGroup(adminGroupID, "Real: 0400L", setWeatherMenu)
+    missionCommands.addCommandForGroup(adminGroupID, "Confirm", real0400Confirm, setWeather, "real0400")
+
+    local real0600Confirm = missionCommands.addSubMenuForGroup(adminGroupID, "Real: 0600L", setWeatherMenu)
+    missionCommands.addCommandForGroup(adminGroupID, "Confirm", real0600Confirm, setWeather, "real0600")
+
+    local real1200Confirm = missionCommands.addSubMenuForGroup(adminGroupID, "Real: 1200L", setWeatherMenu)
+    missionCommands.addCommandForGroup(adminGroupID, "Confirm", real1200Confirm, setWeather, "real1200")
+
+    local real1800Confirm = missionCommands.addSubMenuForGroup(adminGroupID, "Real: 1800L", setWeatherMenu)
+    missionCommands.addCommandForGroup(adminGroupID, "Confirm", real1800Confirm, setWeather, "real1800")
+
+    local real2200Confirm = missionCommands.addSubMenuForGroup(adminGroupID, "Real: 2200L", setWeatherMenu)
+    missionCommands.addCommandForGroup(adminGroupID, "Confirm", real2200Confirm, setWeather, "real2200")
+
+    local real0000Confirm = missionCommands.addSubMenuForGroup(adminGroupID, "Real: 0000L", setWeatherMenu)
+    missionCommands.addCommandForGroup(adminGroupID, "Confirm", real0000Confirm, setWeather, "real0000")
+
     DCSDynamicWeather.Logger.info(THIS_FILE, "Created Set Weather Menus for " .. ADMIN_GROUP_NAME)
 end
 
