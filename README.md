@@ -34,7 +34,7 @@ Donations are welcome 😅
     - `mymission` can be renamed as you desire (this must be matched in a later step).
 3) Copy `mymission\hooks\DCSDynamicWeatherHook.lua` to your Saved Games Hooks folder.
     - e.g. `C:\Users\yourname\Saved Games\DCS.openbeta\Hooks\DCSDynamicWeatherHook.lua`
-4) Acquire an [AVWX API Key](https://avwx.rest/) (Free) and paste into `mymission\secrets\avwx.json` inside the `avwx_key` value, replacing "YOUR_API_KEY".
+4) Acquire an [AVWX API Key](https://account.avwx.rest/getting-started) (Free) and paste into `mymission\secrets\avwx.json` inside the `avwx_key` value, replacing "YOUR_API_KEY".
    ```json
     {
         "avwx_key": "a3jd923ns983fk30TeWWFGjaf329aCutFj2Ask4Js31"
