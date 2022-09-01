@@ -14,8 +14,11 @@ function DCSDynamicWeather.JAR.execute(jarName)
     end
 
     DCSDynamicWeather.Logger.info(THIS_METHOD, "Executing JAR: " .. jar)
-    os.execute("java -jar \"" .. jarPath .. "\" \"" .. DCSDynamicWeather.SCRIPTS_PATH .. "\"")
-    DCSDynamicWeather.Logger.info(THIS_METHOD, "Execution Complete.")
+    if os.execute("java -jar \"" .. jarPath .. "\" \"" .. DCSDynamicWeather.SCRIPTS_PATH .. "\"") == 0 then
+        DCSDynamicWeather.Logger.info(THIS_METHOD, "Execution successful.")
+    else
+        DCSDynamicWeather.Logger.error(THIS_METHOD, "Execution failed.")
+    end
 end
 
 function findJar(jarName)
