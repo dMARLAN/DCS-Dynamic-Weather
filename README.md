@@ -23,8 +23,9 @@ Donations are welcome :)
 
 ## Requirements:
 - [7zip](https://www.7-zip.org/)
-- [Java 17](https://www.oracle.com/java/technologies/downloads/#jdk17-windows) (JDK Class File Version 61.0 or newer)
+- [Java 17](https://www.oracle.com/java/technologies/downloads/#jdk17-windows) (Class File Version 61.0 or newer)
 - [Dedicated DCS Server](https://www.digitalcombatsimulator.com/en/downloads/world/server_beta/)
+- Windows (Probably? I haven't tested/built for other OS yet...)
 
 ## Installation
 #### Initial Set-up
@@ -34,7 +35,8 @@ Donations are welcome :)
     - `mymission` can be renamed as you desire (this must be matched in a later step).
 3) Copy `mymission\hooks\DCSDynamicWeatherHook.lua` to your Saved Games Hooks folder.
     - e.g. `C:\Users\yourname\Saved Games\DCS.openbeta\Hooks\DCSDynamicWeatherHook.lua`
-4) Acquire an [AVWX API Key](https://account.avwx.rest/getting-started) (Free) and paste into `mymission\secrets\avwx_api_key.json`, replacing "YOUR_API_KEY".
+4) Verify the user running DCS has read/write access to the `mymission` folder.
+5) Acquire an [AVWX API Key](https://account.avwx.rest/getting-started) (Free) and paste into `mymission\secrets\avwx_api_key.json`, replacing "YOUR_API_KEY".
    ```json
     {
         "avwx_key": "a3jd923ns983fk30TeWWFGjaf329aCutFj2Ask4Js31"
