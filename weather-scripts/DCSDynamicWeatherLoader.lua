@@ -1,6 +1,6 @@
 require "lfs"
 
-DCSDynamicWeather.MODULE_NAME = "DCSDynamicWeather-Weather-Scripts"
+DCSDynamicWeather.MODULE_NAME = "DCSDynamicWeather-Scripts"
 DCSDynamicWeather.SCRIPTS_PATH = lfs.writedir() .. "Missions\\" .. DCSDynamicWeather.MISSION_FOLDER
 DCSDynamicWeather.DTO_PATH = "data\\dto.json"
 DCSDynamicWeather.CONFIG_PATH = "config.json"

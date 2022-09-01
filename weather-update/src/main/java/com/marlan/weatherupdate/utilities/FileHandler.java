@@ -44,6 +44,7 @@ public class FileHandler {
                     .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
                     .create();
             gson.toJson(jsonObject, fileWriter);
+            Logger.info("Wrote JSON to " + fileName);
         } catch (IOException e) {
             Logger.error(Arrays.toString(e.getStackTrace()));
         }
