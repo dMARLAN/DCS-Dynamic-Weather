@@ -10,7 +10,6 @@ import com.marlan.weatherupdate.utilities.AltimeterUtility;
 import com.marlan.weatherupdate.utilities.Logger;
 import com.marlan.weatherupdate.utilities.StationInfoUtility;
 
-import java.security.SecureRandom;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Random;
@@ -22,6 +21,7 @@ public class MissionEditor {
     private static final double ISA_PRESSURE_INHG = 29.92;
     private static final double TEMP_LAPSE_RATE_C = 1.98;
     private static final double INHG_TO_HPA = 33.86389;
+    private static final Random random = new Random();
 
     private final DTO dto;
     private final AVWXStation stationAVWX;
@@ -203,7 +203,6 @@ public class MissionEditor {
     }
 
     private double getModifiedWindSpeed(double altitudeMeters, double windSpeedKnots) {
-        Random random = new SecureRandom();
         double windSpeedMultiplier;
         double windSpeedAddition;
         if (altitudeMeters == 2000) {
@@ -220,7 +219,6 @@ public class MissionEditor {
     }
 
     private double randomizeWindDirection(double windDirection) {
-        Random random = new SecureRandom();
         double randomizedWindDirection = windDirection + random.nextGaussian(0, 60);
         if (randomizedWindDirection < 0) {
             randomizedWindDirection += 360;
@@ -243,7 +241,6 @@ public class MissionEditor {
     }
 
     private int selectCloudsPresetSuffix(String metar) {
-        Random random = new SecureRandom();
         if (metar.contains("SKC") || metar.contains("NCD")) return 0;
         if (metar.contains("CLR") || metar.contains("NSC") || metar.contains("CAVOK")) return random.nextInt(3);
         if (metar.contains("OVC")) return random.nextInt(10) + 21;

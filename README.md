@@ -21,7 +21,7 @@ Donations are welcome :)
 
 [![](https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_37x23.jpg)](https://www.paypal.com/paypalme/CPenarsky?country.x=CA&locale.x=en_US)
 
-## Requirements:
+## Requirements
 - [7zip](https://www.7-zip.org/)
 - [Java 17](https://www.oracle.com/java/technologies/downloads/#jdk17-windows) (Class File Version 61.0 or newer)
 - [Dedicated DCS Server](https://www.digitalcombatsimulator.com/en/downloads/world/server_beta/)

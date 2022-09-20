@@ -31,12 +31,9 @@ public class DCSRealWeatherController {
 
         DTO dto = gson.fromJson(dataContent, DTO.class);
 
-        AVWXMetar metarAVWX;
-        AVWXStation stationAVWX;
-
         AVWXClient avwxClient = new AVWXClient(DIR);
-        metarAVWX = gson.fromJson(avwxClient.getMetar(dto).body(), AVWXMetar.class);
-        stationAVWX = gson.fromJson(avwxClient.getStation(metarAVWX).body(), AVWXStation.class);
+        AVWXMetar metarAVWX = gson.fromJson(avwxClient.getMetar(dto).body(), AVWXMetar.class);
+        AVWXStation stationAVWX = gson.fromJson(avwxClient.getStation(metarAVWX).body(), AVWXStation.class);
 
         dto.setIcao(stationAVWX.getIcao());
         FileHandler.writeJSON(DIR, DTO_PATH, dto);
