@@ -2,13 +2,13 @@ local menuHandler = {}
 local setWeather, createGroupSpecificMenus, createAllGroupsMenus
 local THIS_FILE = DCSDynamicWeather.MODULE_NAME .. ".SetWeather"
 local setWeatherMenu
+local ADMIN_GROUP_NAME
 
 function setWeather(weatherType)
     DCSDynamicWeather.Mission.loadNextMission(weatherType)
 end
 
 function menuHandler:onEvent(event)
-    local ADMIN_GROUP_NAME = DCSDynamicWeather.JSON.getValue("adminGroupName", DCSDynamicWeather.CONFIG_PATH)
     if event.id == world.event.S_EVENT_BIRTH and event.initiator:getPlayerName() ~= nil then
         if Group.getName(event.initiator:getGroup()) == ADMIN_GROUP_NAME then
             local adminGroup = event.initiator:getGroup()
@@ -63,6 +63,7 @@ function createAllGroupsMenus()
 end
 
 local function main()
+    ADMIN_GROUP_NAME = DCSDynamicWeather.JSON.getValue("adminGroupName", DCSDynamicWeather.CONFIG_PATH)
     if DCSDynamicWeather.JSON.getValue("adminMenuForEveryone", DCSDynamicWeather.CONFIG_PATH) == "false" then
         world.addEventHandler(menuHandler)
     else
