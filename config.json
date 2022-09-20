@@ -1,5 +1,5 @@
 {
-  "adminMenuForEveryone": false,
+  "adminMenuForEveryone": "false",
   "adminGroupName": "ADMIN/DEBUG",
   "stationReferenceZoneName": "StationReference",
   "hoursForEachRestart": "1",
