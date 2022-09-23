@@ -39,9 +39,11 @@ public class MissionEditor {
         double stationTempC = setStationTempC();
         double stationQnh = setStationQnh();
         String metar = setMetar();
-        int day = setDay();
-        int month = setMonth();
-        int hour = setHour();
+
+        ZonedDateTime zonedDateTime = ZonedDateTime.now(ZoneId.of(StationInfoUtility.getZoneId(stationAVWX.getCountry())));
+        int day = setDay(zonedDateTime);
+        int month = setMonth(zonedDateTime);
+        int hour = setHour(zonedDateTime);
 
         double seaLevelTempC = stationTempC + TEMP_LAPSE_RATE_C * (stationAVWX.getElevationFt() / 1000);
         double correctedQffInHg = AltimeterUtility.getCorrectedQff(stationQnh, stationTempC, stationAVWX);
@@ -163,21 +165,18 @@ public class MissionEditor {
         }
     }
 
-    private int setDay() {
-        ZonedDateTime zonedDateTime = ZonedDateTime.now(ZoneId.of(StationInfoUtility.getZoneId(stationAVWX.getCountry())));
+    private int setDay(ZonedDateTime zonedDateTime) {
         return zonedDateTime.getDayOfMonth();
     }
 
-    private int setMonth() {
-        ZonedDateTime zonedDateTime = ZonedDateTime.now(ZoneId.of(StationInfoUtility.getZoneId(stationAVWX.getCountry())));
+    private int setMonth(ZonedDateTime zonedDateTime) {
         return zonedDateTime.getMonthValue();
     }
 
-    private int setHour() {
+    private int setHour(ZonedDateTime zonedDateTime) {
         int hour;
         String dtoWeatherType = dto.getWeatherType();
         if (dtoWeatherType.equals("real")) {
-            ZonedDateTime zonedDateTime = ZonedDateTime.now(ZoneId.of(StationInfoUtility.getZoneId(stationAVWX.getCountry())));
             if (zonedDateTime.getHour() + dto.getTimeOffset() < 0) {
                 hour = 24 + zonedDateTime.getHour() + dto.getTimeOffset();
             } else {
