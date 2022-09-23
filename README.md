@@ -44,7 +44,7 @@ Donations are welcome :)
     ```
 
 #### Miz Set-up
-5) Create a zone in your DCS Mission using the DCS Mission Editor and name it `StationReference`.
+5) Create a zone in your DCS Mission using the DCS Mission Editor and name it `StationReference` (this name can be changed in `config.json`).
     - Place the zone at the location of your station.
     - This will be the reference station where weather will be polled. For example, if you place it at Nellis, the application will retrieve the weather from Nellis Station.
 6) Create the following triggers in your DCS Mission. (See [Example Mission](https://github.com/dMARLAN/DCS-Dynamic-Weather))
@@ -65,12 +65,18 @@ Donations are welcome :)
 9) Discord Webhook and Google Sheets set up is optional, see below.
 
 ### Discord Webhook Setup:
-- Acquire your Discord Webhook API Key (Free) and paste into `mymission\secrets\discord_api_key.json`, replacing "YOUR_API_KEY".
-   ```json
-    {
-        "discord_key": "https://discord.com/api/webhooks/012345678901234567/943c120b27fb49580766808103d3db6943c120b27fb4_951807DeFdAsd668-08103d"
-    }
-    ```
+1) Acquire your Discord Webhook API Key (Free) and paste into `mymission\secrets\discord_api_key.json`.
+```json
+{
+  "discord_key": "https://discord.com/api/webhooks/012345678901234567/943c120b27fb49580766808103d3db6943c120b27fb4_951807DeFdAsd668-08103d"
+}
+```
+2) Set `output_to_discord` inside `config.json` to `true`
+```json
+{
+  "output_to_discord": true,
+}
+```
 ![](https://support.discord.com/hc/article_attachments/1500000463501/Screen_Shot_2020-12-15_at_4.41.53_PM.png)
 ![](https://support.discord.com/hc/article_attachments/360101553853/Screen_Shot_2020-12-15_at_4.51.38_PM.png)
 ![](https://support.discord.com/hc/article_attachments/1500000455142/Screen_Shot_2020-12-15_at_4.45.52_PM.png)
@@ -88,6 +94,7 @@ Donations are welcome :)
 10) Configure `config.json` and include your spreadsheet_id and spreadsheet_range:
 ```json
     {
+        "output_to_sheets": true,
         "spreadsheet_id": "3bd76bf6d6f64c94b0c0a4278e7000c96bf6d6f64c94b0c",
         "spreadsheet_range": "MySheet!C69"
     }
