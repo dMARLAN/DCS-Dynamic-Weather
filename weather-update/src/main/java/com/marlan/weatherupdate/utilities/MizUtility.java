@@ -32,6 +32,7 @@ public class MizUtility {
             runProcess(pb);
         } catch (IOException e) {
             Logger.error("Error extracting .miz: " + e.getMessage());
+            System.exit(1);
         }
 
     }
@@ -49,6 +50,7 @@ public class MizUtility {
             runProcess(pb);
         } catch (IOException e) {
             Logger.error("Error updating .miz: " + e.getMessage());
+            System.exit(1);
         }
     }
 
@@ -56,9 +58,12 @@ public class MizUtility {
         try {
             Process p = pb.start();
             p.waitFor();
-        } catch (IOException | InterruptedException ioe) {
-            Thread.currentThread().interrupt();
+        } catch (IOException ioe) {
             throw new IOException(ioe);
+        } catch (InterruptedException ie) {
+            Logger.error("Error running process: " + ie.getMessage());
+            Thread.currentThread().interrupt();
+            System.exit(1);
         }
     }
 }
