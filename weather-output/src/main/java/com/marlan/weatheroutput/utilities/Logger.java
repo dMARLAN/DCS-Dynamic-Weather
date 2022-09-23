@@ -6,9 +6,9 @@ import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 
 public class Logger {
-    private static final String INFO = "INFO";
-    private static final String WARNING = "WARNING";
-    private static final String ERROR = "ERROR";
+    private static final String INFO = "INFO    ";
+    private static final String WARNING = "WARNING ";
+    private static final String ERROR = "ERROR   ";
     private static final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
 
     @Setter
@@ -30,9 +30,9 @@ public class Logger {
     }
 
     private static void log(String type, String message) {
-        System.out.println(getDateTime() + " " + type + "    " + message);
+        System.out.println(getDateTime() + " " + type + message);
         try {
-            FileHandler.appendFile(dir + "logs\\", "DCSDynamicWeather-Output.log", getDateTime() + " " + type + "    " + message + "\n");
+            FileHandler.appendFile(dir + "logs\\", "DCSDynamicWeather-Output.log", getDateTime() + " " + type + message + "\n");
         } catch (IOException ioe) {
             System.out.println("Error writing to log file");
         }
