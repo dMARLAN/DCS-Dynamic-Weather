@@ -36,7 +36,7 @@ public class SheetsClient {
 
         if (!Files.exists(Paths.get(workingDir + CREDENTIALS_FILE_NAME))) {
             Logger.error("Credentials file not found: " + workingDir + CREDENTIALS_FILE_NAME);
-            return;
+            return; // Guard Return
         }
 
         final NetHttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
