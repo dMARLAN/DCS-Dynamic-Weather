@@ -11,14 +11,20 @@ public class FileHandler {
 
     public static String readFile(String workingDir, String fileName) throws IOException {
         Path dataFilePath = Path.of(workingDir + fileName);
-        return Files.readString(dataFilePath);
+        try {
+            return Files.readString(dataFilePath);
+        } catch (IOException ioe) {
+            Logger.error("Error reading file: " + fileName);
+            throw ioe;
+        }
     }
 
-    public static void appendFile(String workingDir, String fileName, String content) {
+    public static void appendFile(String workingDir, String fileName, String content) throws IOException {
         try (FileWriter fw = new FileWriter(workingDir + fileName, true)) {
             fw.write(content);
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException ioe) {
+            Logger.error("Error appending file: " + fileName);
+            throw ioe;
         }
     }
 

@@ -2,12 +2,14 @@ package com.marlan.weatheroutput.utilities;
 
 import lombok.Setter;
 
+import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 
 public class Logger {
     private static final String INFO = "INFO";
     private static final String WARNING = "WARNING";
     private static final String ERROR = "ERROR";
+    private static final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
 
     @Setter
     private static String dir;
@@ -32,11 +34,14 @@ public class Logger {
 
     private static void log(String type, String message) {
         System.out.println(getDateTime() + " " + type + "    " + message);
-        FileHandler.appendFile(dir + "logs\\", "DCSDynamicWeather-Output.log", getDateTime() + " " + type + "    " + message + "\n");
+        try {
+            FileHandler.appendFile(dir + "logs\\", "DCSDynamicWeather-Output.log", getDateTime() + " " + type + "    " + message + "\n");
+        } catch (IOException ioe) {
+            System.out.println("Error writing to log file");
+        }
     }
 
     private static String getDateTime() {
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         return dtf.format(java.time.LocalDateTime.now());
     }
 
