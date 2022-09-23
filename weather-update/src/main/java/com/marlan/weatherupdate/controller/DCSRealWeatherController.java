@@ -21,7 +21,8 @@ public class DCSRealWeatherController {
 
     public static void main(String[] args) throws IOException, InterruptedException, URISyntaxException {
         final String WORKING_DIR = DirHandler.getWorkingDir(args);
-        Logger.setDir(WORKING_DIR);
+        Logger.open(WORKING_DIR);
+        Logger.info("Working Directory: " + WORKING_DIR);
 
         final Gson gson = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
 
@@ -55,6 +56,8 @@ public class DCSRealWeatherController {
         mizUtility.updateMiz(WORKING_DIR, dto.getMission(), MISSION_FILE);
 
         FileHandler.deleteFile(WORKING_DIR, MISSION_FILE);
+
+        Logger.close();
     }
 
 }

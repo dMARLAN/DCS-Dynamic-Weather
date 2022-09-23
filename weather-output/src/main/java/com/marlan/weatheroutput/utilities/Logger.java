@@ -14,24 +14,24 @@ public class Logger {
     private Logger() {
     }
 
-    public static void info(String message) throws IOException {
+    public static void info(String message) {
         log(INFO, message);
     }
 
-    public static void warning(String message) throws IOException {
+    public static void warning(String message) {
         log(WARNING, message);
     }
 
-    public static void error(String message) throws IOException {
+    public static void error(String message) {
         log(ERROR, message);
     }
 
-    private static void log(String type, String message) throws IOException {
+    private static void log(String type, String message) {
         System.out.println(getDateTime() + " " + type + message);
         try {
             loggerFw.write(getDateTime() + " " + type + message + "\n");
         } catch (IOException ioe) {
-            throw new IOException("Error writing to log file");
+            System.out.println(getDateTime() + " " + ERROR + "Error writing to log file: " + ioe.getMessage());
         }
     }
 
