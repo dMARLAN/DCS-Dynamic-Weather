@@ -4,6 +4,7 @@
   "stationReferenceZoneName": "StationReference",
   "hoursForEachRestart": "1",
   "maximumHoursForEachRestart": "8",
+  "custom_seven_zip_path": "",
   "output_to_sheets": false,
   "output_to_discord": false,
   "spreadsheet_id": "",

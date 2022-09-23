@@ -1,17 +1,26 @@
 package com.marlan.weatherupdate.utilities;
 
+import com.marlan.weatherupdate.model.config.Config;
+
+import java.io.IOException;
+
 import static java.lang.System.getenv;
 
 public class MizUtility {
-    private static final String SEVEN_ZIP_PATH = getenv("ProgramFiles") + "\\7-Zip\\7z.exe";
+    private final String sevenZipPath;
 
-    private MizUtility() {
+    public MizUtility(Config config) {
+        if (config.getCustomSevenZipPath().isEmpty()) {
+            this.sevenZipPath = getenv("ProgramFiles") + "\\7-Zip\\7z.exe";
+        } else {
+            this.sevenZipPath = config.getCustomSevenZipPath();
+        }
     }
 
-    public static void extractMission(String dir, String mizName) {
-        Logger.info("Extracting mission: " + dir + mizName);
+    public void extractMission(String dir, String mizName) {
+        Logger.info("Extracting: " + dir + mizName);
         ProcessBuilder pb = new ProcessBuilder(
-                SEVEN_ZIP_PATH,
+                this.sevenZipPath,
                 "x",
                 "-tzip",
                 dir + mizName,
@@ -19,18 +28,37 @@ public class MizUtility {
                 "mission",
                 "-y"
         );
-        SevenZipUtility.runProcess(pb, dir);
+        try {
+            runProcess(pb);
+        } catch (IOException e) {
+            Logger.error("Error extracting .miz: " + e.getMessage());
+        }
+
     }
 
-    public static void updateMiz(String dir, String mizName, String missionFile) {
-        Logger.info("Updating mission: " + dir + mizName);
+    public void updateMiz(String dir, String mizName, String missionFile) {
+        Logger.info("Updating: " + dir + mizName);
         ProcessBuilder pb = new ProcessBuilder(
-                SEVEN_ZIP_PATH,
+                this.sevenZipPath,
                 "a",
                 "-tzip",
                 dir + mizName,
                 dir + missionFile
         );
-        SevenZipUtility.runProcess(pb, dir);
+        try {
+            runProcess(pb);
+        } catch (IOException e) {
+            Logger.error("Error updating .miz: " + e.getMessage());
+        }
+    }
+
+    private void runProcess(ProcessBuilder pb) throws IOException {
+        try {
+            Process p = pb.start();
+            p.waitFor();
+        } catch (IOException | InterruptedException ioe) {
+            Thread.currentThread().interrupt();
+            throw new IOException(ioe);
+        }
     }
 }
