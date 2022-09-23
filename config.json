@@ -1,6 +1,6 @@
 {
   "adminMenuForEveryone": "false",
-  "adminGroupName": "ADMIN/DEBUG",
+  "adminGroupName": "ADMIN",
   "stationReferenceZoneName": "StationReference",
   "hoursForEachRestart": "1",
   "maximumHoursForEachRestart": "8",
