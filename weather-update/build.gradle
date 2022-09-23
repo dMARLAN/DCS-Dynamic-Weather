@@ -3,7 +3,7 @@ plugins {
 }
 
 group 'com.marlan'
-version '1.1.1'
+version '1.1.2-SNAPSHOT'
 
 repositories {
     mavenCentral()
@@ -26,6 +26,7 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok:1.18.24'
     implementation 'org.projectlombok:lombok:1.18.24'
     implementation 'com.google.code.gson:gson:2.9.0'
+    implementation 'us.dustinj.timezonemap:timezonemap:4.5'
 }
 
 test {

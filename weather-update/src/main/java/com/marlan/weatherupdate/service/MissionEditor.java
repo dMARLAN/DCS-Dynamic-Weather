@@ -40,7 +40,7 @@ public class MissionEditor {
         double stationQnh = setStationQnh();
         String metar = setMetar();
 
-        ZonedDateTime zonedDateTime = ZonedDateTime.now(ZoneId.of(StationInfoUtility.getZoneId(stationAVWX.getCountry())));
+        ZonedDateTime zonedDateTime = ZonedDateTime.now(ZoneId.of(StationInfoUtility.getZoneId(stationAVWX.getCountry(), stationAVWX.getLatitude(), stationAVWX.getLongitude())));
         int day = setDay(zonedDateTime);
         int month = setMonth(zonedDateTime);
         int hour = setHour(zonedDateTime);
@@ -152,7 +152,7 @@ public class MissionEditor {
 
     private String setMetar() {
         String dtoWeatherType = dto.getWeatherType();
-        if (dtoWeatherType.contains("clear")){
+        if (dtoWeatherType.contains("clear")) {
             Logger.info("METAR set clear");
             return "";
         } else {
