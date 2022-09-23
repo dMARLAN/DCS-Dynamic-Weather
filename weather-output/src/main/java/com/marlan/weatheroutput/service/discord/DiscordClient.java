@@ -28,7 +28,7 @@ public class DiscordClient {
         DiscordWebhookAPI discordApiKey = gson.fromJson(discordKeyFile, DiscordWebhookAPI.class);
         String discordKey = discordApiKey.getDiscordApiKey();
 
-        if (discordKey.length() == 0) {
+        if (discordKey.isEmpty()) {
             Logger.warning("Discord API key is empty");
         } else {
             HttpRequest postRequest = HttpRequest.newBuilder()
