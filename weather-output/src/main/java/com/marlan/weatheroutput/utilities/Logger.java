@@ -1,7 +1,6 @@
 package com.marlan.weatheroutput.utilities;
 
-import lombok.Setter;
-
+import java.io.FileWriter;
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 
@@ -10,31 +9,45 @@ public class Logger {
     private static final String WARNING = "WARNING ";
     private static final String ERROR = "ERROR   ";
     private static final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-
-    @Setter
-    private static String dir;
+    private static FileWriter loggerFw;
 
     private Logger() {
     }
 
-    public static void info(String message) {
+    public static void info(String message) throws IOException {
         log(INFO, message);
     }
 
-    public static void warning(String message) {
+    public static void warning(String message) throws IOException {
         log(WARNING, message);
     }
 
-    public static void error(String message) {
+    public static void error(String message) throws IOException {
         log(ERROR, message);
     }
 
-    private static void log(String type, String message) {
+    private static void log(String type, String message) throws IOException {
         System.out.println(getDateTime() + " " + type + message);
         try {
-            FileHandler.appendFile(dir + "logs\\", "DCSDynamicWeather-Output.log", getDateTime() + " " + type + message + "\n");
+            loggerFw.write(getDateTime() + " " + type + message + "\n");
         } catch (IOException ioe) {
-            System.out.println("Error writing to log file");
+            throw new IOException("Error writing to log file");
+        }
+    }
+
+    public static void open(String workingDir) throws IOException {
+        try {
+            loggerFw = new FileWriter(workingDir + "logs\\DCSDynamicWeather-Output.log", true);
+        } catch (IOException ioe) {
+            throw new IOException("Error opening log file");
+        }
+    }
+
+    public static void close() throws IOException {
+        try {
+            loggerFw.close();
+        } catch (IOException ioe) {
+            throw new IOException("Error closing logger");
         }
     }
 

@@ -1,5 +1,6 @@
 package com.marlan.weatheroutput.utilities;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -9,17 +10,14 @@ public class DirHandler {
     private DirHandler() {
     }
 
-    public static String getWorkingDir(String[] args) {
+    public static String getWorkingDir(String[] args) throws IOException {
         if (args.length != 0 && Files.exists(Path.of(args[0]))) {
             System.setProperty("user.dir", args[0]);
         }
         String workingDir = getProperty("user.dir") + "\\";
-        Logger.setDir(workingDir);
         if (!Files.exists(Path.of(workingDir))) {
-            Logger.error("Working Directory inaccessible.");
-            System.exit(1); // Unrecoverable Error
+            throw new IOException("Working directory inaccessible");
         }
-        Logger.info("Working Directory: " + workingDir);
         return workingDir;
     }
 

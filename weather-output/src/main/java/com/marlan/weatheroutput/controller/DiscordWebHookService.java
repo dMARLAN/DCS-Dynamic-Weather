@@ -18,6 +18,9 @@ import java.security.GeneralSecurityException;
 public class DiscordWebHookService {
     public static void main(String[] args) throws IOException, URISyntaxException, InterruptedException, GeneralSecurityException {
         final String WORKING_DIR = DirHandler.getWorkingDir(args);
+        Logger.open(WORKING_DIR);
+        Logger.info("Working Directory: " + WORKING_DIR);
+
         Gson gson = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
 
         final String DTO_PATH = "data\\dto.json";
@@ -50,5 +53,6 @@ public class DiscordWebHookService {
         } else {
             Logger.info("Google Sheets output is disabled, skipping...");
         }
+        Logger.close();
     }
 }
