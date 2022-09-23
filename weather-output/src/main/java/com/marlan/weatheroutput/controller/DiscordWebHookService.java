@@ -9,6 +9,7 @@ import com.marlan.weatheroutput.service.discord.DiscordClient;
 import com.marlan.weatheroutput.service.sheets.SheetsClient;
 import com.marlan.weatheroutput.utilities.DirHandler;
 import com.marlan.weatheroutput.utilities.FileHandler;
+import com.marlan.weatheroutput.utilities.Logger;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -39,7 +40,15 @@ public class DiscordWebHookService {
                 }
                 """.replace("$METAR", dto.getMetar());
 
-        DiscordClient.post(WORKING_DIR, jsonInput);
-        SheetsClient.setSheetValue(config.getSpreadsheetId(), config.getSpreadsheetRange(), dto.getMetar(), WORKING_DIR, config);
+        if (config.isOutputToDiscord()) {
+            DiscordClient.post(WORKING_DIR, jsonInput);
+        } else {
+            Logger.info("Discord Webhook output is disabled, skipping...");
+        }
+        if (config.isOutputToSheets()) {
+            SheetsClient.setSheetValue(config.getSpreadsheetId(), config.getSpreadsheetRange(), dto.getMetar(), WORKING_DIR);
+        } else {
+            Logger.info("Google Sheets output is disabled, skipping...");
+        }
     }
 }

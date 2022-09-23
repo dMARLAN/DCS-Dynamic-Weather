@@ -12,7 +12,6 @@ import com.google.api.services.sheets.v4.model.ValueRange;
 import com.google.auth.http.HttpCredentialsAdapter;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.auth.oauth2.ServiceAccountCredentials;
-import com.marlan.weatheroutput.model.Config;
 import com.marlan.weatheroutput.utilities.Logger;
 
 import java.io.FileInputStream;
@@ -32,11 +31,13 @@ public class SheetsClient {
     private SheetsClient() {
     }
 
-    public static void setSheetValue(final String spreadsheetId, final String spreadsheetRange,
-                                     final String value, final String workingDir, final Config config)
+    public static void setSheetValue(final String spreadsheetId, final String spreadsheetRange, final String value, final String workingDir)
             throws IOException, GeneralSecurityException {
 
-        if (!validParameters(workingDir, config)) return;
+        if (!Files.exists(Paths.get(workingDir + CREDENTIALS_FILE_NAME))) {
+            Logger.error("Credentials file not found: " + workingDir + CREDENTIALS_FILE_NAME);
+            return;
+        }
 
         final NetHttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
 
@@ -61,22 +62,6 @@ public class SheetsClient {
             response = e.toString();
         }
         Logger.info("Sheets Update Response: " + response);
-    }
-
-    private static boolean validParameters(final String workingDir, final Config config) {
-        if (!Files.exists(Paths.get(workingDir + CREDENTIALS_FILE_NAME))) {
-            Logger.warning("Credentials file not found: " + workingDir + CREDENTIALS_FILE_NAME);
-            return false;
-        }
-        if (config.getSpreadsheetId().isEmpty()) {
-            Logger.warning("Spreadsheet ID empty");
-            return false;
-        }
-        if (config.getSpreadsheetRange().isEmpty()) {
-            Logger.warning("Spreadsheet Range empty");
-            return false;
-        }
-        return true;
     }
 
 }
