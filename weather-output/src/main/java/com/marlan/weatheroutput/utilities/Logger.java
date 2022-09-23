@@ -17,17 +17,14 @@ public class Logger {
     private Logger() {
     }
 
-    @SuppressWarnings("unused")
     public static void info(String message) {
         log(INFO, message);
     }
 
-    @SuppressWarnings("unused")
     public static void warning(String message) {
         log(WARNING, message);
     }
 
-    @SuppressWarnings("unused")
     public static void error(String message) {
         log(ERROR, message);
     }
