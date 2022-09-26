@@ -47,7 +47,7 @@ public class DCSRealWeatherController {
         mizUtility.extractMission(WORKING_DIR, dto.getMission());
         String missionContent = FileHandler.readFile(WORKING_DIR, MISSION_FILE);
 
-        MissionEditor missionEditor = new MissionEditor(dto, stationAVWX, metarAVWX);
+        MissionEditor missionEditor = new MissionEditor(dto, config, stationAVWX, metarAVWX);
 
         String replacedMissionContent = missionEditor.editMission(missionContent);
 

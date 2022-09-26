@@ -5,4 +5,5 @@ import lombok.Data;
 @Data
 public class Config {
     private String customSevenZipPath;
+    private int timeOffset;
 }

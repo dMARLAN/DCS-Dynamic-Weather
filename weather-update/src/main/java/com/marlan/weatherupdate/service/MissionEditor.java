@@ -1,5 +1,6 @@
 package com.marlan.weatherupdate.service;
 
+import com.marlan.weatherupdate.model.config.Config;
 import com.marlan.weatherupdate.model.dto.DTO;
 import com.marlan.weatherupdate.model.metar.AVWXMetar;
 import com.marlan.weatherupdate.model.metar.fields.Temperature;
@@ -25,11 +26,13 @@ public class MissionEditor {
     private static final Random random = new Random();
 
     private final DTO dto;
+    private final Config config;
     private final AVWXStation stationAVWX;
     private final AVWXMetar metarAVWX;
 
-    public MissionEditor(DTO dto, AVWXStation stationAVWX, AVWXMetar metarAVWX) {
+    public MissionEditor(DTO dto, Config config, AVWXStation stationAVWX, AVWXMetar metarAVWX) {
         this.dto = dto;
+        this.config = config;
         this.stationAVWX = stationAVWX;
         this.metarAVWX = metarAVWX;
     }
@@ -220,10 +223,10 @@ public class MissionEditor {
         int hour;
         String dtoWeatherType = dto.getWeatherType();
         if (dtoWeatherType.equals("real")) {
-            if (zonedDateTime.getHour() + dto.getTimeOffset() < 0) {
-                hour = 24 + zonedDateTime.getHour() + dto.getTimeOffset();
+            if (zonedDateTime.getHour() + config.getTimeOffset() < 0) {
+                hour = 24 + zonedDateTime.getHour() + config.getTimeOffset();
             } else {
-                hour = zonedDateTime.getHour() + dto.getTimeOffset();
+                hour = zonedDateTime.getHour() + config.getTimeOffset();
             }
         } else {
             switch (dtoWeatherType) {
