@@ -5,7 +5,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.marlan.weatherupdate.model.dto.DTO;
 import com.marlan.weatherupdate.model.metar.AVWXMetar;
-import com.marlan.weatherupdate.model.secrets.AVWXApiKey;
+import com.marlan.weatherupdate.model.secrets.AVWX;
 import com.marlan.weatherupdate.utilities.FileHandler;
 import com.marlan.weatherupdate.utilities.Logger;
 
@@ -62,7 +62,7 @@ public class AVWXClient {
         Gson gson = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
 
         String avwxKeyFile = FileHandler.readFile(dir, AVWX_API_KEY_PATH);
-        AVWXApiKey avwxApiKey = gson.fromJson(avwxKeyFile, AVWXApiKey.class);
-        return avwxApiKey.getAvwxApiKey();
+        AVWX avwx = gson.fromJson(avwxKeyFile, AVWX.class);
+        return avwx.getAvwxApiKey();
     }
 }

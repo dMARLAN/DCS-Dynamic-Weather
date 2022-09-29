@@ -3,7 +3,9 @@ resources
 .idea
 Air_Wing_Nellis.miz
 logs/
-secrets/
+avwx_api_key.json
+discord_api_key.json
+google_sheets_service_account_api_key.json
 
 ### Intellij ###
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio, WebStorm and Rider
