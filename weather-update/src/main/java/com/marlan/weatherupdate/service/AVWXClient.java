@@ -57,7 +57,7 @@ public class AVWXClient {
         }
     }
 
-    private String getAVWXApiKey() {
+    private String getAVWXApiKey() throws IOException {
         final String AVWX_API_KEY_PATH = "secrets\\avwx_api_key.json";
         Gson gson = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
 

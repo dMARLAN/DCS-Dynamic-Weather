@@ -24,7 +24,7 @@ public class MizUtility {
     /**
      * Extracts mission file from .miz using 7zip
      */
-    public void extractMission(String dir, String mizName) {
+    public void extractMission(String dir, String mizName) throws IOException {
         Log.info("Extracting: " + dir + mizName);
         ProcessBuilder pb = new ProcessBuilder(
                 this.sevenZipPath,
@@ -37,9 +37,9 @@ public class MizUtility {
         );
         try {
             runProcess(pb);
-        } catch (IOException e) {
-            Log.error("Error extracting .miz: " + e.getMessage());
-            System.exit(1);
+        } catch (IOException ioe) {
+            Log.error("Error extracting .miz: " + ioe.getMessage());
+            throw new IOException("Error: " + ioe.getMessage(), ioe);
         }
 
     }
@@ -47,7 +47,7 @@ public class MizUtility {
     /**
      * Updates .miz with new mission file using 7zip
      */
-    public void updateMiz(String dir, String mizName, String missionFile) {
+    public void updateMiz(String dir, String mizName, String missionFile) throws IOException {
         Log.info("Updating: " + dir + mizName);
         ProcessBuilder pb = new ProcessBuilder(
                 this.sevenZipPath,
@@ -58,9 +58,9 @@ public class MizUtility {
         );
         try {
             runProcess(pb);
-        } catch (IOException e) {
-            Log.error("Error updating .miz: " + e.getMessage());
-            System.exit(1);
+        } catch (IOException ioe) {
+            Log.error("Error updating .miz: " + ioe.getMessage());
+            throw new IOException("Error: " + ioe.getMessage(), ioe);
         }
     }
 
@@ -69,11 +69,11 @@ public class MizUtility {
             Process p = pb.start();
             p.waitFor();
         } catch (IOException ioe) {
-            throw new IOException(ioe);
+            Log.error("Error running process: " + ioe.getMessage());
+            throw new IOException("Error: " + ioe.getMessage(), ioe);
         } catch (InterruptedException ie) {
             Log.error("Error running process: " + ie.getMessage());
             Thread.currentThread().interrupt();
-            System.exit(1);
         }
     }
 }
