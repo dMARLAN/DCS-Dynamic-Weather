@@ -23,7 +23,7 @@ public class DiscordClient {
     private DiscordClient() {
     }
 
-    public static void post(String workingDir, String message) throws URISyntaxException, IOException, InterruptedException {
+    public static void post(String workingDir, String message) throws IOException, InterruptedException {
         final String DISCORD_KEY_PATH = "secrets\\discord_api_key.json";
         Gson gson = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
 
@@ -34,12 +34,16 @@ public class DiscordClient {
         if (discordKey.isEmpty()) {
             Log.warning("Discord API key is empty");
         } else {
-            HttpRequest postRequest = HttpRequest.newBuilder()
-                    .uri(new URI(discordKey))
-                    .header("Content-Type", "application/json")
-                    .POST(HttpRequest.BodyPublishers.ofString(message))
-                    .build();
-            Log.info("Discord API Reponse: " + httpClient.send(postRequest, HttpResponse.BodyHandlers.ofString()).toString());
+            try {
+                HttpRequest postRequest = HttpRequest.newBuilder()
+                        .uri(new URI(discordKey))
+                        .header("Content-Type", "application/json")
+                        .POST(HttpRequest.BodyPublishers.ofString(message))
+                        .build();
+                Log.info("Discord API Reponse: " + httpClient.send(postRequest, HttpResponse.BodyHandlers.ofString()).toString());
+            } catch (URISyntaxException use){
+                Log.error(use.getMessage());
+            }
         }
     }
 
