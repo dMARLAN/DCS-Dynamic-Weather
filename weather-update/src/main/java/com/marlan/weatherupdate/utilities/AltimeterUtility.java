@@ -2,6 +2,10 @@ package com.marlan.weatherupdate.utilities;
 
 import com.marlan.weatherupdate.model.station.AVWXStation;
 
+/**
+ * DCS does not actually use QNH but instead uses QFF when set inside the mission file.
+ * This will convert QNH to QFF so that it can be used in DCS.
+ */
 public class AltimeterUtility {
     private static final double FEET_TO_METERS = 0.3048;
     private static final double PA_TO_INHG = 0.000295299830714;
@@ -21,6 +25,7 @@ public class AltimeterUtility {
     }
 
     private static double getPressureAltitude(Double stationQnhInHg) {
+        // https://en.wikipedia.org/wiki/Pressure_altitude
         final double INHG_TO_MB = 33.864;
         double stationQnhMb = stationQnhInHg * INHG_TO_MB;
         return 145366.45 * (1 - Math.pow((stationQnhMb / ISA_PRESSURE_MB), 0.190284));
@@ -47,6 +52,7 @@ public class AltimeterUtility {
     }
 
     private static double getWinterInversionT1(double temperatureInCelsius) {
+        // https://www.metpod.co.uk/calculators/pressure/ -- Swedish Meteorological and Hydrological Institute Method
         if (temperatureInCelsius <= -7) {
             return 0.5 * temperatureInCelsius + 275;
         } else if (temperatureInCelsius <= 2) {
