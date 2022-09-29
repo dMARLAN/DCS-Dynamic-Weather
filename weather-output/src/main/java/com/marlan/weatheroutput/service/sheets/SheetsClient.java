@@ -1,7 +1,6 @@
 package com.marlan.weatheroutput.service.sheets;
 
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
@@ -35,7 +34,7 @@ public class SheetsClient {
     }
 
     public static void setSheetValue(final String spreadsheetId, final String spreadsheetRange, final String value, final String workingDir)
-            throws IOException, GeneralSecurityException {
+            throws IOException {
 
         if (!Files.exists(Paths.get(workingDir + CREDENTIALS_FILE_NAME))) {
             Log.error("Credentials file not found: " + workingDir + CREDENTIALS_FILE_NAME);
@@ -47,27 +46,35 @@ public class SheetsClient {
             return; // Guard
         }
 
-        final NetHttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+        try {
+            final NetHttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
 
-        final GoogleCredentials googleCredentials = ServiceAccountCredentials
-                .fromStream(new FileInputStream(workingDir + CREDENTIALS_FILE_NAME))
-                .createScoped(SCOPES);
-        HttpRequestInitializer requestInitializer = new HttpCredentialsAdapter(googleCredentials);
+            final GoogleCredentials googleCredentials = ServiceAccountCredentials
+                    .fromStream(new FileInputStream(workingDir + CREDENTIALS_FILE_NAME))
+                    .createScoped(SCOPES);
+            HttpRequestInitializer requestInitializer = new HttpCredentialsAdapter(googleCredentials);
 
-        Sheets service = new Sheets.Builder(httpTransport, JSON_FACTORY, requestInitializer)
-                .setApplicationName(APPLICATION_NAME)
-                .build();
+            Sheets service = new Sheets.Builder(httpTransport, JSON_FACTORY, requestInitializer)
+                    .setApplicationName(APPLICATION_NAME)
+                    .build();
 
-        ValueRange requestBody = new ValueRange();
-        requestBody.setValues(List.of(List.of(value)));
-        Sheets.Spreadsheets.Values.Update request = service.spreadsheets().values().update(spreadsheetId, spreadsheetRange, requestBody);
-        request.setValueInputOption("RAW");
+            ValueRange requestBody = new ValueRange();
+            requestBody.setValues(List.of(List.of(value)));
+            Sheets.Spreadsheets.Values.Update request = service.spreadsheets().values().update(spreadsheetId, spreadsheetRange, requestBody);
+            request.setValueInputOption("RAW");
 
+            executeRequest(request);
+        } catch (GeneralSecurityException gse) {
+            Log.error(gse.getMessage());
+        }
+    }
+
+    private static void executeRequest(Sheets.Spreadsheets.Values.Update request){
         String response;
         try {
             response = request.execute().toString();
-        } catch (GoogleJsonResponseException e) {
-            response = e.toString();
+        } catch (IOException ioe) {
+            response = ioe.toString();
         }
         Log.info("Sheets Update Response: " + response);
     }
