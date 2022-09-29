@@ -44,7 +44,7 @@ public class MissionEditor {
         double stationQnh = setStationQnh();
         String metar = setMetar();
 
-        ZonedDateTime zonedDateTime = ZonedDateTime.now(ZoneId.of(StationInfoUtility.getZoneId(stationAVWX.getCountry(), stationAVWX.getLatitude(), stationAVWX.getLongitude())));
+        ZonedDateTime zonedDateTime = ZonedDateTime.now(ZoneId.of(StationInfoUtility.getZoneId(stationAVWX.getLatitude(), stationAVWX.getLongitude())));
         int day = setDay(zonedDateTime);
         int month = setMonth(zonedDateTime);
         int hour = setHour(zonedDateTime);
