@@ -16,6 +16,9 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Random;
 
+/**
+ * Handles replacing strings inside the mission file
+ */
 public class MissionEditor {
     private static final double KNOTS_TO_METERS = 0.51444444444;
     private static final double INHG_TO_MMHG = 25.4;
@@ -70,15 +73,17 @@ public class MissionEditor {
         mission = replaceDay(mission, day);
         mission = replaceMonth(mission, month);
         mission = replaceTemperature(mission, stationTempC);
-        mission = replaceQnh(mission, qffMmHg);
+        mission = replaceQnh(mission, qffMmHg, stationQnh);
 
         return mission;
     }
 
     @NotNull
-    private String replaceQnh(String mission, double qffMmHg) {
+    private String replaceQnh(String mission, double qffMmHg, double qnhInHg) {
         mission = mission.replaceAll("(\\[\"qnh\"].*)\n", "[\"qnh\"] = \\$qnh,\n".replace("$qnh", Double.toString(qffMmHg))); // DCS actually uses QFF not QNH!
-        Log.info("QFF set to: " + qffMmHg + " mmHg (" + qffMmHg / INHG_TO_MMHG + " inHg)");
+        double qnhMmHg = qnhInHg * INHG_TO_MMHG;
+        Log.info("QNH set to: " + qnhInHg + " inHg (" + qnhMmHg + " mmHg)");
+        Log.info("QFF set to: " + qffMmHg / INHG_TO_MMHG + " inHg (" + qffMmHg + " mmHg)");
         return mission;
     }
 
