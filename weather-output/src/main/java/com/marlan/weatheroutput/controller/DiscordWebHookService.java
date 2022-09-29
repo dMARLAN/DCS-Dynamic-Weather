@@ -7,7 +7,6 @@ import com.marlan.weatheroutput.model.Config;
 import com.marlan.weatheroutput.model.DTO;
 import com.marlan.weatheroutput.service.discord.DiscordClient;
 import com.marlan.weatheroutput.service.sheets.SheetsClient;
-import com.marlan.weatheroutput.utilities.DirHandler;
 import com.marlan.weatheroutput.utilities.FileHandler;
 import com.marlan.weatheroutput.utilities.Logger;
 
@@ -16,10 +15,10 @@ import java.net.URISyntaxException;
 import java.security.GeneralSecurityException;
 
 public class DiscordWebHookService {
-    public static void main(String[] args) throws IOException, URISyntaxException, InterruptedException, GeneralSecurityException {
-        final String WORKING_DIR = DirHandler.getWorkingDir(args);
-        Logger.open(WORKING_DIR);
-        Logger.info("Working Directory: " + WORKING_DIR);
+    private DiscordWebHookService() {
+    }
+
+    public static void run(final String WORKING_DIR) throws IOException, URISyntaxException, InterruptedException, GeneralSecurityException {
 
         Gson gson = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
 
@@ -53,6 +52,5 @@ public class DiscordWebHookService {
         } else {
             Logger.info("Google Sheets output is disabled, skipping...");
         }
-        Logger.close();
     }
 }
