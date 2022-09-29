@@ -3,7 +3,7 @@ package com.marlan.weatheroutput.service.discord;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.marlan.weatheroutput.model.DiscordWebhookAPI;
+import com.marlan.weatheroutput.model.DiscordWebhook;
 import com.marlan.weatheroutput.utilities.FileHandler;
 import com.marlan.weatheroutput.utilities.Log;
 
@@ -14,6 +14,9 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
+/**
+ * Handles posting METAR data to Discord Webhook
+ */
 public class DiscordClient {
     private static final HttpClient httpClient = HttpClient.newHttpClient();
 
@@ -25,7 +28,7 @@ public class DiscordClient {
         Gson gson = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
 
         String discordKeyFile = FileHandler.readFile(workingDir, DISCORD_KEY_PATH);
-        DiscordWebhookAPI discordApiKey = gson.fromJson(discordKeyFile, DiscordWebhookAPI.class);
+        DiscordWebhook discordApiKey = gson.fromJson(discordKeyFile, DiscordWebhook.class);
         String discordKey = discordApiKey.getDiscordApiKey();
 
         if (discordKey.isEmpty()) {

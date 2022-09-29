@@ -22,6 +22,9 @@ import java.security.GeneralSecurityException;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Handles posting METAR data to Google Sheets cell
+ */
 public class SheetsClient {
     private static final String APPLICATION_NAME = "DCS-Dynamic-Weather";
     private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
