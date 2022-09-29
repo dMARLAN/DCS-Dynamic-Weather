@@ -36,7 +36,12 @@ public class SheetsClient {
 
         if (!Files.exists(Paths.get(workingDir + CREDENTIALS_FILE_NAME))) {
             Logger.error("Credentials file not found: " + workingDir + CREDENTIALS_FILE_NAME);
-            return; // Guard Return
+            return; // Guard
+        }
+
+        if (spreadsheetId.isEmpty() || spreadsheetRange.isEmpty()){
+            Logger.error("Spreadsheet Range or ID is empty.");
+            return; // Guard
         }
 
         final NetHttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
