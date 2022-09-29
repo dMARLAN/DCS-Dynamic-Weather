@@ -16,6 +16,9 @@ import com.marlan.weatherupdate.utilities.MizUtility;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
+/**
+ * Controller for Weather Update module
+ */
 public class WeatherUpdateController {
     private WeatherUpdateController(){
     }

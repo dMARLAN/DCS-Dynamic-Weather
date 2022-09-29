@@ -14,6 +14,9 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.security.GeneralSecurityException;
 
+/**
+ * Controller for Weather Output module
+ */
 public class WeatherOutputController {
     private WeatherOutputController() {
     }
