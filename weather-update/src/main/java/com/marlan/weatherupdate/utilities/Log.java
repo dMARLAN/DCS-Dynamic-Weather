@@ -1,5 +1,7 @@
 package com.marlan.weatherupdate.utilities;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -64,6 +66,7 @@ public class Log {
         }
     }
 
+    @NotNull
     private static String getDateTime() {
         return dtf.format(java.time.LocalDateTime.now());
     }
