@@ -11,8 +11,6 @@ import com.marlan.weatheroutput.utilities.FileHandler;
 import com.marlan.weatheroutput.utilities.Log;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.security.GeneralSecurityException;
 
 /**
  * Controller for Weather Output module
@@ -21,7 +19,13 @@ public class WeatherOutputController {
     private WeatherOutputController() {
     }
 
-    public static void run(final String WORKING_DIR) throws IOException, URISyntaxException, InterruptedException, GeneralSecurityException {
+    /**
+     *
+     * @param WORKING_DIR Received from WeatherOutput
+     * @throws IOException If thrown here, program fails, cannot be handled.
+     * @throws InterruptedException Should never be thrown.
+     */
+    public static void run(final String WORKING_DIR) throws IOException, InterruptedException {
 
         Gson gson = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
 
