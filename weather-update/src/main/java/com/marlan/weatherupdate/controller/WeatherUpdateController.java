@@ -14,7 +14,6 @@ import com.marlan.weatherupdate.utilities.Log;
 import com.marlan.weatherupdate.utilities.MizUtility;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 
 /**
  * Controller for Weather Update module
@@ -23,7 +22,13 @@ public class WeatherUpdateController {
     private WeatherUpdateController(){
     }
 
-    public static void run(final String WORKING_DIR) throws IOException, InterruptedException, URISyntaxException {
+    /**
+     *
+     * @param WORKING_DIR Received from WeatherOutput.
+     * @throws IOException If thrown here, program fails, cannot be handled.
+     * @throws InterruptedException Should never be thrown.
+     */
+    public static void run(final String WORKING_DIR) throws IOException, InterruptedException {
 
         final Gson gson = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
 
