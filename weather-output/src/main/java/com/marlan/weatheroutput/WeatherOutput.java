@@ -8,6 +8,11 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.security.GeneralSecurityException;
 
+/**
+ * Entry Point for the Weather Output module of DCS Dynamic Weather
+ * Outputs METAR from DTO to Discord Webhook and/or Google Sheets if config file is set to true for either.
+ * @author Chad Penarsky
+ */
 public class WeatherOutput {
     public static void main(String[] args) throws IOException, GeneralSecurityException, URISyntaxException, InterruptedException {
         final String WORKING_DIR = DirHandler.getWorkingDir(args);
