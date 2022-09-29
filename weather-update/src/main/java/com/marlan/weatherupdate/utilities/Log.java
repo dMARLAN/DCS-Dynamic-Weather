@@ -58,7 +58,6 @@ public class Log {
      */
     public static void close() throws IOException {
         try {
-            loggerFw.flush();
             loggerFw.close();
         } catch (IOException ioe) {
             throw new IOException("Error: " + ioe.getMessage(), ioe);
