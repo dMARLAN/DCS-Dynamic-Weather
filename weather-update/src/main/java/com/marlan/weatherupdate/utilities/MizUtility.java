@@ -23,17 +23,15 @@ public class MizUtility {
 
     /**
      * Extracts mission file from .miz using 7zip
-     * @param workingDir Working Directory
-     * @param mizName Name of miz file
      */
-    public void extractMission(String workingDir, String mizName) {
-        Log.info("Extracting: " + workingDir + mizName);
+    public void extractMission(String dir, String mizName) {
+        Log.info("Extracting: " + dir + mizName);
         ProcessBuilder pb = new ProcessBuilder(
                 this.sevenZipPath,
                 "x",
                 "-tzip",
-                workingDir + mizName,
-                "-o" + workingDir,
+                dir + mizName,
+                "-o" + dir,
                 "mission",
                 "-y"
         );
@@ -48,18 +46,15 @@ public class MizUtility {
 
     /**
      * Updates .miz with new mission file using 7zip
-     * @param workingDir Working Directory
-     * @param mizName Name of miz file
-     * @param missionFile Name of new mission file
      */
-    public void updateMiz(String workingDir, String mizName, String missionFile) {
-        Log.info("Updating: " + workingDir + mizName);
+    public void updateMiz(String dir, String mizName, String missionFile) {
+        Log.info("Updating: " + dir + mizName);
         ProcessBuilder pb = new ProcessBuilder(
                 this.sevenZipPath,
                 "a",
                 "-tzip",
-                workingDir + mizName,
-                workingDir + missionFile
+                dir + mizName,
+                dir + missionFile
         );
         try {
             runProcess(pb);
