@@ -11,6 +11,12 @@ public class StationInfoUtility {
     private StationInfoUtility() {
     }
 
+    /**
+     * Uses TimeZoneMap and returns Java ZoneId based on latitude/longitude for the station within 1 degree of latitude or longititude.
+     * @param latitude Latitude for station
+     * @param longitude Longitude for station
+     * @return Java ZoneId or UTC if null
+     */
     public static String getZoneId(double latitude, double longitude) {
         TimeZoneMap map = TimeZoneMap.forRegion(latitude - 1, longitude - 1, latitude + 1, longitude + 1);
         try {
