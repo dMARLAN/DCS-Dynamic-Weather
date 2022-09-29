@@ -1,6 +1,7 @@
 package com.marlan.weatherupdate.utilities;
 
 import com.marlan.weatherupdate.model.config.Config;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 
@@ -13,7 +14,7 @@ import static java.lang.System.getenv;
 public class MizUtility {
     private final String sevenZipPath;
 
-    public MizUtility(Config config) {
+    public MizUtility(@NotNull Config config) {
         if (config.getCustomSevenZipPath().isEmpty()) {
             this.sevenZipPath = getenv("ProgramFiles") + "\\7-Zip\\7z.exe";
         } else {
@@ -64,7 +65,7 @@ public class MizUtility {
         }
     }
 
-    private void runProcess(ProcessBuilder pb) throws IOException {
+    private void runProcess(@NotNull ProcessBuilder pb) throws IOException {
         try {
             Process p = pb.start();
             p.waitFor();

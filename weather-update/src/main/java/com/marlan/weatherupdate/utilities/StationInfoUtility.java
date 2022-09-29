@@ -1,5 +1,6 @@
 package com.marlan.weatherupdate.utilities;
 
+import org.jetbrains.annotations.NotNull;
 import us.dustinj.timezonemap.TimeZoneMap;
 
 import java.util.Objects;
@@ -17,6 +18,7 @@ public class StationInfoUtility {
      * @param longitude Longitude for station
      * @return Java ZoneId or UTC if null
      */
+    @NotNull
     public static String getZoneId(double latitude, double longitude) {
         TimeZoneMap map = TimeZoneMap.forRegion(latitude - 1, longitude - 1, latitude + 1, longitude + 1);
         try {
