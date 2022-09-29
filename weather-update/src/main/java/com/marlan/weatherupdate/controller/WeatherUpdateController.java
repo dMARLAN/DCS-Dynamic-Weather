@@ -9,7 +9,6 @@ import com.marlan.weatherupdate.model.metar.AVWXMetar;
 import com.marlan.weatherupdate.model.station.AVWXStation;
 import com.marlan.weatherupdate.service.AVWXClient;
 import com.marlan.weatherupdate.service.MissionEditor;
-import com.marlan.weatherupdate.utilities.DirHandler;
 import com.marlan.weatherupdate.utilities.FileHandler;
 import com.marlan.weatherupdate.utilities.Logger;
 import com.marlan.weatherupdate.utilities.MizUtility;
@@ -17,12 +16,11 @@ import com.marlan.weatherupdate.utilities.MizUtility;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
-public class DCSRealWeatherController {
+public class WeatherUpdateController {
+    private WeatherUpdateController(){
+    }
 
-    public static void main(String[] args) throws IOException, InterruptedException, URISyntaxException {
-        final String WORKING_DIR = DirHandler.getWorkingDir(args);
-        Logger.open(WORKING_DIR);
-        Logger.info("Working Directory: " + WORKING_DIR);
+    public static void run(final String WORKING_DIR) throws IOException, InterruptedException, URISyntaxException {
 
         final Gson gson = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
 

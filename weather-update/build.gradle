@@ -11,7 +11,7 @@ repositories {
 
 jar {
     manifest {
-        attributes "Main-Class": "com.marlan.weatherupdate.controller.DCSRealWeatherController"
+        attributes "Main-Class": "com.marlan.weatherupdate.WeatherUpdate"
     }
 
     from {
