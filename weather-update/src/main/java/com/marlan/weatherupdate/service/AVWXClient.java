@@ -27,7 +27,7 @@ public class AVWXClient {
         this.dir = dir;
     }
 
-    public HttpResponse<String> getMetar(DTO dto) throws URISyntaxException, IOException, InterruptedException, IllegalArgumentException {
+    public HttpResponse<String> getMetar(DTO dto) throws IOException, InterruptedException, IllegalArgumentException {
 
         String avwxKey = getAVWXApiKey();
         if (avwxKey.isEmpty() || dto.getStationLatitude().isEmpty() || dto.getStationLongitude().isEmpty()) {
@@ -35,28 +35,38 @@ public class AVWXClient {
             Log.error(errorMessage);
             throw new IllegalArgumentException(errorMessage);
         } else {
-            HttpRequest getRequest = HttpRequest.newBuilder()
-                    .uri(new URI("https://avwx.rest/api/metar/" + dto.getStationLatitude() + "," + dto.getStationLongitude() + "?onfail=nearest"))
-                    .header("Authorization", avwxKey)
-                    .build();
+            try {
+                HttpRequest getRequest = HttpRequest.newBuilder()
+                        .uri(new URI("https://avwx.rest/api/metar/" + dto.getStationLatitude() + "," + dto.getStationLongitude() + "?onfail=nearest"))
+                        .header("Authorization", avwxKey)
+                        .build();
 
-            return this.httpClient.send(getRequest, HttpResponse.BodyHandlers.ofString());
+                return this.httpClient.send(getRequest, HttpResponse.BodyHandlers.ofString());
+            } catch (URISyntaxException use) {
+                Log.error(use.getMessage());
+            }
+            return null;
         }
     }
 
-    public HttpResponse<String> getStation(AVWXMetar weatherAVWX) throws URISyntaxException, IOException, InterruptedException, IllegalArgumentException {
+    public HttpResponse<String> getStation(AVWXMetar weatherAVWX) throws IOException, InterruptedException, IllegalArgumentException {
         String avwxKey = getAVWXApiKey();
         if (avwxKey.isEmpty() || weatherAVWX.getStation().isEmpty()) {
             String errorMessage = "AVWX API Key and Station are required";
             Log.error(errorMessage);
             throw new IllegalArgumentException(errorMessage);
         } else {
-            HttpRequest getRequest = HttpRequest.newBuilder()
-                    .uri(new URI("https://avwx.rest/api/station/" + weatherAVWX.getStation()))
-                    .header("Authorization", avwxKey)
-                    .build();
+            try {
+                HttpRequest getRequest = HttpRequest.newBuilder()
+                        .uri(new URI("https://avwx.rest/api/station/" + weatherAVWX.getStation()))
+                        .header("Authorization", avwxKey)
+                        .build();
 
-            return this.httpClient.send(getRequest, HttpResponse.BodyHandlers.ofString());
+                return this.httpClient.send(getRequest, HttpResponse.BodyHandlers.ofString());
+            } catch (URISyntaxException use) {
+                Log.error(use.getMessage());
+            }
+            return null;
         }
     }
 
