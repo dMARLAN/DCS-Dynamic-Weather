@@ -23,7 +23,6 @@ public class WeatherUpdateController {
     }
 
     /**
-     *
      * @param WORKING_DIR Received from WeatherOutput.
      * @throws IOException If thrown here, program fails, cannot be handled.
      * @throws InterruptedException Should never be thrown.
