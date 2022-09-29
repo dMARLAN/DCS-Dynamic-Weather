@@ -6,6 +6,10 @@ import java.io.IOException;
 
 import static java.lang.System.getenv;
 
+/**
+ * Handles extracting mission file from DCS *.miz archive file and updating with the new
+ * mission file. Uses 7zip to handle extraction/rearchiving.
+ */
 public class MizUtility {
     private final String sevenZipPath;
 
@@ -17,14 +21,19 @@ public class MizUtility {
         }
     }
 
-    public void extractMission(String dir, String mizName) {
-        Log.info("Extracting: " + dir + mizName);
+    /**
+     * Extracts mission file from .miz using 7zip
+     * @param workingDir Working Directory
+     * @param mizName Name of miz file
+     */
+    public void extractMission(String workingDir, String mizName) {
+        Log.info("Extracting: " + workingDir + mizName);
         ProcessBuilder pb = new ProcessBuilder(
                 this.sevenZipPath,
                 "x",
                 "-tzip",
-                dir + mizName,
-                "-o" + dir,
+                workingDir + mizName,
+                "-o" + workingDir,
                 "mission",
                 "-y"
         );
@@ -37,14 +46,20 @@ public class MizUtility {
 
     }
 
-    public void updateMiz(String dir, String mizName, String missionFile) {
-        Log.info("Updating: " + dir + mizName);
+    /**
+     * Updates .miz with new mission file using 7zip
+     * @param workingDir Working Directory
+     * @param mizName Name of miz file
+     * @param missionFile Name of new mission file
+     */
+    public void updateMiz(String workingDir, String mizName, String missionFile) {
+        Log.info("Updating: " + workingDir + mizName);
         ProcessBuilder pb = new ProcessBuilder(
                 this.sevenZipPath,
                 "a",
                 "-tzip",
-                dir + mizName,
-                dir + missionFile
+                workingDir + mizName,
+                workingDir + missionFile
         );
         try {
             runProcess(pb);
