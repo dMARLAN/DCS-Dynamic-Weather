@@ -6,6 +6,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * Logger for DCS Dynamic Weather, prints to logs folder.
+ */
 public class Log {
     private static final String INFO = "INFO    ";
     private static final String WARNING = "WARNING ";
@@ -16,14 +19,26 @@ public class Log {
     private Log() {
     }
 
+    /**
+     * Prints to log file with "INFO" prefix.
+     * @param message Logger message
+     */
     public static void info(String message) {
         log(INFO, message);
     }
 
+    /**
+     * Prints to log file with "WARNING" prefix.
+     * @param message Logger message
+     */
     public static void warning(String message) {
         log(WARNING, message);
     }
 
+    /**
+     * Prints to log file with "ERROR" prefix.
+     * @param message Logger message
+     */
     public static void error(String message) {
         log(ERROR, message);
     }
@@ -37,6 +52,11 @@ public class Log {
         }
     }
 
+    /**
+     * Opens logger's file writer and writes to logs\\DCSDynamicWeather-Update.log
+     * @param workingDir Working Directory
+     * @throws IOException If log file cannot be opened
+     */
     public static void open(String workingDir) throws IOException {
         String logPath = workingDir + "logs\\DCSDynamicWeather-Update.log";
         try {
@@ -47,8 +67,13 @@ public class Log {
         }
     }
 
+    /**
+     * Closes & flushes logger's file writer.
+     * @throws IOException If log file cannot be closed
+     */
     public static void close() throws IOException {
         try {
+            loggerFw.flush();
             loggerFw.close();
         } catch (IOException ioe) {
             throw new IOException("Error closing logger");
