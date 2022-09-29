@@ -5,7 +5,6 @@ import com.marlan.weatherupdate.utilities.DirHandler;
 import com.marlan.weatherupdate.utilities.Log;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 
 /**
  * Entry Point for the Weather Update module of DCS Dynamic Weather
@@ -14,7 +13,7 @@ import java.net.URISyntaxException;
  * @author Chad Penarsky
  */
 public class WeatherUpdate {
-    public static void main(String[] args) throws IOException, URISyntaxException, InterruptedException {
+    public static void main(String[] args) throws IOException, InterruptedException {
         final String WORKING_DIR = DirHandler.getWorkingDir(args);
         Log.open(WORKING_DIR);
         Log.info("Working Directory: " + WORKING_DIR);
