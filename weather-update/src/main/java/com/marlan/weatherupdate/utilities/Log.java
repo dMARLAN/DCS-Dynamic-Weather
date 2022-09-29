@@ -21,7 +21,6 @@ public class Log {
 
     /**
      * Prints to log file with "INFO" prefix.
-     * @param message Logger message
      */
     public static void info(String message) {
         log(INFO, message);
@@ -29,7 +28,6 @@ public class Log {
 
     /**
      * Prints to log file with "WARNING" prefix.
-     * @param message Logger message
      */
     public static void warning(String message) {
         log(WARNING, message);
@@ -37,7 +35,6 @@ public class Log {
 
     /**
      * Prints to log file with "ERROR" prefix.
-     * @param message Logger message
      */
     public static void error(String message) {
         log(ERROR, message);
@@ -54,13 +51,12 @@ public class Log {
 
     /**
      * Opens logger's file writer and writes to logs\\DCSDynamicWeather-Update.log
-     * @param workingDir Working Directory
      * @throws IOException If log file cannot be opened
      */
-    public static void open(String workingDir) throws IOException {
-        String logPath = workingDir + "logs\\DCSDynamicWeather-Update.log";
+    public static void open(String dir) throws IOException {
+        String logPath = dir + "logs\\DCSDynamicWeather-Update.log";
         try {
-            Files.createDirectories(Path.of(workingDir + "logs"));
+            Files.createDirectories(Path.of(dir + "logs"));
             loggerFw = new FileWriter(logPath, true);
         } catch (IOException ioe) {
             throw new IOException("Error opening log file");
