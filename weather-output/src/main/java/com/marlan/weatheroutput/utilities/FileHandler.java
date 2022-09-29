@@ -13,7 +13,7 @@ public class FileHandler {
         try {
             return Files.readString(dataFilePath);
         } catch (IOException ioe) {
-            Logger.error("Error reading file: " + fileName);
+            Log.error("Error reading file: " + fileName);
             throw ioe;
         }
     }

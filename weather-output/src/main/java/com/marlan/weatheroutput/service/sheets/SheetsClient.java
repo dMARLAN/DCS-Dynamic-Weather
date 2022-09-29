@@ -12,7 +12,7 @@ import com.google.api.services.sheets.v4.model.ValueRange;
 import com.google.auth.http.HttpCredentialsAdapter;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.auth.oauth2.ServiceAccountCredentials;
-import com.marlan.weatheroutput.utilities.Logger;
+import com.marlan.weatheroutput.utilities.Log;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -35,12 +35,12 @@ public class SheetsClient {
             throws IOException, GeneralSecurityException {
 
         if (!Files.exists(Paths.get(workingDir + CREDENTIALS_FILE_NAME))) {
-            Logger.error("Credentials file not found: " + workingDir + CREDENTIALS_FILE_NAME);
+            Log.error("Credentials file not found: " + workingDir + CREDENTIALS_FILE_NAME);
             return; // Guard
         }
 
         if (spreadsheetId.isEmpty() || spreadsheetRange.isEmpty()){
-            Logger.error("Spreadsheet Range or ID is empty.");
+            Log.error("Spreadsheet Range or ID is empty.");
             return; // Guard
         }
 
@@ -66,7 +66,7 @@ public class SheetsClient {
         } catch (GoogleJsonResponseException e) {
             response = e.toString();
         }
-        Logger.info("Sheets Update Response: " + response);
+        Log.info("Sheets Update Response: " + response);
     }
 
 }

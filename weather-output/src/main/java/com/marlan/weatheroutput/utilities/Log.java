@@ -1,4 +1,4 @@
-package com.marlan.weatherupdate.utilities;
+package com.marlan.weatheroutput.utilities;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -6,14 +6,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.format.DateTimeFormatter;
 
-public class Logger {
+public class Log {
     private static final String INFO = "INFO    ";
     private static final String WARNING = "WARNING ";
     private static final String ERROR = "ERROR   ";
     private static final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
     private static FileWriter loggerFw;
 
-    private Logger() {
+    private Log() {
     }
 
     public static void info(String message) {
@@ -38,12 +38,12 @@ public class Logger {
     }
 
     public static void open(String workingDir) throws IOException {
-        String logPath = workingDir + "logs\\DCSDynamicWeather-Update.log";
+        String logPath = workingDir + "logs\\DCSDynamicWeather-Output.log";
         try {
             Files.createDirectories(Path.of(workingDir + "logs"));
             loggerFw = new FileWriter(logPath, true);
         } catch (IOException ioe) {
-            throw new IOException("Error opening log file");
+                throw new IOException("Error opening log file");
         }
     }
 

@@ -7,7 +7,7 @@ import com.marlan.weatherupdate.model.dto.DTO;
 import com.marlan.weatherupdate.model.metar.AVWXMetar;
 import com.marlan.weatherupdate.model.secrets.AVWX;
 import com.marlan.weatherupdate.utilities.FileHandler;
-import com.marlan.weatherupdate.utilities.Logger;
+import com.marlan.weatherupdate.utilities.Log;
 
 import java.io.IOException;
 import java.net.URI;
@@ -29,7 +29,7 @@ public class AVWXClient {
         String avwxKey = getAVWXApiKey();
         if (avwxKey.isEmpty() || dto.getStationLatitude().isEmpty() || dto.getStationLongitude().isEmpty()) {
             String errorMessage = "AVWX API Key, Station Latitude and Station Longitude are required";
-            Logger.error(errorMessage);
+            Log.error(errorMessage);
             throw new IllegalArgumentException(errorMessage);
         } else {
             HttpRequest getRequest = HttpRequest.newBuilder()
@@ -45,7 +45,7 @@ public class AVWXClient {
         String avwxKey = getAVWXApiKey();
         if (avwxKey.isEmpty() || weatherAVWX.getStation().isEmpty()) {
             String errorMessage = "AVWX API Key and Station are required";
-            Logger.error(errorMessage);
+            Log.error(errorMessage);
             throw new IllegalArgumentException(errorMessage);
         } else {
             HttpRequest getRequest = HttpRequest.newBuilder()

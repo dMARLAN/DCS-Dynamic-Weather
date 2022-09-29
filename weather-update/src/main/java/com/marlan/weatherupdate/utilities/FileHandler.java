@@ -20,7 +20,7 @@ public class FileHandler {
         try {
             return Files.readString(filePath);
         } catch (IOException e) {
-            Logger.error(Arrays.toString(e.getStackTrace()));
+            Log.error(Arrays.toString(e.getStackTrace()));
             System.exit(1); // Program can't continue without the file, Lua Script can read error code.
         }
         return ""; // Unreachable
@@ -31,7 +31,7 @@ public class FileHandler {
         try (FileWriter fileWriter = new FileWriter(file, false)) {
             fileWriter.write(newContent);
         } catch (IOException e) {
-            Logger.error(Arrays.toString(e.getStackTrace()));
+            Log.error(Arrays.toString(e.getStackTrace()));
             System.exit(1); // Program is useless without writing to file, Lua Script can read error code.
         }
     }
@@ -44,17 +44,9 @@ public class FileHandler {
                     .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
                     .create();
             gson.toJson(jsonObject, fileWriter);
-            Logger.info("Wrote JSON to " + fileName);
+            Log.info("Wrote JSON to " + fileName);
         } catch (IOException e) {
-            Logger.error(Arrays.toString(e.getStackTrace()));
-        }
-    }
-
-    public static void appendFile(String dir, String fileName, String content) {
-        try (FileWriter fw = new FileWriter(dir + fileName, true)) {
-            fw.write(content);
-        } catch (IOException e) {
-            Logger.error(Arrays.toString(e.getStackTrace()));
+            Log.error(Arrays.toString(e.getStackTrace()));
         }
     }
 
@@ -63,7 +55,7 @@ public class FileHandler {
         try {
             Files.delete(filePath);
         } catch (IOException e) {
-            Logger.error(Arrays.toString(e.getStackTrace()));
+            Log.error(Arrays.toString(e.getStackTrace()));
         }
     }
 

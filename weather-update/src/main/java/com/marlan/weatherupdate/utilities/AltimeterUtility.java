@@ -14,9 +14,9 @@ public class AltimeterUtility {
         double stationElevFeet = station.getElevationFt();
         double stationLatitude = station.getLatitude();
         double pressureAltitude = getPressureAltitude(stationQnhInHg) + stationElevFeet;
-        Logger.info("Pressure Altitude: " + pressureAltitude + " ft");
+        Log.info("Pressure Altitude: " + pressureAltitude + " ft");
         double stationQfeInHg = getQfe(pressureAltitude);
-        Logger.info("Station QFE: " + stationQfeInHg + " inHg");
+        Log.info("Station QFE: " + stationQfeInHg + " inHg");
         return getQff(stationQfeInHg, stationTempC, stationLatitude, stationElevFeet + 50);
     }
 

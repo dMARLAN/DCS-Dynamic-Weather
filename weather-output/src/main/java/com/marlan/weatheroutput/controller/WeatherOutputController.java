@@ -8,7 +8,7 @@ import com.marlan.weatheroutput.model.DTO;
 import com.marlan.weatheroutput.service.discord.DiscordClient;
 import com.marlan.weatheroutput.service.sheets.SheetsClient;
 import com.marlan.weatheroutput.utilities.FileHandler;
-import com.marlan.weatheroutput.utilities.Logger;
+import com.marlan.weatheroutput.utilities.Log;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -45,12 +45,12 @@ public class WeatherOutputController {
         if (config.isOutputToDiscord()) {
             DiscordClient.post(WORKING_DIR, jsonInput);
         } else {
-            Logger.info("Discord Webhook output is disabled, skipping...");
+            Log.info("Discord Webhook output is disabled, skipping...");
         }
         if (config.isOutputToSheets()) {
             SheetsClient.setSheetValue(config.getSpreadsheetId(), config.getSpreadsheetRange(), dto.getMetar(), WORKING_DIR);
         } else {
-            Logger.info("Google Sheets output is disabled, skipping...");
+            Log.info("Google Sheets output is disabled, skipping...");
         }
     }
 }

@@ -10,7 +10,7 @@ import com.marlan.weatherupdate.model.station.AVWXStation;
 import com.marlan.weatherupdate.service.AVWXClient;
 import com.marlan.weatherupdate.service.MissionEditor;
 import com.marlan.weatherupdate.utilities.FileHandler;
-import com.marlan.weatherupdate.utilities.Logger;
+import com.marlan.weatherupdate.utilities.Log;
 import com.marlan.weatherupdate.utilities.MizUtility;
 
 import java.io.IOException;
@@ -55,7 +55,7 @@ public class WeatherUpdateController {
 
         FileHandler.deleteFile(WORKING_DIR, MISSION_FILE);
 
-        Logger.close();
+        Log.close();
     }
 
 }

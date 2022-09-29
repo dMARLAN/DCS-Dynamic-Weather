@@ -18,7 +18,7 @@ public class MizUtility {
     }
 
     public void extractMission(String dir, String mizName) {
-        Logger.info("Extracting: " + dir + mizName);
+        Log.info("Extracting: " + dir + mizName);
         ProcessBuilder pb = new ProcessBuilder(
                 this.sevenZipPath,
                 "x",
@@ -31,14 +31,14 @@ public class MizUtility {
         try {
             runProcess(pb);
         } catch (IOException e) {
-            Logger.error("Error extracting .miz: " + e.getMessage());
+            Log.error("Error extracting .miz: " + e.getMessage());
             System.exit(1);
         }
 
     }
 
     public void updateMiz(String dir, String mizName, String missionFile) {
-        Logger.info("Updating: " + dir + mizName);
+        Log.info("Updating: " + dir + mizName);
         ProcessBuilder pb = new ProcessBuilder(
                 this.sevenZipPath,
                 "a",
@@ -49,7 +49,7 @@ public class MizUtility {
         try {
             runProcess(pb);
         } catch (IOException e) {
-            Logger.error("Error updating .miz: " + e.getMessage());
+            Log.error("Error updating .miz: " + e.getMessage());
             System.exit(1);
         }
     }
@@ -61,7 +61,7 @@ public class MizUtility {
         } catch (IOException ioe) {
             throw new IOException(ioe);
         } catch (InterruptedException ie) {
-            Logger.error("Error running process: " + ie.getMessage());
+            Log.error("Error running process: " + ie.getMessage());
             Thread.currentThread().interrupt();
             System.exit(1);
         }

@@ -5,7 +5,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.marlan.weatheroutput.model.DiscordWebhookAPI;
 import com.marlan.weatheroutput.utilities.FileHandler;
-import com.marlan.weatheroutput.utilities.Logger;
+import com.marlan.weatheroutput.utilities.Log;
 
 import java.io.IOException;
 import java.net.URI;
@@ -29,14 +29,14 @@ public class DiscordClient {
         String discordKey = discordApiKey.getDiscordApiKey();
 
         if (discordKey.isEmpty()) {
-            Logger.warning("Discord API key is empty");
+            Log.warning("Discord API key is empty");
         } else {
             HttpRequest postRequest = HttpRequest.newBuilder()
                     .uri(new URI(discordKey))
                     .header("Content-Type", "application/json")
                     .POST(HttpRequest.BodyPublishers.ofString(message))
                     .build();
-            Logger.info("Discord API Reponse: " + httpClient.send(postRequest, HttpResponse.BodyHandlers.ofString()).toString());
+            Log.info("Discord API Reponse: " + httpClient.send(postRequest, HttpResponse.BodyHandlers.ofString()).toString());
         }
     }
 
