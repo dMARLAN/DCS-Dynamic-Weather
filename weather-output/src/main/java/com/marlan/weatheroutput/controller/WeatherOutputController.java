@@ -14,8 +14,8 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.security.GeneralSecurityException;
 
-public class DiscordWebHookService {
-    private DiscordWebHookService() {
+public class WeatherOutputController {
+    private WeatherOutputController() {
     }
 
     public static void run(final String WORKING_DIR) throws IOException, URISyntaxException, InterruptedException, GeneralSecurityException {
