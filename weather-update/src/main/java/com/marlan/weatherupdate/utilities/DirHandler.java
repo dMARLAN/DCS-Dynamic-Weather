@@ -1,5 +1,7 @@
 package com.marlan.weatherupdate.utilities;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -14,8 +16,9 @@ public class DirHandler {
     private DirHandler() {
     }
 
+    @NotNull
     public static String getWorkingDir(String[] args) throws IOException {
-        if (args.length != 0 && Files.exists(Path.of(args[0]))) {
+        if (args != null && args.length != 0 && Files.exists(Path.of(args[0]))) {
             System.setProperty("user.dir", args[0]);
         }
         String workingDir = getProperty("user.dir") + "\\";
