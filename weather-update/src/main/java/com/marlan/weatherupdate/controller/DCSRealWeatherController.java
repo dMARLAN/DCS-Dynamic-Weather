@@ -17,8 +17,19 @@ import com.marlan.weatherupdate.utilities.MizUtility;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
+/**
+ * Reads config and data files, gets METAR and Station data from AVXW API, extracts mission file from .miz, writes to mission file then zips back to .miz
+ * @author Chad Penarsky
+ */
 public class DCSRealWeatherController {
 
+    /**
+     * Entry Point
+     * @param args Should contain the path to the working directory, received from weather-scripts/utilities/JAR.lua
+     * @throws IOException If API call fails or file cannot be read/written (unrecoverable)
+     * @throws InterruptedException Should not be thrown
+     * @throws URISyntaxException Thrown if the METAR Latitude/Longitude or Station ICAO is invalid
+     */
     public static void main(String[] args) throws IOException, InterruptedException, URISyntaxException {
         final String WORKING_DIR = DirHandler.getWorkingDir(args);
         Logger.open(WORKING_DIR);
