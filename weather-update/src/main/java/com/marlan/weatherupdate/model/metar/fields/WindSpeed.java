@@ -4,6 +4,9 @@ import lombok.Data;
 
 import java.util.Optional;
 
+/**
+ * GSON Deserialization Class
+ */
 @Data
 public class WindSpeed {
     private Double value;

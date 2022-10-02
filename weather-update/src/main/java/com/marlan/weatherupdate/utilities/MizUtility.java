@@ -1,15 +1,20 @@
 package com.marlan.weatherupdate.utilities;
 
 import com.marlan.weatherupdate.model.config.Config;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 
 import static java.lang.System.getenv;
 
+/**
+ * Handles extracting mission file from DCS *.miz archive file and updating with the new
+ * mission file. Uses 7zip to handle extraction/rearchiving.
+ */
 public class MizUtility {
     private final String sevenZipPath;
 
-    public MizUtility(Config config) {
+    public MizUtility(@NotNull Config config) {
         if (config.getCustomSevenZipPath().isEmpty()) {
             this.sevenZipPath = getenv("ProgramFiles") + "\\7-Zip\\7z.exe";
         } else {
@@ -17,8 +22,11 @@ public class MizUtility {
         }
     }
 
-    public void extractMission(String dir, String mizName) {
-        Logger.info("Extracting: " + dir + mizName);
+    /**
+     * Extracts mission file from .miz using 7zip
+     */
+    public void extractMission(String dir, String mizName) throws IOException {
+        Log.info("Extracting: " + dir + mizName);
         ProcessBuilder pb = new ProcessBuilder(
                 this.sevenZipPath,
                 "x",
@@ -30,15 +38,18 @@ public class MizUtility {
         );
         try {
             runProcess(pb);
-        } catch (IOException e) {
-            Logger.error("Error extracting .miz: " + e.getMessage());
-            System.exit(1);
+        } catch (IOException ioe) {
+            Log.error("Error extracting .miz: " + ioe.getMessage());
+            throw new IOException("Error: " + ioe.getMessage(), ioe);
         }
 
     }
 
-    public void updateMiz(String dir, String mizName, String missionFile) {
-        Logger.info("Updating: " + dir + mizName);
+    /**
+     * Updates .miz with new mission file using 7zip
+     */
+    public void updateMiz(String dir, String mizName, String missionFile) throws IOException {
+        Log.info("Updating: " + dir + mizName);
         ProcessBuilder pb = new ProcessBuilder(
                 this.sevenZipPath,
                 "a",
@@ -48,22 +59,22 @@ public class MizUtility {
         );
         try {
             runProcess(pb);
-        } catch (IOException e) {
-            Logger.error("Error updating .miz: " + e.getMessage());
-            System.exit(1);
+        } catch (IOException ioe) {
+            Log.error("Error updating .miz: " + ioe.getMessage());
+            throw new IOException("Error: " + ioe.getMessage(), ioe);
         }
     }
 
-    private void runProcess(ProcessBuilder pb) throws IOException {
+    private void runProcess(@NotNull ProcessBuilder pb) throws IOException {
         try {
             Process p = pb.start();
             p.waitFor();
         } catch (IOException ioe) {
-            throw new IOException(ioe);
+            Log.error("Error running process: " + ioe.getMessage());
+            throw new IOException("Error: " + ioe.getMessage(), ioe);
         } catch (InterruptedException ie) {
-            Logger.error("Error running process: " + ie.getMessage());
+            Log.error("Error running process: " + ie.getMessage());
             Thread.currentThread().interrupt();
-            System.exit(1);
         }
     }
 }

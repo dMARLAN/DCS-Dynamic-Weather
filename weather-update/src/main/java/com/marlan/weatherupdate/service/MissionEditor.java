@@ -8,7 +8,7 @@ import com.marlan.weatherupdate.model.metar.fields.WindDirection;
 import com.marlan.weatherupdate.model.metar.fields.WindSpeed;
 import com.marlan.weatherupdate.model.station.AVWXStation;
 import com.marlan.weatherupdate.utilities.AltimeterUtility;
-import com.marlan.weatherupdate.utilities.Logger;
+import com.marlan.weatherupdate.utilities.Log;
 import com.marlan.weatherupdate.utilities.StationInfoUtility;
 import org.jetbrains.annotations.NotNull;
 
@@ -16,6 +16,9 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Random;
 
+/**
+ * Handles replacing strings inside the mission file
+ */
 public class MissionEditor {
     private static final double KNOTS_TO_METERS = 0.51444444444;
     private static final double INHG_TO_MMHG = 25.4;
@@ -44,7 +47,7 @@ public class MissionEditor {
         double stationQnh = setStationQnh();
         String metar = setMetar();
 
-        ZonedDateTime zonedDateTime = ZonedDateTime.now(ZoneId.of(StationInfoUtility.getZoneId(stationAVWX.getCountry(), stationAVWX.getLatitude(), stationAVWX.getLongitude())));
+        ZonedDateTime zonedDateTime = ZonedDateTime.now(ZoneId.of(StationInfoUtility.getZoneId(stationAVWX.getLatitude(), stationAVWX.getLongitude())));
         int day = setDay(zonedDateTime);
         int month = setMonth(zonedDateTime);
         int hour = setHour(zonedDateTime);
@@ -70,43 +73,45 @@ public class MissionEditor {
         mission = replaceDay(mission, day);
         mission = replaceMonth(mission, month);
         mission = replaceTemperature(mission, stationTempC);
-        mission = replaceQnh(mission, qffMmHg);
+        mission = replaceQnh(mission, qffMmHg, stationQnh);
 
         return mission;
     }
 
     @NotNull
-    private String replaceQnh(String mission, double qffMmHg) {
+    private String replaceQnh(String mission, double qffMmHg, double qnhInHg) {
         mission = mission.replaceAll("(\\[\"qnh\"].*)\n", "[\"qnh\"] = \\$qnh,\n".replace("$qnh", Double.toString(qffMmHg))); // DCS actually uses QFF not QNH!
-        Logger.info("QFF set to: " + qffMmHg + " mmHg (" + qffMmHg / INHG_TO_MMHG + " inHg)");
+        double qnhMmHg = qnhInHg * INHG_TO_MMHG;
+        Log.info("QNH set to: " + qnhInHg + " inHg (" + qnhMmHg + " mmHg)");
+        Log.info("QFF set to: " + qffMmHg / INHG_TO_MMHG + " inHg (" + qffMmHg + " mmHg)");
         return mission;
     }
 
     @NotNull
     private String replaceTemperature(String mission, double stationTempC) {
         mission = mission.replaceAll("(\\[\"temperature\"].*)\n", "[\"temperature\"] = \\$stationTempC,\n".replace("$stationTempC", Double.toString(stationTempC)));
-        Logger.info("Station Temperature set to: " + stationTempC + " C" + " / Sea Level Temperature set to: " + Math.round(stationTempC + TEMP_LAPSE_RATE_C * (stationAVWX.getElevationFt() / 1000)) + " C");
+        Log.info("Station Temperature set to: " + stationTempC + " C" + " / Sea Level Temperature set to: " + Math.round(stationTempC + TEMP_LAPSE_RATE_C * (stationAVWX.getElevationFt() / 1000)) + " C");
         return mission;
     }
 
     @NotNull
     private String replaceMonth(String mission, int month) {
         mission = mission.replaceAll("(\\[\"Month\"].*)\n", "[\"Month\"] = \\$month,\n".replace("$month", Integer.toString(month)));
-        Logger.info("Month set to: " + month);
+        Log.info("Month set to: " + month);
         return mission;
     }
 
     @NotNull
     private String replaceDay(String mission, int day) {
         mission = mission.replaceAll("(\\[\"Day\"].*)\n", "[\"Day\"] = \\$day,\n".replace("$day", Integer.toString(day)));
-        Logger.info("Day set to: " + day);
+        Log.info("Day set to: " + day);
         return mission;
     }
 
     @NotNull
     private String replaceHour(String mission, int hour) {
         mission = mission.replaceAll("(?<=\\[\"currentKey\"]\\s{1,5}=\\s{1,5}.{1,100}\n)(.*)", "    [\"start_time\"] = $startTime,".replace("$startTime", Integer.toString(hour * 3600)));
-        Logger.info("Start Time set to: " + hour * 3600 + "s (" + hour + "h)");
+        Log.info("Start Time set to: " + hour * 3600 + "s (" + hour + "h)");
         return mission;
     }
 
@@ -116,7 +121,7 @@ public class MissionEditor {
                 "[\"atGround\"] =\n            {\n                [\"speed\"] = $windGroundSpeed,\n                [\"dir\"] = $windGroundDir,\n            "
                         .replace("$windGroundSpeed", Double.toString(windSpeedGround))
                         .replace("$windGroundDir", Double.toString(windDirectionGround)));
-        Logger.info("Wind at Ground set to: " + Math.round(windSpeedGround) + " m/s (" + Math.round(windSpeedGround / KNOTS_TO_METERS) + " kts) " + Math.floor(invertWindDirection(windDirectionGround)) + "°");
+        Log.info("Wind at Ground set to: " + Math.round(windSpeedGround) + " m/s (" + Math.round(windSpeedGround / KNOTS_TO_METERS) + " kts) " + Math.floor(invertWindDirection(windDirectionGround)) + "°");
         return mission;
     }
 
@@ -126,7 +131,7 @@ public class MissionEditor {
                 "[\"at2000\"] =\n            {\n                [\"speed\"] = $wind2000Speed,\n                [\"dir\"] = $wind2000Dir,\n            "
                         .replace("$wind2000Speed", Double.toString(windSpeed2000))
                         .replace("$wind2000Dir", Double.toString(windDirection2000)));
-        Logger.info("Wind at 2000 set to: " + Math.round(windSpeed2000) + " m/s (" + Math.round(windSpeed2000 / KNOTS_TO_METERS) + " kts) " + Math.floor(invertWindDirection(windDirection2000)) + "°");
+        Log.info("Wind at 2000 set to: " + Math.round(windSpeed2000) + " m/s (" + Math.round(windSpeed2000 / KNOTS_TO_METERS) + " kts) " + Math.floor(invertWindDirection(windDirection2000)) + "°");
         return mission;
     }
 
@@ -136,7 +141,7 @@ public class MissionEditor {
                 "[\"at8000\"] =\n            {\n                [\"speed\"] = $wind8000Speed,\n                [\"dir\"] = $wind8000Dir,\n            "
                         .replace("$wind8000Speed", Double.toString(windSpeed8000))
                         .replace("$wind8000Dir", Double.toString(windDirection8000)));
-        Logger.info("Wind at 8000 set to: " + Math.round(windSpeed8000) + " m/s (" + Math.round(windSpeed8000 / KNOTS_TO_METERS) + " kts) " + Math.floor(invertWindDirection(windDirection8000)) + "°");
+        Log.info("Wind at 8000 set to: " + Math.round(windSpeed8000) + " m/s (" + Math.round(windSpeed8000 / KNOTS_TO_METERS) + " kts) " + Math.floor(invertWindDirection(windDirection8000)) + "°");
         return mission;
     }
 
@@ -152,7 +157,7 @@ public class MissionEditor {
                     "[\"preset\"] = \"\\$cloudsPreset\",\n"
                             .replace("$cloudsPreset", cloudsPreset));
         }
-        Logger.info("Clouds Preset: " + cloudsPreset);
+        Log.info("Clouds Preset: " + cloudsPreset);
         return mission;
     }
 
@@ -199,14 +204,14 @@ public class MissionEditor {
     private String setMetar() {
         String dtoWeatherType = dto.getWeatherType();
         if (dtoWeatherType.contains("clear")) {
-            Logger.info("METAR set clear");
+            Log.info("METAR set clear");
             return "";
         } else {
             if (metarAVWX.getMeta().getWarning() != null) {
-                Logger.warning(metarAVWX.getMeta().getWarning());
+                Log.warning(metarAVWX.getMeta().getWarning());
             }
             String metar = metarAVWX.getSanitized();
-            Logger.info("METAR: " + metar);
+            Log.info("METAR: " + metar);
             return metar;
         }
     }

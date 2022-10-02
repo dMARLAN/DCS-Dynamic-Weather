@@ -1,17 +1,24 @@
-package com.marlan.weatherupdate.utilities;
+package com.marlan.weatheroutput.utilities;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.format.DateTimeFormatter;
 
-public class Logger {
+/**
+ * Logger for DCS Dynamic Weather, prints to logs folder.
+ */
+public class Log {
     private static final String INFO = "INFO    ";
     private static final String WARNING = "WARNING ";
     private static final String ERROR = "ERROR   ";
     private static final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
     private static FileWriter loggerFw;
 
-    private Logger() {
+    private Log() {
     }
 
     public static void info(String message) {
@@ -35,22 +42,31 @@ public class Logger {
         }
     }
 
-    public static void open(String workingDir) throws IOException {
+    /**
+     * Opens logger's file writer and writes to logs\\DCSDynamicWeather-Update.log
+     */
+    public static void open(String dir) throws IOException {
+        String logPath = dir + "logs\\DCSDynamicWeather-Output.log";
         try {
-            loggerFw = new FileWriter(workingDir + "logs\\DCSDynamicWeather-Output.log", true);
+            Files.createDirectories(Path.of(dir + "logs"));
+            loggerFw = new FileWriter(logPath, true);
         } catch (IOException ioe) {
             throw new IOException("Error opening log file");
         }
     }
 
+    /**
+     * Closes & flushes logger's file writer.
+     */
     public static void close() throws IOException {
         try {
             loggerFw.close();
         } catch (IOException ioe) {
-            throw new IOException("Error closing logger");
+            throw new IOException("Error: " + ioe.getMessage(), ioe);
         }
     }
 
+    @NotNull
     private static String getDateTime() {
         return dtf.format(java.time.LocalDateTime.now());
     }

@@ -1,7 +1,6 @@
 package com.marlan.weatheroutput.service.sheets;
 
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
@@ -12,7 +11,7 @@ import com.google.api.services.sheets.v4.model.ValueRange;
 import com.google.auth.http.HttpCredentialsAdapter;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.auth.oauth2.ServiceAccountCredentials;
-import com.marlan.weatheroutput.utilities.Logger;
+import com.marlan.weatheroutput.utilities.Log;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -22,6 +21,9 @@ import java.security.GeneralSecurityException;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Handles posting METAR data to Google Sheets cell
+ */
 public class SheetsClient {
     private static final String APPLICATION_NAME = "DCS-Dynamic-Weather";
     private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
@@ -32,36 +34,49 @@ public class SheetsClient {
     }
 
     public static void setSheetValue(final String spreadsheetId, final String spreadsheetRange, final String value, final String workingDir)
-            throws IOException, GeneralSecurityException {
+            throws IOException {
 
         if (!Files.exists(Paths.get(workingDir + CREDENTIALS_FILE_NAME))) {
-            Logger.error("Credentials file not found: " + workingDir + CREDENTIALS_FILE_NAME);
-            return; // Guard Return
+            Log.error("Credentials file not found: " + workingDir + CREDENTIALS_FILE_NAME);
+            return; // Guard
         }
 
-        final NetHttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+        if (spreadsheetId.isEmpty() || spreadsheetRange.isEmpty()){
+            Log.error("Spreadsheet Range or ID is empty.");
+            return; // Guard
+        }
 
-        final GoogleCredentials googleCredentials = ServiceAccountCredentials
-                .fromStream(new FileInputStream(workingDir + CREDENTIALS_FILE_NAME))
-                .createScoped(SCOPES);
-        HttpRequestInitializer requestInitializer = new HttpCredentialsAdapter(googleCredentials);
+        try {
+            final NetHttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
 
-        Sheets service = new Sheets.Builder(httpTransport, JSON_FACTORY, requestInitializer)
-                .setApplicationName(APPLICATION_NAME)
-                .build();
+            final GoogleCredentials googleCredentials = ServiceAccountCredentials
+                    .fromStream(new FileInputStream(workingDir + CREDENTIALS_FILE_NAME))
+                    .createScoped(SCOPES);
+            HttpRequestInitializer requestInitializer = new HttpCredentialsAdapter(googleCredentials);
 
-        ValueRange requestBody = new ValueRange();
-        requestBody.setValues(List.of(List.of(value)));
-        Sheets.Spreadsheets.Values.Update request = service.spreadsheets().values().update(spreadsheetId, spreadsheetRange, requestBody);
-        request.setValueInputOption("RAW");
+            Sheets service = new Sheets.Builder(httpTransport, JSON_FACTORY, requestInitializer)
+                    .setApplicationName(APPLICATION_NAME)
+                    .build();
 
+            ValueRange requestBody = new ValueRange();
+            requestBody.setValues(List.of(List.of(value)));
+            Sheets.Spreadsheets.Values.Update request = service.spreadsheets().values().update(spreadsheetId, spreadsheetRange, requestBody);
+            request.setValueInputOption("RAW");
+
+            executeRequest(request);
+        } catch (GeneralSecurityException gse) {
+            Log.error(gse.getMessage());
+        }
+    }
+
+    private static void executeRequest(Sheets.Spreadsheets.Values.Update request){
         String response;
         try {
             response = request.execute().toString();
-        } catch (GoogleJsonResponseException e) {
-            response = e.toString();
+        } catch (IOException ioe) {
+            response = ioe.toString();
         }
-        Logger.info("Sheets Update Response: " + response);
+        Log.info("Sheets Update Response: " + response);
     }
 
 }

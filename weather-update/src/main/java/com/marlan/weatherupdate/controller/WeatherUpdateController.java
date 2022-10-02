@@ -9,31 +9,25 @@ import com.marlan.weatherupdate.model.metar.AVWXMetar;
 import com.marlan.weatherupdate.model.station.AVWXStation;
 import com.marlan.weatherupdate.service.AVWXClient;
 import com.marlan.weatherupdate.service.MissionEditor;
-import com.marlan.weatherupdate.utilities.DirHandler;
 import com.marlan.weatherupdate.utilities.FileHandler;
-import com.marlan.weatherupdate.utilities.Logger;
+import com.marlan.weatherupdate.utilities.Log;
 import com.marlan.weatherupdate.utilities.MizUtility;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 
 /**
- * Reads config and data files, gets METAR and Station data from AVXW API, extracts mission file from .miz, writes to mission file then zips back to .miz
- * @author Chad Penarsky
+ * Controller for Weather Update module
  */
-public class DCSRealWeatherController {
+public class WeatherUpdateController {
+    private WeatherUpdateController(){
+    }
 
     /**
-     * Entry Point
-     * @param args Should contain the path to the working directory, received from weather-scripts/utilities/JAR.lua
-     * @throws IOException If API call fails or file cannot be read/written (unrecoverable)
-     * @throws InterruptedException Should not be thrown
-     * @throws URISyntaxException Thrown if the METAR Latitude/Longitude or Station ICAO is invalid
+     * @param WORKING_DIR Received from WeatherOutput.
+     * @throws IOException If thrown here, program fails, cannot be handled.
+     * @throws InterruptedException Should never be thrown.
      */
-    public static void main(String[] args) throws IOException, InterruptedException, URISyntaxException {
-        final String WORKING_DIR = DirHandler.getWorkingDir(args);
-        Logger.open(WORKING_DIR);
-        Logger.info("Working Directory: " + WORKING_DIR);
+    public static void run(final String WORKING_DIR) throws IOException, InterruptedException {
 
         final Gson gson = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
 
@@ -68,7 +62,7 @@ public class DCSRealWeatherController {
 
         FileHandler.deleteFile(WORKING_DIR, MISSION_FILE);
 
-        Logger.close();
+        Log.close();
     }
 
 }

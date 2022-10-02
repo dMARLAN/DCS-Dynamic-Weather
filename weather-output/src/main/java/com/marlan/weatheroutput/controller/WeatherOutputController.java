@@ -7,19 +7,24 @@ import com.marlan.weatheroutput.model.Config;
 import com.marlan.weatheroutput.model.DTO;
 import com.marlan.weatheroutput.service.discord.DiscordClient;
 import com.marlan.weatheroutput.service.sheets.SheetsClient;
-import com.marlan.weatheroutput.utilities.DirHandler;
 import com.marlan.weatheroutput.utilities.FileHandler;
-import com.marlan.weatheroutput.utilities.Logger;
+import com.marlan.weatheroutput.utilities.Log;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.security.GeneralSecurityException;
 
-public class DiscordWebHookService {
-    public static void main(String[] args) throws IOException, URISyntaxException, InterruptedException, GeneralSecurityException {
-        final String WORKING_DIR = DirHandler.getWorkingDir(args);
-        Logger.open(WORKING_DIR);
-        Logger.info("Working Directory: " + WORKING_DIR);
+/**
+ * Controller for Weather Output module
+ */
+public class WeatherOutputController {
+    private WeatherOutputController() {
+    }
+
+    /**
+     * @param WORKING_DIR Received from WeatherOutput.
+     * @throws IOException If thrown here, program fails, cannot be handled.
+     * @throws InterruptedException Should never be thrown.
+     */
+    public static void run(final String WORKING_DIR) throws IOException, InterruptedException {
 
         Gson gson = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
 
@@ -46,13 +51,12 @@ public class DiscordWebHookService {
         if (config.isOutputToDiscord()) {
             DiscordClient.post(WORKING_DIR, jsonInput);
         } else {
-            Logger.info("Discord Webhook output is disabled, skipping...");
+            Log.info("Discord Webhook output is disabled, skipping...");
         }
         if (config.isOutputToSheets()) {
             SheetsClient.setSheetValue(config.getSpreadsheetId(), config.getSpreadsheetRange(), dto.getMetar(), WORKING_DIR);
         } else {
-            Logger.info("Google Sheets output is disabled, skipping...");
+            Log.info("Google Sheets output is disabled, skipping...");
         }
-        Logger.close();
     }
 }
