@@ -1,5 +1,7 @@
 ![](images/DCSDynamicWeatherLogo.png)
 
+**_WORK IN PROGRESS - NOT READY FOR PUBLIC RELEASE YET..._**
+
 Automated DCS Mission Weather editor to set DCS mission to match real world environment conditions (temperarture, clouds, visibility, time, pressure, wind) based on the METAR data obtained from the AVWX API.
 
 Optionally outputs METAR to Discord Webhook or Google Sheets Cell for KBC's (Kneeboard Card) stored on a Google Drive to aid in mission planning or KBC creation.
@@ -13,9 +15,9 @@ Optionally outputs METAR to Discord Webhook or Google Sheets Cell for KBC's (Kne
 - Automatically desanitizes `\Program Files\Eagle Dynamics\DCS World OpenBeta\Scripts\MissionScripting.lua`
   - Be aware of running other untrusted DCS scripts when `MissionScripting.lua` is desanitized.
 
-I'm a new programmer, if you notice any bugs or have any suggestions, please let me know! If you're happy with the program feel free to star the project! 
+I'm a new programmer, if you notice any bugs or have any suggestions, please let me know! Would also appreciate any GitHub stars which may help me in my job pursuit!
 
-Donations are welcome!
+Donations are welcome :)
 
 [![](https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_37x23.jpg)](https://www.paypal.com/paypalme/CPenarsky?country.x=CA&locale.x=en_US)
 
