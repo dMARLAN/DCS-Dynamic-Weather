@@ -1,19 +1,10 @@
-package com.marlan.weatherupdate.service;
+package com.marlan.weatherupdate.service.missioneditor;
 
-import com.marlan.weatherupdate.model.config.Config;
-import com.marlan.weatherupdate.model.dto.DTO;
-import com.marlan.weatherupdate.model.metar.AVWXMetar;
-import com.marlan.weatherupdate.model.metar.fields.Temperature;
-import com.marlan.weatherupdate.model.metar.fields.WindDirection;
-import com.marlan.weatherupdate.model.metar.fields.WindSpeed;
 import com.marlan.weatherupdate.model.station.AVWXStation;
 import com.marlan.weatherupdate.utilities.AltimeterUtility;
 import com.marlan.weatherupdate.utilities.Log;
-import com.marlan.weatherupdate.utilities.StationInfoUtility;
 import org.jetbrains.annotations.NotNull;
 
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.Random;
 
 /**
@@ -22,58 +13,41 @@ import java.util.Random;
 public class MissionEditor {
     private static final double KNOTS_TO_METERS = 0.51444444444;
     private static final double INHG_TO_MMHG = 25.4;
-    private static final double ISA_TEMP_C = 15;
-    private static final double ISA_PRESSURE_INHG = 29.92;
     private static final double TEMP_LAPSE_RATE_C = 1.98;
-    private static final double INHG_TO_HPA = 33.86389;
     private static final Random random = new Random();
 
-    private final DTO dto;
-    private final Config config;
     private final AVWXStation stationAVWX;
-    private final AVWXMetar metarAVWX;
+    private final MissionValues missionValues;
 
-    public MissionEditor(DTO dto, Config config, AVWXStation stationAVWX, AVWXMetar metarAVWX) {
-        this.dto = dto;
-        this.config = config;
+    public MissionEditor(AVWXStation stationAVWX, MissionValues missionValues) {
         this.stationAVWX = stationAVWX;
-        this.metarAVWX = metarAVWX;
+        this.missionValues = missionValues;
     }
 
     public String editMission(String mission) {
-        double windSpeed = setWindSpeed();
-        double windDirection = setWindDirection();
-        double stationTempC = setStationTempC();
-        double stationQnh = setStationQnh();
-        String metar = setMetar();
-
-        ZonedDateTime zonedDateTime = ZonedDateTime.now(ZoneId.of(StationInfoUtility.getZoneId(stationAVWX.getLatitude(), stationAVWX.getLongitude())));
-        int day = setDay(zonedDateTime);
-        int month = setMonth(zonedDateTime);
-        int hour = setHour(zonedDateTime);
-
-        double correctedQffInHg = AltimeterUtility.getCorrectedQff(stationQnh, stationTempC, stationAVWX);
+        double correctedQffInHg = AltimeterUtility.getCorrectedQff(missionValues.getStationQnh(), missionValues.getStationTempC(), stationAVWX);
         double qffMmHg = correctedQffInHg * INHG_TO_MMHG;
 
-        double windSpeedGround = getCorrectedGroundWindSpeed(windSpeed, stationAVWX.getElevationM()); // "Ground" Wind is 10m/33ft but also sets ~500m/1660ft
-        double windSpeed2000 = getModifiedWindSpeed(2000, windSpeed); // "2000" Wind is 2000m/6600ft
-        double windSpeed8000 = getModifiedWindSpeed(8000, windSpeed); // "8000" Wind is 8000m/26000ft
+        // TODO Move this shit into MissionValues
+        double windSpeedGround = getCorrectedGroundWindSpeed(missionValues.getWindSpeed(), stationAVWX.getElevationM()); // "Ground" Wind is 10m/33ft but also sets ~500m/1660ft
+        double windSpeed2000 = getModifiedWindSpeed(2000, missionValues.getWindSpeed()); // "2000" Wind is 2000m/6600ft
+        double windSpeed8000 = getModifiedWindSpeed(8000, missionValues.getWindSpeed()); // "8000" Wind is 8000m/26000ft
 
-        double windDirectionGround = invertWindDirection(windDirection); // Wind Direction is backwards in DCS.
-        double windDirection2000 = randomizeWindDirection(windDirection);
+        double windDirectionGround = invertWindDirection(missionValues.getWindDirection()); // Wind Direction is backwards in DCS.
+        double windDirection2000 = randomizeWindDirection(missionValues.getWindDirection());
         double windDirection8000 = randomizeWindDirection(windDirection2000);
 
-        String cloudsPreset = buildCloudsPreset(selectCloudsPresetSuffix(metar));
+        String cloudsPreset = buildCloudsPreset(selectCloudsPresetSuffix(missionValues.getMetar()));
 
         mission = replaceCloudsPreset(mission, cloudsPreset);
         mission = replaceWind8000(mission, windSpeed8000, windDirection8000);
         mission = replaceWind2000(mission, windSpeed2000, windDirection2000);
         mission = replaceWindGround(mission, windSpeedGround, windDirectionGround);
-        mission = replaceHour(mission, hour);
-        mission = replaceDay(mission, day);
-        mission = replaceMonth(mission, month);
-        mission = replaceTemperature(mission, stationTempC);
-        mission = replaceQnh(mission, qffMmHg, stationQnh);
+        mission = replaceHour(mission, missionValues.getHour());
+        mission = replaceDay(mission, missionValues.getDay());
+        mission = replaceMonth(mission, missionValues.getMonth());
+        mission = replaceTemperature(mission, missionValues.getStationTempC());
+        mission = replaceQnh(mission, qffMmHg, missionValues.getStationQnh());
 
         return mission;
     }
@@ -159,91 +133,6 @@ public class MissionEditor {
         }
         Log.info("Clouds Preset: " + cloudsPreset);
         return mission;
-    }
-
-    private double setWindSpeed() {
-        String dtoWeatherType = dto.getWeatherType();
-        if (dtoWeatherType.contains("real")) {
-            return metarAVWX.getWindSpeed().flatMap(WindSpeed::getValue).orElse(0.0);
-        } else {
-            return 0.0;
-        }
-    }
-
-    private double setWindDirection() {
-        String dtoWeatherType = dto.getWeatherType();
-        if (dtoWeatherType.contains("real")) {
-            return metarAVWX.getWindDirection().flatMap(WindDirection::getValue).orElse(0.0);
-        } else {
-            return 0.0;
-        }
-    }
-
-    private double setStationTempC() {
-        String dtoWeatherType = dto.getWeatherType();
-        if (dtoWeatherType.contains("real")) {
-            return metarAVWX.getTemperature().flatMap(Temperature::getValue).orElse(ISA_TEMP_C);
-        } else {
-            return ISA_TEMP_C;
-        }
-    }
-
-    private double setStationQnh() {
-        String dtoWeatherType = dto.getWeatherType();
-        if (dtoWeatherType.contains("real")) {
-            if (metarAVWX.getUnits().getAltimeter().equals("hPa")) {
-                return metarAVWX.getAltimeter().getValue() / INHG_TO_HPA;
-            } else {
-                return metarAVWX.getAltimeter().getValue();
-            }
-        } else {
-            return ISA_PRESSURE_INHG;
-        }
-    }
-
-    private String setMetar() {
-        String dtoWeatherType = dto.getWeatherType();
-        if (dtoWeatherType.contains("clear")) {
-            Log.info("METAR set clear");
-            return "";
-        } else {
-            if (metarAVWX.getMeta().getWarning() != null) {
-                Log.warning(metarAVWX.getMeta().getWarning());
-            }
-            String metar = metarAVWX.getSanitized();
-            Log.info("METAR: " + metar);
-            return metar;
-        }
-    }
-
-    private int setDay(@NotNull ZonedDateTime zonedDateTime) {
-        return zonedDateTime.getDayOfMonth();
-    }
-
-    private int setMonth(@NotNull ZonedDateTime zonedDateTime) {
-        return zonedDateTime.getMonthValue();
-    }
-
-    private int setHour(ZonedDateTime zonedDateTime) {
-        int hour;
-        String dtoWeatherType = dto.getWeatherType();
-        if (dtoWeatherType.equals("real")) {
-            if (zonedDateTime.getHour() + config.getTimeOffset() < 0) {
-                hour = 24 + zonedDateTime.getHour() + config.getTimeOffset();
-            } else {
-                hour = zonedDateTime.getHour() + config.getTimeOffset();
-            }
-        } else {
-            switch (dtoWeatherType) {
-                case "real0400" -> hour = 4;
-                case "real0600" -> hour = 6;
-                case "real1800" -> hour = 18;
-                case "real2200" -> hour = 22;
-                case "real0000", "clearNight" -> hour = 0;
-                default -> hour = 12;
-            }
-        }
-        return hour;
     }
 
     private double getCorrectedGroundWindSpeed(double windSpeedKnots, double stationAltitude) {

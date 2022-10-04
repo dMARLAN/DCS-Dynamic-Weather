@@ -8,7 +8,8 @@ import com.marlan.weatherupdate.model.dto.DTO;
 import com.marlan.weatherupdate.model.metar.AVWXMetar;
 import com.marlan.weatherupdate.model.station.AVWXStation;
 import com.marlan.weatherupdate.service.AVWXClient;
-import com.marlan.weatherupdate.service.MissionEditor;
+import com.marlan.weatherupdate.service.missioneditor.MissionEditor;
+import com.marlan.weatherupdate.service.missioneditor.MissionValues;
 import com.marlan.weatherupdate.utilities.FileHandler;
 import com.marlan.weatherupdate.utilities.Log;
 import com.marlan.weatherupdate.utilities.MizUtility;
@@ -52,7 +53,8 @@ public class WeatherUpdateController {
         mizUtility.extractMission(WORKING_DIR, dto.getMission());
         String missionContent = FileHandler.readFile(WORKING_DIR, MISSION_FILE);
 
-        MissionEditor missionEditor = new MissionEditor(dto, config, stationAVWX, metarAVWX);
+        MissionValues missionValues = new MissionValues(config, dto, stationAVWX, metarAVWX);
+        MissionEditor missionEditor = new MissionEditor(stationAVWX, missionValues);
 
         String replacedMissionContent = missionEditor.editMission(missionContent);
 
