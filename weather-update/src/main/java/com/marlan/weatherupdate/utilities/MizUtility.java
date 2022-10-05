@@ -25,7 +25,7 @@ public class MizUtility {
     /**
      * Extracts mission file from .miz using 7zip
      */
-    public void extractMission(String dir, String mizName) throws IOException {
+    public void extractMission(String dir, String mizName) {
         Log.info("Extracting: " + dir + mizName);
         ProcessBuilder pb = new ProcessBuilder(
                 this.sevenZipPath,
@@ -36,19 +36,13 @@ public class MizUtility {
                 "mission",
                 "-y"
         );
-        try {
-            runProcess(pb);
-        } catch (IOException ioe) {
-            Log.error("Error extracting .miz: " + ioe.getMessage());
-            throw new IOException("Error: " + ioe.getMessage(), ioe);
-        }
-
+        runProcess(pb);
     }
 
     /**
      * Updates .miz with new mission file using 7zip
      */
-    public void updateMiz(String dir, String mizName, String missionFile) throws IOException {
+    public void updateMiz(String dir, String mizName, String missionFile) {
         Log.info("Updating: " + dir + mizName);
         ProcessBuilder pb = new ProcessBuilder(
                 this.sevenZipPath,
@@ -57,21 +51,15 @@ public class MizUtility {
                 dir + mizName,
                 dir + missionFile
         );
-        try {
-            runProcess(pb);
-        } catch (IOException ioe) {
-            Log.error("Error updating .miz: " + ioe.getMessage());
-            throw new IOException("Error: " + ioe.getMessage(), ioe);
-        }
+        runProcess(pb);
     }
 
-    private void runProcess(@NotNull ProcessBuilder pb) throws IOException {
+    private void runProcess(@NotNull ProcessBuilder pb) {
         try {
             Process p = pb.start();
             p.waitFor();
         } catch (IOException ioe) {
             Log.error("Error running process: " + ioe.getMessage());
-            throw new IOException("Error: " + ioe.getMessage(), ioe);
         } catch (InterruptedException ie) {
             Log.error("Error running process: " + ie.getMessage());
             Thread.currentThread().interrupt();

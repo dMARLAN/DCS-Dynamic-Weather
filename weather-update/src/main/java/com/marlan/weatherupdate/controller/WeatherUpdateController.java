@@ -14,8 +14,6 @@ import com.marlan.weatherupdate.utilities.FileHandler;
 import com.marlan.weatherupdate.utilities.Log;
 import com.marlan.weatherupdate.utilities.MizUtility;
 
-import java.io.IOException;
-
 /**
  * Controller for Weather Update module
  */
@@ -26,9 +24,8 @@ public class WeatherUpdateController {
     /**
      * @param WORKING_DIR Working directory of the program which is the location of this file (which should also include
      *                    the other folders and files needed for the program to run e.g. data, constants, secrets, etc.)
-     * @throws IOException If thrown here, program fails, cannot be handled.
      */
-    public static void run(final String WORKING_DIR) throws IOException {
+    public static void run(final String WORKING_DIR) {
         Log.info("Working Directory: " + WORKING_DIR);
         final Gson gson = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
 

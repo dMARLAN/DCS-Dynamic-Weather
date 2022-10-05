@@ -17,27 +17,26 @@ public class FileHandler {
     private FileHandler() {
     }
 
-    public static String readFile(String dir, String fileName) throws IOException {
+    public static String readFile(String dir, String fileName) {
         Path filePath = Path.of(dir + fileName);
         try {
             return Files.readString(filePath);
         } catch (IOException ioe) {
             Log.error(ioe.getMessage());
-            throw new IOException("Error: " + ioe.getMessage(), ioe);
         }
+        return "";
     }
 
-    public static void overwriteFile(String dir, String fileName, String newContent) throws IOException {
+    public static void overwriteFile(String dir, String fileName, String newContent) {
         File file = new File(dir + fileName);
         try (FileWriter fileWriter = new FileWriter(file, false)) {
             fileWriter.write(newContent);
         } catch (IOException ioe) {
             Log.error(ioe.getMessage());
-            throw new IOException("Error: " + ioe.getMessage(), ioe);
         }
     }
 
-    public static void writeJSON(String dir, String fileName, Object jsonObject) throws IOException {
+    public static void writeJSON(String dir, String fileName, Object jsonObject) {
         File file = new File(dir + fileName);
         try (FileWriter fileWriter = new FileWriter(file, false)) {
             Gson gson = new GsonBuilder()
@@ -48,17 +47,15 @@ public class FileHandler {
             Log.info("Wrote JSON to " + fileName);
         } catch (IOException ioe) {
             Log.error(ioe.getMessage());
-            throw new IOException("Error: " + ioe.getMessage(), ioe);
         }
     }
 
-    public static void deleteFile(String dir, String fileName) throws IOException {
+    public static void deleteFile(String dir, String fileName) {
         Path filePath = Path.of(dir + fileName);
         try {
             Files.delete(filePath);
         } catch (IOException ioe) {
             Log.error(ioe.getMessage());
-            throw new IOException("Error: " + ioe.getMessage(), ioe);
         }
     }
 
