@@ -27,66 +27,68 @@ public class AVWXClient {
         this.dir = dir;
     }
 
-    public HttpResponse<String> getMetar(DTO dto) throws IOException, IllegalArgumentException {
+    public HttpResponse<String> getMetar(DTO dto) {
 
         String avwxKey = getAVWXApiKey();
         if (avwxKey.isEmpty() || dto.getStationLatitude().isEmpty() || dto.getStationLongitude().isEmpty()) {
             String errorMessage = "AVWX API Key, Station Latitude and Station Longitude are required";
             Log.error(errorMessage);
-            throw new IllegalArgumentException(errorMessage);
         } else {
             try {
                 HttpRequest getRequest = HttpRequest.newBuilder()
                         .uri(new URI("https://avwx.rest/api/metar/" + dto.getStationLatitude() + "," + dto.getStationLongitude() + "?onfail=nearest"))
                         .header("Authorization", avwxKey)
                         .build();
-                try {
-                    return this.httpClient.send(getRequest, HttpResponse.BodyHandlers.ofString());
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                    Log.error(e.getMessage());
-                }
+                return sendRequest(getRequest);
 
             } catch (URISyntaxException use) {
                 Log.error(use.getMessage());
             }
-            return null;
         }
+        return null;
     }
 
-    public HttpResponse<String> getStation(AVWXMetar weatherAVWX) throws IOException, IllegalArgumentException {
+    public HttpResponse<String> getStation(AVWXMetar weatherAVWX) {
         String avwxKey = getAVWXApiKey();
         if (avwxKey.isEmpty() || weatherAVWX.getStation().isEmpty()) {
             String errorMessage = "AVWX API Key and Station are required";
             Log.error(errorMessage);
-            throw new IllegalArgumentException(errorMessage);
         } else {
             try {
                 HttpRequest getRequest = HttpRequest.newBuilder()
                         .uri(new URI("https://avwx.rest/api/station/" + weatherAVWX.getStation()))
                         .header("Authorization", avwxKey)
                         .build();
-
-                try {
-                    return this.httpClient.send(getRequest, HttpResponse.BodyHandlers.ofString());
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                    Log.error(e.getMessage());
-                }
+                return sendRequest(getRequest);
 
             } catch (URISyntaxException use) {
                 Log.error(use.getMessage());
             }
-            return null;
         }
+        return null;
     }
 
-    private String getAVWXApiKey() throws IOException {
+    private HttpResponse<String> sendRequest(HttpRequest getRequest) {
+        try {
+            return this.httpClient.send(getRequest, HttpResponse.BodyHandlers.ofString());
+        } catch (IOException | InterruptedException e) {
+            Thread.currentThread().interrupt();
+            Log.error(e.getMessage());
+        }
+        return null;
+    }
+
+    private String getAVWXApiKey() {
         final String AVWX_API_KEY_PATH = "secrets\\avwx_api_key.json";
         Gson gson = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
 
-        String avwxKeyFile = FileHandler.readFile(dir, AVWX_API_KEY_PATH);
-        AVWX avwx = gson.fromJson(avwxKeyFile, AVWX.class);
-        return avwx.getAvwxApiKey();
+        try {
+            String avwxKeyFile = FileHandler.readFile(dir, AVWX_API_KEY_PATH);
+            AVWX avwx = gson.fromJson(avwxKeyFile, AVWX.class);
+            return avwx.getAvwxApiKey();
+        } catch (IOException ioe) {
+            Log.error(ioe.getMessage());
+        }
+        return "";
     }
 }
