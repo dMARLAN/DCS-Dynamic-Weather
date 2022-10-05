@@ -45,24 +45,24 @@ public class Log {
     /**
      * Opens logger's file writer and writes to logs\\DCSDynamicWeather-Update.log
      */
-    public static void open(String dir) throws IOException {
+    public static void open(String dir) {
         String logPath = dir + "logs\\DCSDynamicWeather-Update.log";
         try {
             Files.createDirectories(Path.of(dir + "logs"));
             loggerFw = new FileWriter(logPath, true);
         } catch (IOException ioe) {
-            throw new IOException("Error opening log file");
+            ioe.printStackTrace();
         }
     }
 
     /**
      * Closes & flushes logger's file writer.
      */
-    public static void close() throws IOException {
+    public static void close() {
         try {
             loggerFw.close();
         } catch (IOException ioe) {
-            throw new IOException("Error: " + ioe.getMessage(), ioe);
+            ioe.printStackTrace();
         }
     }
 

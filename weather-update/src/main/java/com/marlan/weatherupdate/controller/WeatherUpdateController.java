@@ -24,11 +24,11 @@ public class WeatherUpdateController {
     }
 
     /**
-     * @param WORKING_DIR Received from WeatherOutput.
+     * @param WORKING_DIR Working directory of the program which is the location of this file (which should also include
+     *                    the other folders and files needed for the program to run e.g. data, constants, secrets, etc.)
      * @throws IOException If thrown here, program fails, cannot be handled.
-     * @throws InterruptedException Should never be thrown.
      */
-    public static void run(final String WORKING_DIR) throws IOException, InterruptedException {
+    public static void run(final String WORKING_DIR) throws IOException {
         Log.info("Working Directory: " + WORKING_DIR);
         final Gson gson = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
 

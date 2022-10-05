@@ -27,7 +27,7 @@ public class AVWXClient {
         this.dir = dir;
     }
 
-    public HttpResponse<String> getMetar(DTO dto) throws IOException, InterruptedException, IllegalArgumentException {
+    public HttpResponse<String> getMetar(DTO dto) throws IOException, IllegalArgumentException {
 
         String avwxKey = getAVWXApiKey();
         if (avwxKey.isEmpty() || dto.getStationLatitude().isEmpty() || dto.getStationLongitude().isEmpty()) {
@@ -40,8 +40,13 @@ public class AVWXClient {
                         .uri(new URI("https://avwx.rest/api/metar/" + dto.getStationLatitude() + "," + dto.getStationLongitude() + "?onfail=nearest"))
                         .header("Authorization", avwxKey)
                         .build();
+                try {
+                    return this.httpClient.send(getRequest, HttpResponse.BodyHandlers.ofString());
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    Log.error(e.getMessage());
+                }
 
-                return this.httpClient.send(getRequest, HttpResponse.BodyHandlers.ofString());
             } catch (URISyntaxException use) {
                 Log.error(use.getMessage());
             }
@@ -49,7 +54,7 @@ public class AVWXClient {
         }
     }
 
-    public HttpResponse<String> getStation(AVWXMetar weatherAVWX) throws IOException, InterruptedException, IllegalArgumentException {
+    public HttpResponse<String> getStation(AVWXMetar weatherAVWX) throws IOException, IllegalArgumentException {
         String avwxKey = getAVWXApiKey();
         if (avwxKey.isEmpty() || weatherAVWX.getStation().isEmpty()) {
             String errorMessage = "AVWX API Key and Station are required";
@@ -62,7 +67,13 @@ public class AVWXClient {
                         .header("Authorization", avwxKey)
                         .build();
 
-                return this.httpClient.send(getRequest, HttpResponse.BodyHandlers.ofString());
+                try {
+                    return this.httpClient.send(getRequest, HttpResponse.BodyHandlers.ofString());
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    Log.error(e.getMessage());
+                }
+
             } catch (URISyntaxException use) {
                 Log.error(use.getMessage());
             }
