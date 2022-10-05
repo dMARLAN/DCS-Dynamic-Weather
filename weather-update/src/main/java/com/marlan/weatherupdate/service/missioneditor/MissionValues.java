@@ -25,30 +25,35 @@ public class MissionValues {
     private final DTO dto;
     private final AVWXMetar metarAVWX;
 
-    @Getter private final double windSpeed;
-    @Getter private final double windDirection;
-    @Getter private final double stationTempC;
-    @Getter private final double stationQnh;
-    @Getter private final String metar;
-    @Getter private final int day;
-    @Getter private final int month;
-    @Getter private final int hour;
+    @Getter
+    private final Wind wind;
+    @Getter
+    private final Station station;
+    @Getter
+    private final Time time;
 
     public MissionValues(Config config, DTO dto, AVWXStation stationAVWX, AVWXMetar metarAVWX) {
         this.config = config;
         this.dto = dto;
         this.metarAVWX = metarAVWX;
 
-        this.windSpeed = setWindSpeed();
-        this.windDirection = setWindDirection();
-        this.stationTempC = setStationTempC();
-        this.stationQnh = setStationQnh();
-        this.metar = setMetar();
+        this.wind = setWind();
+        this.station = setStation();
 
         ZonedDateTime zonedDateTime = ZonedDateTime.now(ZoneId.of(StationInfoUtility.getZoneId(stationAVWX.getLatitude(), stationAVWX.getLongitude())));
-        this.day = setDay(zonedDateTime);
-        this.month = setMonth(zonedDateTime);
-        this.hour = setHour(zonedDateTime);
+        this.time = setTime(zonedDateTime);
+    }
+
+    private Time setTime(ZonedDateTime zonedDateTime) {
+        return new Time(setHour(zonedDateTime), setDay(zonedDateTime), setMonth(zonedDateTime));
+    }
+
+    private Station setStation() {
+        return new Station(setMetar(), setStationTempC(), setStationQnh());
+    }
+
+    private Wind setWind() {
+        return new Wind(setWindSpeed(), setWindDirection());
     }
 
     private double setWindSpeed() {

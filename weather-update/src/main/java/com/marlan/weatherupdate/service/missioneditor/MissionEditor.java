@@ -25,29 +25,29 @@ public class MissionEditor {
     }
 
     public String editMission(String mission) {
-        double correctedQffInHg = AltimeterUtility.getCorrectedQff(missionValues.getStationQnh(), missionValues.getStationTempC(), stationAVWX);
+        double correctedQffInHg = AltimeterUtility.getCorrectedQff(missionValues.getStation().getQnh(), missionValues.getStation().getTempC(), stationAVWX);
         double qffMmHg = correctedQffInHg * INHG_TO_MMHG;
 
         // TODO Move this shit into MissionValues
-        double windSpeedGround = getCorrectedGroundWindSpeed(missionValues.getWindSpeed(), stationAVWX.getElevationM()); // "Ground" Wind is 10m/33ft but also sets ~500m/1660ft
-        double windSpeed2000 = getModifiedWindSpeed(2000, missionValues.getWindSpeed()); // "2000" Wind is 2000m/6600ft
-        double windSpeed8000 = getModifiedWindSpeed(8000, missionValues.getWindSpeed()); // "8000" Wind is 8000m/26000ft
+        double windSpeedGround = getCorrectedGroundWindSpeed(missionValues.getWind().getSpeed(), stationAVWX.getElevationM()); // "Ground" Wind is 10m/33ft but also sets ~500m/1660ft
+        double windSpeed2000 = getModifiedWindSpeed(2000, missionValues.getWind().getSpeed()); // "2000" Wind is 2000m/6600ft
+        double windSpeed8000 = getModifiedWindSpeed(8000, missionValues.getWind().getSpeed()); // "8000" Wind is 8000m/26000ft
 
-        double windDirectionGround = invertWindDirection(missionValues.getWindDirection()); // Wind Direction is backwards in DCS.
-        double windDirection2000 = randomizeWindDirection(missionValues.getWindDirection());
+        double windDirectionGround = invertWindDirection(missionValues.getWind().getDirection()); // Wind Direction is backwards in DCS.
+        double windDirection2000 = randomizeWindDirection(missionValues.getWind().getDirection());
         double windDirection8000 = randomizeWindDirection(windDirection2000);
 
-        String cloudsPreset = buildCloudsPreset(selectCloudsPresetSuffix(missionValues.getMetar()));
+        String cloudsPreset = buildCloudsPreset(selectCloudsPresetSuffix(missionValues.getStation().getMetar()));
 
         mission = replaceCloudsPreset(mission, cloudsPreset);
         mission = replaceWind8000(mission, windSpeed8000, windDirection8000);
         mission = replaceWind2000(mission, windSpeed2000, windDirection2000);
         mission = replaceWindGround(mission, windSpeedGround, windDirectionGround);
-        mission = replaceHour(mission, missionValues.getHour());
-        mission = replaceDay(mission, missionValues.getDay());
-        mission = replaceMonth(mission, missionValues.getMonth());
-        mission = replaceTemperature(mission, missionValues.getStationTempC());
-        mission = replaceQnh(mission, qffMmHg, missionValues.getStationQnh());
+        mission = replaceHour(mission, missionValues.getTime().getHour());
+        mission = replaceDay(mission, missionValues.getTime().getDay());
+        mission = replaceMonth(mission, missionValues.getTime().getMonth());
+        mission = replaceTemperature(mission, missionValues.getStation().getTempC());
+        mission = replaceQnh(mission, qffMmHg, missionValues.getStation().getQnh());
 
         return mission;
     }
@@ -119,7 +119,7 @@ public class MissionEditor {
         return mission;
     }
 
-    private String replaceCloudsPreset(@NotNull String mission, String cloudsPreset) {
+    private String replaceCloudsPreset(String mission, String cloudsPreset) {
         if (!mission.contains("[\"preset\"]")) {
             mission = mission.replaceAll(
                             "(\\[\"iprecptns\"].*)\n",
