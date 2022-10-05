@@ -29,7 +29,7 @@ public class WeatherUpdateController {
      * @throws InterruptedException Should never be thrown.
      */
     public static void run(final String WORKING_DIR) throws IOException, InterruptedException {
-
+        Log.info("Working Directory: " + WORKING_DIR);
         final Gson gson = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
 
         final String MISSION_FILE = "mission";

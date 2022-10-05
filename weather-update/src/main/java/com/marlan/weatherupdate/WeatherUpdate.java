@@ -16,7 +16,6 @@ public class WeatherUpdate {
     public static void main(String[] args) throws IOException, InterruptedException {
         final String WORKING_DIR = DirHandler.getWorkingDir(args);
         Log.open(WORKING_DIR);
-        Log.info("Working Directory: " + WORKING_DIR);
 
         WeatherUpdateController.run(WORKING_DIR);
 
