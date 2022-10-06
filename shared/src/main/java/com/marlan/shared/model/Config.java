@@ -1,4 +1,4 @@
-package com.marlan.weatheroutput.model;
+package com.marlan.shared.model;
 
 import lombok.Data;
 
@@ -11,4 +11,6 @@ public class Config {
     private String spreadsheetRange;
     private boolean outputToSheets;
     private boolean outputToDiscord;
+    private String customSevenZipPath;
+    private int timeOffset;
 }

@@ -1,8 +1,8 @@
 package com.marlan.weatherupdate.service.missioneditor;
 
-import com.marlan.utilities.Log;
-import com.marlan.weatherupdate.model.config.Config;
-import com.marlan.weatherupdate.model.dto.DTO;
+import com.marlan.shared.model.Config;
+import com.marlan.shared.model.DTO;
+import com.marlan.shared.utilities.Log;
 import com.marlan.weatherupdate.model.metar.AVWXMetar;
 import com.marlan.weatherupdate.model.metar.fields.Temperature;
 import com.marlan.weatherupdate.model.metar.fields.WindDirection;

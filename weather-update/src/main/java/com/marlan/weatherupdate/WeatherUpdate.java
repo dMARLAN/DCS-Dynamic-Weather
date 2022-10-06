@@ -1,7 +1,7 @@
 package com.marlan.weatherupdate;
 
-import com.marlan.utilities.DirHandler;
-import com.marlan.utilities.Log;
+import com.marlan.shared.utilities.DirHandler;
+import com.marlan.shared.utilities.Log;
 import com.marlan.weatherupdate.controller.WeatherUpdateController;
 
 import java.io.IOException;

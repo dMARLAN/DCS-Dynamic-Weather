@@ -1,4 +1,4 @@
-package com.marlan.weatherupdate.model.dto;
+package com.marlan.shared.model;
 
 import lombok.Data;
 
@@ -7,9 +7,9 @@ import lombok.Data;
  */
 @Data
 public class DTO {
+    private String metar;
     private String mission;
     private String icao;
-    private String metar;
     private String stationLongitude;
     private String stationLatitude;
     private String weatherType;

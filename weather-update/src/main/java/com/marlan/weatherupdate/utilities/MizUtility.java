@@ -1,7 +1,7 @@
 package com.marlan.weatherupdate.utilities;
 
-import com.marlan.utilities.Log;
-import com.marlan.weatherupdate.model.config.Config;
+import com.marlan.shared.utilities.Log;
+import com.marlan.shared.model.Config;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;

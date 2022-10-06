@@ -1,6 +1,6 @@
 package com.marlan.weatherupdate.utilities;
 
-import com.marlan.utilities.Log;
+import com.marlan.shared.utilities.Log;
 import org.jetbrains.annotations.NotNull;
 import us.dustinj.timezonemap.TimeZoneMap;
 

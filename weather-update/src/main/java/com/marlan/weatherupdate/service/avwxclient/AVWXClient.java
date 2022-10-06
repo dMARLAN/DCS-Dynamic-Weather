@@ -3,9 +3,9 @@ package com.marlan.weatherupdate.service.avwxclient;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.marlan.utilities.FileHandler;
-import com.marlan.utilities.Log;
-import com.marlan.weatherupdate.model.dto.DTO;
+import com.marlan.shared.model.DTO;
+import com.marlan.shared.utilities.FileHandler;
+import com.marlan.shared.utilities.Log;
 import com.marlan.weatherupdate.model.metar.AVWXMetar;
 import com.marlan.weatherupdate.model.secrets.AVWX;
 

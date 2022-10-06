@@ -1,4 +1,4 @@
-package com.marlan.utilities;
+package com.marlan.shared.utilities;
 
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;

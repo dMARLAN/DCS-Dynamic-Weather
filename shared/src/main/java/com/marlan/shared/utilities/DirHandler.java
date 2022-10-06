@@ -1,4 +1,4 @@
-package com.marlan.utilities;
+package com.marlan.shared.utilities;
 
 import org.jetbrains.annotations.NotNull;
 
