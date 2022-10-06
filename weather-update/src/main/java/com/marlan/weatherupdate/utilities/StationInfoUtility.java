@@ -10,13 +10,15 @@ import java.util.Objects;
  * Returns Time Zone Id based on latitude & longitude using TimeZoneMap otherwise returns UTC if TimeZoneMap fails.
  */
 public class StationInfoUtility {
-    static Log log = Log.getInstance();
+    private static final Log log = Log.getInstance();
+
     private StationInfoUtility() {
     }
 
     /**
      * Uses TimeZoneMap and returns Java ZoneId based on latitude/longitude for the station within 1 degree of latitude or longititude.
-     * @param latitude Latitude for station
+     *
+     * @param latitude  Latitude for station
      * @param longitude Longitude for station
      * @return Java ZoneId or UTC if null
      */
