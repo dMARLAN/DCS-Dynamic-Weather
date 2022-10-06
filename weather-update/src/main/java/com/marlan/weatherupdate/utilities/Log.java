@@ -15,6 +15,7 @@ public class Log {
     private static Log instance;
     private final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
     private FileWriter loggerFw;
+    private boolean enabled = true;
 
     private Log() {
     }
@@ -42,11 +43,13 @@ public class Log {
     }
 
     private void log(String type, String message) {
-        System.out.println(getDateTime() + " " + type + message);
-        try {
-            loggerFw.write(getDateTime() + " " + type + message + "\n");
-        } catch (IOException ioe) {
-            System.out.println(getDateTime() + " ERROR   " + "Error writing to log file: " + ioe.getMessage());
+        if (enabled) {
+            System.out.println(getDateTime() + " " + type + message);
+            try {
+                loggerFw.write(getDateTime() + " " + type + message + "\n");
+            } catch (IOException ioe) {
+                System.out.println(getDateTime() + " ERROR   " + "Error writing to log file: " + ioe.getMessage());
+            }
         }
     }
 
@@ -72,6 +75,13 @@ public class Log {
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
+    }
+
+    /**
+     * For disabling logger during testing.
+     */
+    public void disable() {
+        enabled = false;
     }
 
     @NotNull
