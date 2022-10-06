@@ -11,12 +11,11 @@ import java.util.Random;
  * Handles replacing strings inside the mission file
  */
 public class MissionEditor {
-    static Log log = Log.getInstance();
+    private static final Log log = Log.getInstance();
     private static final double KNOTS_TO_METERS = 0.51444444444;
     private static final double INHG_TO_MMHG = 25.4;
     private static final double TEMP_LAPSE_RATE_C = 1.98;
     private static final Random random = new Random();
-
     private final AVWXStation stationAVWX;
     private final MissionValues missionValues;
 
