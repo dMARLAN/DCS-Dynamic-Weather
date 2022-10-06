@@ -7,7 +7,7 @@ public class Wind {
     private final double speed;
     private final double direction;
 
-    public Wind(double speed, double direction){
+    public Wind(double speed, double direction) {
         this.speed = speed;
         this.direction = direction;
     }
