@@ -3,12 +3,12 @@ package com.marlan.weatheroutput.controller;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.marlan.utilities.FileHandler;
+import com.marlan.utilities.Log;
 import com.marlan.weatheroutput.model.Config;
 import com.marlan.weatheroutput.model.DTO;
 import com.marlan.weatheroutput.service.discord.DiscordClient;
 import com.marlan.weatheroutput.service.sheets.SheetsClient;
-import com.marlan.weatheroutput.utilities.FileHandler;
-import com.marlan.weatheroutput.utilities.Log;
 
 /**
  * Controller for Weather Output module

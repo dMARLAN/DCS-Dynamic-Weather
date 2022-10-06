@@ -1,4 +1,4 @@
-package com.marlan.weatherupdate.utilities;
+package com.marlan.utilities;
 
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;

@@ -3,11 +3,11 @@ package com.marlan.weatherupdate.service.avwxclient;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.marlan.utilities.FileHandler;
+import com.marlan.utilities.Log;
 import com.marlan.weatherupdate.model.dto.DTO;
 import com.marlan.weatherupdate.model.metar.AVWXMetar;
 import com.marlan.weatherupdate.model.secrets.AVWX;
-import com.marlan.weatherupdate.utilities.FileHandler;
-import com.marlan.weatherupdate.utilities.Log;
 
 import java.io.IOException;
 import java.net.URI;

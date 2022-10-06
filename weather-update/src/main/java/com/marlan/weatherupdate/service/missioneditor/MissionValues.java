@@ -1,5 +1,6 @@
 package com.marlan.weatherupdate.service.missioneditor;
 
+import com.marlan.utilities.Log;
 import com.marlan.weatherupdate.model.config.Config;
 import com.marlan.weatherupdate.model.dto.DTO;
 import com.marlan.weatherupdate.model.metar.AVWXMetar;
@@ -10,7 +11,6 @@ import com.marlan.weatherupdate.model.station.AVWXStation;
 import com.marlan.weatherupdate.service.missioneditor.values.Station;
 import com.marlan.weatherupdate.service.missioneditor.values.Time;
 import com.marlan.weatherupdate.service.missioneditor.values.Wind;
-import com.marlan.weatherupdate.utilities.Log;
 import com.marlan.weatherupdate.utilities.StationInfoUtility;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;

@@ -3,9 +3,9 @@ package com.marlan.weatheroutput.service.discord;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.marlan.utilities.FileHandler;
+import com.marlan.utilities.Log;
 import com.marlan.weatheroutput.model.DiscordWebhook;
-import com.marlan.weatheroutput.utilities.FileHandler;
-import com.marlan.weatheroutput.utilities.Log;
 
 import java.io.IOException;
 import java.net.URI;

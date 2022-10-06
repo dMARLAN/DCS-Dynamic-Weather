@@ -11,7 +11,7 @@ import com.google.api.services.sheets.v4.model.ValueRange;
 import com.google.auth.http.HttpCredentialsAdapter;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.auth.oauth2.ServiceAccountCredentials;
-import com.marlan.weatheroutput.utilities.Log;
+import com.marlan.utilities.Log;
 
 import java.io.FileInputStream;
 import java.io.IOException;

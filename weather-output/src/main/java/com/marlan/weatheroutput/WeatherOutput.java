@@ -1,8 +1,8 @@
 package com.marlan.weatheroutput;
 
+import com.marlan.utilities.DirHandler;
+import com.marlan.utilities.Log;
 import com.marlan.weatheroutput.controller.WeatherOutputController;
-import com.marlan.weatheroutput.utilities.DirHandler;
-import com.marlan.weatheroutput.utilities.Log;
 
 import java.io.IOException;
 

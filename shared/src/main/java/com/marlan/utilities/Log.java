@@ -1,4 +1,4 @@
-package com.marlan.weatherupdate.utilities;
+package com.marlan.utilities;
 
 import org.jetbrains.annotations.NotNull;
 

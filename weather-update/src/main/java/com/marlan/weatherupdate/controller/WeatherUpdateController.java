@@ -3,6 +3,8 @@ package com.marlan.weatherupdate.controller;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.marlan.utilities.FileHandler;
+import com.marlan.utilities.Log;
 import com.marlan.weatherupdate.model.config.Config;
 import com.marlan.weatherupdate.model.dto.DTO;
 import com.marlan.weatherupdate.model.metar.AVWXMetar;
@@ -10,8 +12,6 @@ import com.marlan.weatherupdate.model.station.AVWXStation;
 import com.marlan.weatherupdate.service.avwxclient.AVWXClient;
 import com.marlan.weatherupdate.service.missioneditor.MissionEditor;
 import com.marlan.weatherupdate.service.missioneditor.MissionValues;
-import com.marlan.weatherupdate.utilities.FileHandler;
-import com.marlan.weatherupdate.utilities.Log;
 import com.marlan.weatherupdate.utilities.MizUtility;
 
 /**

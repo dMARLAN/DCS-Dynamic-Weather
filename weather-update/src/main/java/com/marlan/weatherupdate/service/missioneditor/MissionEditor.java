@@ -1,8 +1,8 @@
 package com.marlan.weatherupdate.service.missioneditor;
 
+import com.marlan.utilities.Log;
 import com.marlan.weatherupdate.model.station.AVWXStation;
 import com.marlan.weatherupdate.utilities.AltimeterUtility;
-import com.marlan.weatherupdate.utilities.Log;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Random;

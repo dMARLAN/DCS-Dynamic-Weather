@@ -1,4 +1,4 @@
-package com.marlan.weatheroutput.utilities;
+package com.marlan.utilities;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -9,7 +9,7 @@ import java.nio.file.Path;
 import static java.lang.System.getProperty;
 
 /**
- * Returns working directory using either WeatherOutput's main String[] args passed through
+ * Returns working directory using either WeatherUpdate's main String[] args passed through
  * from weather-scripts/utilities/JAR or if args are empty, then use user.dir
  */
 public class DirHandler {
