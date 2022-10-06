@@ -8,7 +8,7 @@ public class Station {
     private final double tempC;
     private final double qnh;
 
-    public Station(String metar, double tempC, double qnh){
+    public Station(String metar, double tempC, double qnh) {
         this.metar = metar;
         this.tempC = tempC;
         this.qnh = qnh;
