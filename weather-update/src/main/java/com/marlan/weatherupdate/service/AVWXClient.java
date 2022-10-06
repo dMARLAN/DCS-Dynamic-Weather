@@ -20,7 +20,7 @@ import java.net.http.HttpResponse;
  * Gets Station & METAR data from <a href="https://avwx.rest/">AVWX API</a>
  */
 public class AVWXClient {
-    static Log log = Log.getInstance();
+    private static final Log log = Log.getInstance();
     private final String dir;
     HttpClient httpClient = HttpClient.newHttpClient();
 
