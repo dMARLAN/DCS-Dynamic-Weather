@@ -25,6 +25,7 @@ import java.util.List;
  * Handles posting METAR data to Google Sheets cell
  */
 public class SheetsClient {
+    private static final Log log = Log.getInstance();
     private static final String APPLICATION_NAME = "DCS-Dynamic-Weather";
     private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
     private static final List<String> SCOPES = Collections.singletonList(SheetsScopes.SPREADSHEETS);
@@ -33,16 +34,15 @@ public class SheetsClient {
     private SheetsClient() {
     }
 
-    public static void setSheetValue(final String spreadsheetId, final String spreadsheetRange, final String value, final String workingDir)
-            throws IOException {
+    public static void setSheetValue(final String spreadsheetId, final String spreadsheetRange, final String value, final String workingDir) {
 
         if (!Files.exists(Paths.get(workingDir + CREDENTIALS_FILE_NAME))) {
-            Log.error("Credentials file not found: " + workingDir + CREDENTIALS_FILE_NAME);
+            log.error("Credentials file not found: " + workingDir + CREDENTIALS_FILE_NAME);
             return; // Guard
         }
 
-        if (spreadsheetId.isEmpty() || spreadsheetRange.isEmpty()){
-            Log.error("Spreadsheet Range or ID is empty.");
+        if (spreadsheetId.isEmpty() || spreadsheetRange.isEmpty()) {
+            log.error("Spreadsheet Range or ID is empty.");
             return; // Guard
         }
 
@@ -64,19 +64,19 @@ public class SheetsClient {
             request.setValueInputOption("RAW");
 
             executeRequest(request);
-        } catch (GeneralSecurityException gse) {
-            Log.error(gse.getMessage());
+        } catch (GeneralSecurityException | IOException e) {
+            log.error(e.getMessage());
         }
     }
 
-    private static void executeRequest(Sheets.Spreadsheets.Values.Update request){
+    private static void executeRequest(Sheets.Spreadsheets.Values.Update request) {
         String response;
         try {
             response = request.execute().toString();
         } catch (IOException ioe) {
             response = ioe.toString();
         }
-        Log.info("Sheets Update Response: " + response);
+        log.info("Sheets Update Response: " + response);
     }
 
 }
