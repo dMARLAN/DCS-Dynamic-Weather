@@ -7,6 +7,7 @@ import com.marlan.weatherupdate.model.station.AVWXStation;
  * This will convert QNH to QFF so that it can be used in DCS.
  */
 public class AltimeterUtility {
+    static Log log = Log.getInstance();
     private static final double FEET_TO_METERS = 0.3048;
     private static final double PA_TO_INHG = 0.000295299830714;
     private static final double ISA_PRESSURE_MB = 1013.25;
@@ -18,9 +19,9 @@ public class AltimeterUtility {
         double stationElevFeet = station.getElevationFt();
         double stationLatitude = station.getLatitude();
         double pressureAltitude = getPressureAltitude(stationQnhInHg) + stationElevFeet;
-        Log.info("Pressure Altitude: " + pressureAltitude + " ft");
+        log.info("Pressure Altitude: " + pressureAltitude + " ft");
         double stationQfeInHg = getQfe(pressureAltitude);
-        Log.info("Station QFE: " + stationQfeInHg + " inHg");
+        log.info("Station QFE: " + stationQfeInHg + " inHg");
         return getQff(stationQfeInHg, stationTempC, stationLatitude, stationElevFeet + 50);
     }
 

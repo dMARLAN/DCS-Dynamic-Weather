@@ -14,6 +14,7 @@ import java.nio.file.Path;
  * Handles files other than the logger, primarily for reading/writing JSON
  */
 public class FileHandler {
+    static Log log = Log.getInstance();
     private FileHandler() {
     }
 
@@ -22,7 +23,7 @@ public class FileHandler {
         try {
             return Files.readString(filePath);
         } catch (IOException ioe) {
-            Log.error(ioe.getMessage());
+            log.error(ioe.getMessage());
         }
         return "";
     }
@@ -32,7 +33,7 @@ public class FileHandler {
         try (FileWriter fileWriter = new FileWriter(file, false)) {
             fileWriter.write(newContent);
         } catch (IOException ioe) {
-            Log.error(ioe.getMessage());
+            log.error(ioe.getMessage());
         }
     }
 
@@ -44,9 +45,9 @@ public class FileHandler {
                     .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
                     .create();
             gson.toJson(jsonObject, fileWriter);
-            Log.info("Wrote JSON to " + fileName);
+            log.info("Wrote JSON to " + fileName);
         } catch (IOException ioe) {
-            Log.error(ioe.getMessage());
+            log.error(ioe.getMessage());
         }
     }
 
@@ -55,7 +56,7 @@ public class FileHandler {
         try {
             Files.delete(filePath);
         } catch (IOException ioe) {
-            Log.error(ioe.getMessage());
+            log.error(ioe.getMessage());
         }
     }
 

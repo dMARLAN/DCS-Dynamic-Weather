@@ -18,6 +18,7 @@ import com.marlan.weatherupdate.utilities.MizUtility;
  * Controller for Weather Update module
  */
 public class WeatherUpdateController {
+    static Log log = Log.getInstance();
     private WeatherUpdateController(){
     }
 
@@ -26,7 +27,7 @@ public class WeatherUpdateController {
      *                    the other folders and files needed for the program to run e.g. data, constants, secrets, etc.)
      */
     public static void run(final String WORKING_DIR) {
-        Log.info("Working Directory: " + WORKING_DIR);
+        log.info("Working Directory: " + WORKING_DIR);
         final Gson gson = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
 
         final String MISSION_FILE = "mission";
@@ -60,8 +61,6 @@ public class WeatherUpdateController {
         mizUtility.updateMiz(WORKING_DIR, dto.getMission(), MISSION_FILE);
 
         FileHandler.deleteFile(WORKING_DIR, MISSION_FILE);
-
-        Log.close();
     }
 
 }

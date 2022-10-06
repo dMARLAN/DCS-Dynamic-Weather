@@ -20,6 +20,7 @@ import java.net.http.HttpResponse;
  * Gets Station & METAR data from <a href="https://avwx.rest/">AVWX API</a>
  */
 public class AVWXClient {
+    static Log log = Log.getInstance();
     private final String dir;
     HttpClient httpClient = HttpClient.newHttpClient();
 
@@ -32,7 +33,7 @@ public class AVWXClient {
         String avwxKey = getAVWXApiKey();
         if (avwxKey.isEmpty() || dto.getStationLatitude().isEmpty() || dto.getStationLongitude().isEmpty()) {
             String errorMessage = "AVWX API Key, Station Latitude and Station Longitude are required";
-            Log.error(errorMessage);
+            log.error(errorMessage);
         } else {
             try {
                 HttpRequest getRequest = HttpRequest.newBuilder()
@@ -42,7 +43,7 @@ public class AVWXClient {
                 return sendRequest(getRequest);
 
             } catch (URISyntaxException use) {
-                Log.error(use.getMessage());
+                log.error(use.getMessage());
             }
         }
         return null;
@@ -52,7 +53,7 @@ public class AVWXClient {
         String avwxKey = getAVWXApiKey();
         if (avwxKey.isEmpty() || weatherAVWX.getStation().isEmpty()) {
             String errorMessage = "AVWX API Key and Station are required";
-            Log.error(errorMessage);
+            log.error(errorMessage);
         } else {
             try {
                 HttpRequest getRequest = HttpRequest.newBuilder()
@@ -62,7 +63,7 @@ public class AVWXClient {
                 return sendRequest(getRequest);
 
             } catch (URISyntaxException use) {
-                Log.error(use.getMessage());
+                log.error(use.getMessage());
             }
         }
         return null;
@@ -73,7 +74,7 @@ public class AVWXClient {
             return this.httpClient.send(getRequest, HttpResponse.BodyHandlers.ofString());
         } catch (IOException | InterruptedException e) {
             Thread.currentThread().interrupt();
-            Log.error(e.getMessage());
+            log.error(e.getMessage());
         }
         return null;
     }

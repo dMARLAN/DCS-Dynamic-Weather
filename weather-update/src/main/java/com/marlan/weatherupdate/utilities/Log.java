@@ -12,40 +12,48 @@ import java.time.format.DateTimeFormatter;
  * Logger for DCS Dynamic Weather, prints to logs folder.
  */
 public class Log {
-    private static final String INFO = "INFO    ";
-    private static final String WARNING = "WARNING ";
-    private static final String ERROR = "ERROR   ";
-    private static final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-    private static FileWriter loggerFw;
+    private static Log instance;
+    private final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+    private FileWriter loggerFw;
 
     private Log() {
     }
 
-    public static void info(String message) {
+    public static Log getInstance() {
+        if (instance == null) {
+            instance = new Log();
+        }
+        return instance;
+    }
+
+    public void info(String message) {
+        final String INFO = "INFO    ";
         log(INFO, message);
     }
 
-    public static void warning(String message) {
+    public void warning(String message) {
+        final String WARNING = "WARNING ";
         log(WARNING, message);
     }
 
-    public static void error(String message) {
+    public void error(String message) {
+        final String ERROR = "ERROR   ";
         log(ERROR, message);
     }
 
-    private static void log(String type, String message) {
+    private void log(String type, String message) {
         System.out.println(getDateTime() + " " + type + message);
         try {
             loggerFw.write(getDateTime() + " " + type + message + "\n");
         } catch (IOException ioe) {
-            System.out.println(getDateTime() + " " + ERROR + "Error writing to log file: " + ioe.getMessage());
+            System.out.println(getDateTime() + " ERROR   " + "Error writing to log file: " + ioe.getMessage());
         }
     }
 
     /**
      * Opens logger's file writer and writes to logs\\DCSDynamicWeather-Update.log
      */
-    public static void open(String dir) {
+    public void open(String dir) {
         String logPath = dir + "logs\\DCSDynamicWeather-Update.log";
         try {
             Files.createDirectories(Path.of(dir + "logs"));
@@ -56,9 +64,9 @@ public class Log {
     }
 
     /**
-     * Closes & flushes logger's file writer.
+     * Closes logger's file writer.
      */
-    public static void close() {
+    public void close() {
         try {
             loggerFw.close();
         } catch (IOException ioe) {
@@ -67,7 +75,7 @@ public class Log {
     }
 
     @NotNull
-    private static String getDateTime() {
+    private String getDateTime() {
         return dtf.format(java.time.LocalDateTime.now());
     }
 

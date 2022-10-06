@@ -16,6 +16,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
 public class MissionValues {
+    static Log log = Log.getInstance();
 
     private static final double ISA_TEMP_C = 15;
     private static final double ISA_PRESSURE_INHG = 29.92;
@@ -99,14 +100,14 @@ public class MissionValues {
     private String setMetar() {
         String dtoWeatherType = dto.getWeatherType();
         if (dtoWeatherType.contains("clear")) {
-            Log.info("METAR set clear");
+            log.info("METAR set clear");
             return "";
         } else {
             if (metarAVWX.getMeta().getWarning() != null) {
-                Log.warning(metarAVWX.getMeta().getWarning());
+                log.warning(metarAVWX.getMeta().getWarning());
             }
             String assignedMetar = metarAVWX.getSanitized();
-            Log.info("METAR: " + assignedMetar);
+            log.info("METAR: " + assignedMetar);
             return assignedMetar;
         }
     }

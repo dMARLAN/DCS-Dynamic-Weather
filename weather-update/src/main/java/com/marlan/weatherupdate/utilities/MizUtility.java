@@ -12,6 +12,7 @@ import static java.lang.System.getenv;
  * mission file. Uses 7zip to handle extraction/rearchiving.
  */
 public class MizUtility {
+    static Log log = Log.getInstance();
     private final String sevenZipPath;
 
     public MizUtility(@NotNull Config config) {
@@ -26,7 +27,7 @@ public class MizUtility {
      * Extracts mission file from .miz using 7zip
      */
     public void extractMission(String dir, String mizName) {
-        Log.info("Extracting: " + dir + mizName);
+        log.info("Extracting: " + dir + mizName);
         ProcessBuilder pb = new ProcessBuilder(
                 this.sevenZipPath,
                 "x",
@@ -43,7 +44,7 @@ public class MizUtility {
      * Updates .miz with new mission file using 7zip
      */
     public void updateMiz(String dir, String mizName, String missionFile) {
-        Log.info("Updating: " + dir + mizName);
+        log.info("Updating: " + dir + mizName);
         ProcessBuilder pb = new ProcessBuilder(
                 this.sevenZipPath,
                 "a",
@@ -59,9 +60,9 @@ public class MizUtility {
             Process p = pb.start();
             p.waitFor();
         } catch (IOException ioe) {
-            Log.error("Error running process: " + ioe.getMessage());
+            log.error("Error running process: " + ioe.getMessage());
         } catch (InterruptedException ie) {
-            Log.error("Error running process: " + ie.getMessage());
+            log.error("Error running process: " + ie.getMessage());
             Thread.currentThread().interrupt();
         }
     }

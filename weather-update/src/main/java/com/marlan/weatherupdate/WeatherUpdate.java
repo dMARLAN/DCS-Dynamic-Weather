@@ -16,14 +16,17 @@ import java.io.IOException;
 public class WeatherUpdate {
 
     public static void main(String[] args) {
-        final String WORKING_DIR;
+        String workingDirectory;
         try {
-            WORKING_DIR = DirHandler.getWorkingDir(args);
-            Log.open(WORKING_DIR);
-            WeatherUpdateController.run(WORKING_DIR); // Start of the Weather Update program
+            workingDirectory = DirHandler.getWorkingDir(args);
         } catch (IOException ioe) {
             ioe.printStackTrace();
-            System.exit(1);
+            workingDirectory = "";
         }
+
+        Log log = Log.getInstance();
+        log.open(workingDirectory);
+        WeatherUpdateController.run(workingDirectory); // Start of the Weather Update program
+        log.close();
     }
 }

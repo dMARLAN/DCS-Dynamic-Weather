@@ -11,6 +11,7 @@ import java.util.Random;
  * Handles replacing strings inside the mission file
  */
 public class MissionEditor {
+    static Log log = Log.getInstance();
     private static final double KNOTS_TO_METERS = 0.51444444444;
     private static final double INHG_TO_MMHG = 25.4;
     private static final double TEMP_LAPSE_RATE_C = 1.98;
@@ -56,36 +57,36 @@ public class MissionEditor {
     private String replaceQnh(String mission, double qffMmHg, double qnhInHg) {
         mission = mission.replaceAll("(\\[\"qnh\"].*)\n", "[\"qnh\"] = \\$qnh,\n".replace("$qnh", Double.toString(qffMmHg))); // DCS actually uses QFF not QNH!
         double qnhMmHg = qnhInHg * INHG_TO_MMHG;
-        Log.info("QNH set to: " + qnhInHg + " inHg (" + qnhMmHg + " mmHg)");
-        Log.info("QFF set to: " + qffMmHg / INHG_TO_MMHG + " inHg (" + qffMmHg + " mmHg)");
+        log.info("QNH set to: " + qnhInHg + " inHg (" + qnhMmHg + " mmHg)");
+        log.info("QFF set to: " + qffMmHg / INHG_TO_MMHG + " inHg (" + qffMmHg + " mmHg)");
         return mission;
     }
 
     @NotNull
     private String replaceTemperature(String mission, double stationTempC) {
         mission = mission.replaceAll("(\\[\"temperature\"].*)\n", "[\"temperature\"] = \\$stationTempC,\n".replace("$stationTempC", Double.toString(stationTempC)));
-        Log.info("Station Temperature set to: " + stationTempC + " C" + " / Sea Level Temperature set to: " + Math.round(stationTempC + TEMP_LAPSE_RATE_C * (stationAVWX.getElevationFt() / 1000)) + " C");
+        log.info("Station Temperature set to: " + stationTempC + " C" + " / Sea Level Temperature set to: " + Math.round(stationTempC + TEMP_LAPSE_RATE_C * (stationAVWX.getElevationFt() / 1000)) + " C");
         return mission;
     }
 
     @NotNull
     private String replaceMonth(String mission, int month) {
         mission = mission.replaceAll("(\\[\"Month\"].*)\n", "[\"Month\"] = \\$month,\n".replace("$month", Integer.toString(month)));
-        Log.info("Month set to: " + month);
+        log.info("Month set to: " + month);
         return mission;
     }
 
     @NotNull
     private String replaceDay(String mission, int day) {
         mission = mission.replaceAll("(\\[\"Day\"].*)\n", "[\"Day\"] = \\$day,\n".replace("$day", Integer.toString(day)));
-        Log.info("Day set to: " + day);
+        log.info("Day set to: " + day);
         return mission;
     }
 
     @NotNull
     private String replaceHour(String mission, int hour) {
         mission = mission.replaceAll("(?<=\\[\"currentKey\"]\\s{1,5}=\\s{1,5}.{1,100}\n)(.*)", "    [\"start_time\"] = $startTime,".replace("$startTime", Integer.toString(hour * 3600)));
-        Log.info("Start Time set to: " + hour * 3600 + "s (" + hour + "h)");
+        log.info("Start Time set to: " + hour * 3600 + "s (" + hour + "h)");
         return mission;
     }
 
@@ -95,7 +96,7 @@ public class MissionEditor {
                 "[\"atGround\"] =\n            {\n                [\"speed\"] = $windGroundSpeed,\n                [\"dir\"] = $windGroundDir,\n            "
                         .replace("$windGroundSpeed", Double.toString(windSpeedGround))
                         .replace("$windGroundDir", Double.toString(windDirectionGround)));
-        Log.info("Wind at Ground set to: " + Math.round(windSpeedGround) + " m/s (" + Math.round(windSpeedGround / KNOTS_TO_METERS) + " kts) " + Math.floor(invertWindDirection(windDirectionGround)) + "°");
+        log.info("Wind at Ground set to: " + Math.round(windSpeedGround) + " m/s (" + Math.round(windSpeedGround / KNOTS_TO_METERS) + " kts) " + Math.floor(invertWindDirection(windDirectionGround)) + "°");
         return mission;
     }
 
@@ -105,7 +106,7 @@ public class MissionEditor {
                 "[\"at2000\"] =\n            {\n                [\"speed\"] = $wind2000Speed,\n                [\"dir\"] = $wind2000Dir,\n            "
                         .replace("$wind2000Speed", Double.toString(windSpeed2000))
                         .replace("$wind2000Dir", Double.toString(windDirection2000)));
-        Log.info("Wind at 2000 set to: " + Math.round(windSpeed2000) + " m/s (" + Math.round(windSpeed2000 / KNOTS_TO_METERS) + " kts) " + Math.floor(invertWindDirection(windDirection2000)) + "°");
+        log.info("Wind at 2000 set to: " + Math.round(windSpeed2000) + " m/s (" + Math.round(windSpeed2000 / KNOTS_TO_METERS) + " kts) " + Math.floor(invertWindDirection(windDirection2000)) + "°");
         return mission;
     }
 
@@ -115,7 +116,7 @@ public class MissionEditor {
                 "[\"at8000\"] =\n            {\n                [\"speed\"] = $wind8000Speed,\n                [\"dir\"] = $wind8000Dir,\n            "
                         .replace("$wind8000Speed", Double.toString(windSpeed8000))
                         .replace("$wind8000Dir", Double.toString(windDirection8000)));
-        Log.info("Wind at 8000 set to: " + Math.round(windSpeed8000) + " m/s (" + Math.round(windSpeed8000 / KNOTS_TO_METERS) + " kts) " + Math.floor(invertWindDirection(windDirection8000)) + "°");
+        log.info("Wind at 8000 set to: " + Math.round(windSpeed8000) + " m/s (" + Math.round(windSpeed8000 / KNOTS_TO_METERS) + " kts) " + Math.floor(invertWindDirection(windDirection8000)) + "°");
         return mission;
     }
 
@@ -131,7 +132,7 @@ public class MissionEditor {
                     "[\"preset\"] = \"\\$cloudsPreset\",\n"
                             .replace("$cloudsPreset", cloudsPreset));
         }
-        Log.info("Clouds Preset: " + cloudsPreset);
+        log.info("Clouds Preset: " + cloudsPreset);
         return mission;
     }
 

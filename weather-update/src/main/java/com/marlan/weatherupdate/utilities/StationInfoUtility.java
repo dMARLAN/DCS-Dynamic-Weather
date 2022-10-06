@@ -9,6 +9,7 @@ import java.util.Objects;
  * Returns Time Zone Id based on latitude & longitude using TimeZoneMap otherwise returns UTC if TimeZoneMap fails.
  */
 public class StationInfoUtility {
+    static Log log = Log.getInstance();
     private StationInfoUtility() {
     }
 
@@ -23,10 +24,10 @@ public class StationInfoUtility {
         TimeZoneMap map = TimeZoneMap.forRegion(latitude - 1, longitude - 1, latitude + 1, longitude + 1);
         try {
             String zoneId = Objects.requireNonNull(map.getOverlappingTimeZone(latitude, longitude)).getZoneId();
-            Log.info("ZoneId: " + zoneId);
+            log.info("ZoneId: " + zoneId);
             return zoneId;
         } catch (NullPointerException npe) {
-            Log.warning("Unable to get ZoneId, using UTC");
+            log.warning("Unable to get ZoneId, using UTC");
             return "UTC";
         }
     }
