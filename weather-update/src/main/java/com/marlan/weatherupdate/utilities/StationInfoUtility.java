@@ -3,6 +3,7 @@ package com.marlan.weatherupdate.utilities;
 import org.jetbrains.annotations.NotNull;
 import us.dustinj.timezonemap.TimeZoneMap;
 
+import java.util.NoSuchElementException;
 import java.util.Objects;
 
 /**
@@ -26,7 +27,7 @@ public class StationInfoUtility {
             String zoneId = Objects.requireNonNull(map.getOverlappingTimeZone(latitude, longitude)).getZoneId();
             log.info("ZoneId: " + zoneId);
             return zoneId;
-        } catch (NullPointerException npe) {
+        } catch (NullPointerException | NoSuchElementException e) {
             log.warning("Unable to get ZoneId, using UTC");
             return "UTC";
         }
