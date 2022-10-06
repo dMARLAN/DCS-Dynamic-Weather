@@ -8,17 +8,19 @@ import java.nio.file.Path;
  * Handles reading JSON
  */
 public class FileHandler {
+    private static final Log log = Log.getInstance();
+
     private FileHandler() {
     }
 
-    public static String readFile(String dir, String fileName) throws IOException {
+    public static String readFile(String dir, String fileName) {
         Path filePath = Path.of(dir + fileName);
         try {
             return Files.readString(filePath);
         } catch (IOException ioe) {
-            Log.error(ioe.getMessage());
-            throw new IOException("Error: " + ioe.getMessage(), ioe);
+            log.error(ioe.getMessage());
         }
+        return "";
     }
 
 }
