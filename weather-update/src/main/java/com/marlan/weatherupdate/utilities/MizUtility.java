@@ -12,7 +12,7 @@ import static java.lang.System.getenv;
  * mission file. Uses 7zip to handle extraction/rearchiving.
  */
 public class MizUtility {
-    static Log log = Log.getInstance();
+    private static final Log log = Log.getInstance();
     private final String sevenZipPath;
 
     public MizUtility(@NotNull Config config) {
