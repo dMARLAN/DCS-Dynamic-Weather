@@ -37,10 +37,8 @@ public class MissionValues {
         this.config = config;
         this.dto = dto;
         this.metarAVWX = metarAVWX;
-
         this.wind = setWind();
         this.station = setStation();
-
         ZonedDateTime zonedDateTime = ZonedDateTime.now(ZoneId.of(StationInfoUtility.getZoneId(stationAVWX.getLatitude(), stationAVWX.getLongitude())));
         this.time = setTime(zonedDateTime);
     }
