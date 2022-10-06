@@ -10,7 +10,6 @@ repositories {
 }
 
 jar {
-
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 
     manifest {
