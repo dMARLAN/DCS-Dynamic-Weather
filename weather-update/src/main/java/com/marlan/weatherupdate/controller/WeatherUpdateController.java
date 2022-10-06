@@ -18,8 +18,9 @@ import com.marlan.weatherupdate.utilities.MizUtility;
  * Controller for Weather Update module
  */
 public class WeatherUpdateController {
-    static Log log = Log.getInstance();
-    private WeatherUpdateController(){
+    private static final Log log = Log.getInstance();
+
+    private WeatherUpdateController() {
     }
 
     /**
