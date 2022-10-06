@@ -1,5 +1,4 @@
-rootProject.name = 'dcs-weather'
+rootProject.name = 'DCS-Dynamic-Weather'
 include 'weather-update'
 include 'weather-output'
 include 'shared'
-
