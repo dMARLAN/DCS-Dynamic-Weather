@@ -10,21 +10,21 @@ import com.marlan.weatheroutput.service.sheets.SheetsClient;
 import com.marlan.weatheroutput.utilities.FileHandler;
 import com.marlan.weatheroutput.utilities.Log;
 
-import java.io.IOException;
-
 /**
  * Controller for Weather Output module
  */
 public class WeatherOutputController {
+    private static final Log log = Log.getInstance();
+
     private WeatherOutputController() {
     }
 
     /**
-     * @param WORKING_DIR Received from WeatherOutput.
-     * @throws IOException If thrown here, program fails, cannot be handled.
-     * @throws InterruptedException Should never be thrown.
+     * @param WORKING_DIR Working directory of the program which is the location of this file (which should also include
+     *                    the other folders and files needed for the program to run e.g. data, constants, secrets, etc.)
      */
-    public static void run(final String WORKING_DIR) throws IOException, InterruptedException {
+    public static void run(final String WORKING_DIR) {
+
 
         Gson gson = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
 
@@ -49,14 +49,15 @@ public class WeatherOutputController {
                 """.replace("$METAR", dto.getMetar());
 
         if (config.isOutputToDiscord()) {
-            DiscordClient.post(WORKING_DIR, jsonInput);
+            DiscordClient discordClient = new DiscordClient(WORKING_DIR, jsonInput);
+            discordClient.post();
         } else {
-            Log.info("Discord Webhook output is disabled, skipping...");
+            log.info("Discord Webhook output is disabled, skipping...");
         }
         if (config.isOutputToSheets()) {
             SheetsClient.setSheetValue(config.getSpreadsheetId(), config.getSpreadsheetRange(), dto.getMetar(), WORKING_DIR);
         } else {
-            Log.info("Google Sheets output is disabled, skipping...");
+            log.info("Google Sheets output is disabled, skipping...");
         }
     }
 }
