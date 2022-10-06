@@ -1,5 +1,6 @@
 package com.marlan.weatherupdate.utilities;
 
+import com.marlan.shared.utilities.Log;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
