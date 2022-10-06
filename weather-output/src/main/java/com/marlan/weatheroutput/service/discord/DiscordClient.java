@@ -18,12 +18,17 @@ import java.net.http.HttpResponse;
  * Handles posting METAR data to Discord Webhook
  */
 public class DiscordClient {
-    private static final HttpClient httpClient = HttpClient.newHttpClient();
+    private static final Log log = Log.getInstance();
+    private final HttpClient httpClient = HttpClient.newHttpClient();
+    private final String workingDir;
+    private final String message;
 
-    private DiscordClient() {
+    public DiscordClient(String workingDir, String message) {
+        this.workingDir = workingDir;
+        this.message = message;
     }
 
-    public static void post(String workingDir, String message) throws IOException, InterruptedException {
+    public void post() {
         final String DISCORD_KEY_PATH = "secrets\\discord_api_key.json";
         Gson gson = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
 
@@ -32,7 +37,7 @@ public class DiscordClient {
         String discordKey = discordApiKey.getDiscordApiKey();
 
         if (discordKey.isEmpty()) {
-            Log.warning("Discord API key is empty");
+            log.warning("Discord API key is empty");
         } else {
             try {
                 HttpRequest postRequest = HttpRequest.newBuilder()
@@ -40,11 +45,21 @@ public class DiscordClient {
                         .header("Content-Type", "application/json")
                         .POST(HttpRequest.BodyPublishers.ofString(message))
                         .build();
-                Log.info("Discord API Reponse: " + httpClient.send(postRequest, HttpResponse.BodyHandlers.ofString()).toString());
-            } catch (URISyntaxException use){
-                Log.error(use.getMessage());
+                log.info("Discord API Reponse: " + sendRequest(postRequest));
+            } catch (URISyntaxException use) {
+                log.error(use.getMessage());
             }
         }
+    }
+
+    private String sendRequest(HttpRequest postRequest) {
+        try {
+            return httpClient.send(postRequest, HttpResponse.BodyHandlers.ofString()).toString();
+        } catch (IOException | InterruptedException e) {
+            Thread.currentThread().interrupt();
+            log.error(e.getMessage());
+        }
+        return null;
     }
 
 }
