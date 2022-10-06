@@ -18,7 +18,7 @@ public class FileHandler {
         try {
             return Files.readString(filePath);
         } catch (IOException ioe) {
-            log.error(ioe.getMessage());
+            log.error("Could not open file: " + ioe.getMessage());
         }
         return "";
     }
