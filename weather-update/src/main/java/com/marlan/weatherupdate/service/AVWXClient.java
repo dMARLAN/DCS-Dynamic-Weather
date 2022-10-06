@@ -81,14 +81,8 @@ public class AVWXClient {
     private String getAVWXApiKey() {
         final String AVWX_API_KEY_PATH = "secrets\\avwx_api_key.json";
         Gson gson = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
-
-        try {
-            String avwxKeyFile = FileHandler.readFile(dir, AVWX_API_KEY_PATH);
-            AVWX avwx = gson.fromJson(avwxKeyFile, AVWX.class);
-            return avwx.getAvwxApiKey();
-        } catch (IOException ioe) {
-            Log.error(ioe.getMessage());
-        }
-        return "";
+        String avwxKeyFile = FileHandler.readFile(dir, AVWX_API_KEY_PATH);
+        AVWX avwx = gson.fromJson(avwxKeyFile, AVWX.class);
+        return avwx.getAvwxApiKey();
     }
 }
