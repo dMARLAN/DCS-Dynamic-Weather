@@ -16,12 +16,10 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
 public class MissionValues {
-    static Log log = Log.getInstance();
-
+    private static final Log log = Log.getInstance();
     private static final double ISA_TEMP_C = 15;
     private static final double ISA_PRESSURE_INHG = 29.92;
     private static final double INHG_TO_HPA = 33.86389;
-
     private final Config config;
     private final DTO dto;
     private final AVWXMetar metarAVWX;
