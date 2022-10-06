@@ -14,6 +14,7 @@ import java.io.IOException;
  * @author Chad Penarsky
  */
 public class WeatherUpdate {
+    private static final Log log = Log.getInstance();
 
     public static void main(String[] args) {
         String workingDirectory;
@@ -24,7 +25,6 @@ public class WeatherUpdate {
             workingDirectory = "";
         }
 
-        Log log = Log.getInstance();
         log.open(workingDirectory);
         WeatherUpdateController.run(workingDirectory); // Start of the Weather Update program
         log.close();
