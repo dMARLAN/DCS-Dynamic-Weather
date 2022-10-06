@@ -1,4 +1,4 @@
-package com.marlan.weatherupdate.service;
+package com.marlan.weatherupdate.service.avwxclient;
 
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;

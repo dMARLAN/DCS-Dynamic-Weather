@@ -1,4 +1,4 @@
-package com.marlan.weatherupdate.service.missioneditor;
+package com.marlan.weatherupdate.service.missioneditor.values;
 
 import lombok.Data;
 

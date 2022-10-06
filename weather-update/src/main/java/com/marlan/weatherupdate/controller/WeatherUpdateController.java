@@ -7,7 +7,7 @@ import com.marlan.weatherupdate.model.config.Config;
 import com.marlan.weatherupdate.model.dto.DTO;
 import com.marlan.weatherupdate.model.metar.AVWXMetar;
 import com.marlan.weatherupdate.model.station.AVWXStation;
-import com.marlan.weatherupdate.service.AVWXClient;
+import com.marlan.weatherupdate.service.avwxclient.AVWXClient;
 import com.marlan.weatherupdate.service.missioneditor.MissionEditor;
 import com.marlan.weatherupdate.service.missioneditor.MissionValues;
 import com.marlan.weatherupdate.utilities.FileHandler;
