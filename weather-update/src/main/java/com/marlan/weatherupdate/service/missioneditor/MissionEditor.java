@@ -29,7 +29,6 @@ public class MissionEditor {
         double correctedQffInHg = AltimeterUtility.getCorrectedQff(missionValues.getStation().getQnh(), missionValues.getStation().getTempC(), stationAVWX);
         double qffMmHg = correctedQffInHg * INHG_TO_MMHG;
 
-        // TODO Move this shit into MissionValues
         double windSpeedGround = getCorrectedGroundWindSpeed(missionValues.getWind().getSpeed(), stationAVWX.getElevationM()); // "Ground" Wind is 10m/33ft but also sets ~500m/1660ft
         double windSpeed2000 = getModifiedWindSpeed(2000, missionValues.getWind().getSpeed()); // "2000" Wind is 2000m/6600ft
         double windSpeed8000 = getModifiedWindSpeed(8000, missionValues.getWind().getSpeed()); // "8000" Wind is 8000m/26000ft
