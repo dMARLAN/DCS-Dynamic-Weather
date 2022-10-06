@@ -14,7 +14,8 @@ import java.nio.file.Path;
  * Handles files other than the logger, primarily for reading/writing JSON
  */
 public class FileHandler {
-    static Log log = Log.getInstance();
+    private static final Log log = Log.getInstance();
+
     private FileHandler() {
     }
 
