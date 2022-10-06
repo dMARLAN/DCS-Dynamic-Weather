@@ -9,16 +9,23 @@ import java.io.IOException;
 /**
  * Entry Point for the Weather Output module of DCS Dynamic Weather
  * Outputs METAR from DTO to Discord Webhook and/or Google Sheets if config file is set to true for either.
+ *
  * @author Chad Penarsky
  */
 public class WeatherOutput {
-    public static void main(String[] args) throws IOException, InterruptedException {
-        final String WORKING_DIR = DirHandler.getWorkingDir(args);
-        Log.open(WORKING_DIR);
-        Log.info("Working Directory: " + WORKING_DIR);
+    private static final Log log = Log.getInstance();
 
-        WeatherOutputController.run(WORKING_DIR);
+    public static void main(String[] args) {
+        String workingDirectory;
+        try {
+            workingDirectory = DirHandler.getWorkingDir(args);
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+            workingDirectory = "";
+        }
 
-        Log.close();
+        log.open(workingDirectory);
+        WeatherOutputController.run(workingDirectory); // Start of the Weather Output program
+        log.close();
     }
 }
