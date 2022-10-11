@@ -34,7 +34,7 @@ public class FileHandler {
         try (FileWriter fileWriter = new FileWriter(file, false)) {
             fileWriter.write(newContent);
         } catch (IOException ioe) {
-            log.error(ioe.getMessage());
+            log.error("Could not overwrite file: " + ioe.getMessage());
         }
     }
 
@@ -48,7 +48,7 @@ public class FileHandler {
             gson.toJson(jsonObject, fileWriter);
             log.info("Wrote JSON to " + fileName);
         } catch (IOException ioe) {
-            log.error(ioe.getMessage());
+            log.error("Could not write JSON: " + ioe.getMessage());
         }
     }
 
@@ -57,7 +57,7 @@ public class FileHandler {
         try {
             Files.delete(filePath);
         } catch (IOException ioe) {
-            log.error(ioe.getMessage());
+            log.error("Could not delete file: " + ioe.getMessage());
         }
     }
 
