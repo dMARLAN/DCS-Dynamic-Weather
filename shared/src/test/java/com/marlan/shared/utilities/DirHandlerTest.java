@@ -16,12 +16,7 @@ class DirHandlerTest {
     @Order(1)
     void EmptyArgsShouldEqualSharedDir() {
         String[] args = {};
-        String workingDir = "";
-        try {
-            workingDir = DirHandler.getWorkingDir(args);
-        } catch (IOException ioe) {
-            fail("Exception thrown: " + ioe.getMessage());
-        }
+        String workingDir = DirHandler.getWorkingDir(args);
         assertTrue(workingDir.endsWith("shared\\"));
     }
 
@@ -29,12 +24,7 @@ class DirHandlerTest {
     @DisplayName("Null Args should return user.dir")
     @Order(2)
     void NullArgsShouldEqualSharedDir() {
-        String workingDir = "";
-        try {
-            workingDir = DirHandler.getWorkingDir(null);
-        } catch (IOException ioe) {
-            fail("Exception thrown: " + ioe.getMessage());
-        }
+        String workingDir = DirHandler.getWorkingDir(null);
         assertTrue(workingDir.endsWith("shared\\"));
     }
 
@@ -59,12 +49,7 @@ class DirHandlerTest {
 
         // Test Block
         String[] args = {testDirName};
-        String workingDir = "";
-        try {
-            workingDir = DirHandler.getWorkingDir(args);
-        } catch (IOException ioe) {
-            fail("Exception thrown: " + ioe.getMessage());
-        }
+        String workingDir = DirHandler.getWorkingDir(args);
         assertTrue(workingDir.endsWith("testDir\\"));
 
         // Teardown
