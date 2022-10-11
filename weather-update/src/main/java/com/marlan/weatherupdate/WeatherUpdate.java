@@ -25,7 +25,7 @@ public class WeatherUpdate {
             workingDirectory = "";
         }
 
-        log.open(workingDirectory);
+        log.open(workingDirectory, "DCSDynamicWeather-WeatherUpdate.log");
         WeatherUpdateController.run(workingDirectory); // Start of the Weather Update program
         log.close();
     }

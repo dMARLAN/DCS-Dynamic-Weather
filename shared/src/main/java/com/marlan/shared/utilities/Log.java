@@ -56,8 +56,8 @@ public class Log {
     /**
      * Opens logger's file writer and writes to logs\\DCSDynamicWeather-Update.log
      */
-    public void open(String dir) {
-        String logPath = dir + "logs\\DCSDynamicWeather-Update.log";
+    public void open(String dir, String fileName) {
+        String logPath = dir + "logs\\" + fileName;
         try {
             Files.createDirectories(Path.of(dir + "logs"));
             loggerFw = new FileWriter(logPath, true);
