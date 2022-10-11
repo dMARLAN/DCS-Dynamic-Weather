@@ -96,7 +96,6 @@ class AltimeterUtilityTest {
         station.setLatitude(44.227816); // Kutaisi AFB Latitude
         double qff = AltimeterUtility.getCorrectedQff(stationQnhInHg, stationTempC, station);
         qff = Math.round(qff * 100.0) / 100.0;
-        System.out.println(qff);
         assertEquals(30.09, qff, qnhDelta);
     }
 
