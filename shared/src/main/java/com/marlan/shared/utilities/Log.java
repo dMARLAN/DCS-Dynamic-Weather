@@ -53,11 +53,9 @@ public class Log {
         }
     }
 
-    /**
-     * Opens logger's file writer and writes to logs\\DCSDynamicWeather-Update.log
-     */
     public void open(String dir, String fileName) {
-        String logPath = dir + "logs\\" + fileName;
+        String timeStamp = DateTimeFormatter.ofPattern("-yyMMdd").format(java.time.LocalDateTime.now());
+        String logPath = dir + "logs\\" + fileName + timeStamp + ".log";
         try {
             Files.createDirectories(Path.of(dir + "logs"));
             loggerFw = new FileWriter(logPath, true);
@@ -66,9 +64,6 @@ public class Log {
         }
     }
 
-    /**
-     * Closes logger's file writer.
-     */
     public void close() {
         try {
             loggerFw.close();

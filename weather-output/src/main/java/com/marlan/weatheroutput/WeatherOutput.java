@@ -24,7 +24,7 @@ public class WeatherOutput {
             workingDirectory = "";
         }
 
-        log.open(workingDirectory, "DCSDynamicWeather-WeatherOutput.log");
+        log.open(workingDirectory, "DCSDynamicWeather-WeatherOutput");
         WeatherOutputController.run(workingDirectory); // Start of the Weather Output program
         log.close();
     }
