@@ -37,13 +37,13 @@ public class AltimeterUtility {
 
     private static double getQfe(double pressureAltitude) {
         // https://en.wikipedia.org/wiki/Atmospheric_pressure
-        double h = pressureAltitude * FEET_TO_METERS;
-        double p0 = 101325; // Sea Level Standard Atmospheric Pressure (Pa)
-        double t0 = 288.15; // Sea Level Standard Temperature (K)
-        double g = 9.80665; // Acceleration of Gravity (m/s^2)
-        double m = 0.0289647; // Molar Mass of Earth's Air (kg/mol)
-        double r0 = 8.314462618; // Universal Gas Constant (J/mol/K)
-        double cp = 1004.68506; // Specific Heat Capacity of Air (J/kg/K)
+        final double h = pressureAltitude * FEET_TO_METERS;
+        final double p0 = 101325; // Sea Level Standard Atmospheric Pressure (Pa)
+        final double t0 = 288.15; // Sea Level Standard Temperature (K)
+        final double g = 9.80665; // Acceleration of Gravity (m/s^2)
+        final double m = 0.0289647; // Molar Mass of Earth's Air (kg/mol)
+        final double r0 = 8.314462618; // Universal Gas Constant (J/mol/K)
+        final double cp = 1004.68506; // Specific Heat Capacity of Air (J/kg/K)
 
         return p0 * Math.pow(1 - ((g * h) / (cp * t0)), (cp * m) / (r0)) / PA_TO_INHG;
     }
