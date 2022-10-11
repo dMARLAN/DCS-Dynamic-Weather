@@ -21,15 +21,15 @@ public class DirHandler {
     public static String getWorkingDir(String[] args) {
         if (args != null && args.length != 0) {
             if (!Files.exists(Path.of(args[0]))) {
-                System.out.println("ERROR: Directory does not exist: " + args[0]);
-                System.exit(1); // Unrecoverable error
+                throw new IllegalArgumentException("Directory does not exist: " + args[0]);
             }
             System.setProperty("user.dir", args[0]);
         }
         String workingDir = getProperty("user.dir") + "\\";
-        if (!Files.exists(Path.of(workingDir))) {
-            System.out.println("ERROR: Directory inaccessible " + workingDir);
-            System.exit(1); // Unrecoverable error
+
+        Path workingDirPath = Path.of(workingDir);
+        if (!Files.isReadable(workingDirPath) || !Files.isWritable(workingDirPath)) {
+            throw new SecurityException("Missing read/write permissions: " + workingDir);
         }
         return workingDir;
     }

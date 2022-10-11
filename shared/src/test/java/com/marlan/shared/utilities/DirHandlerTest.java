@@ -29,10 +29,10 @@ class DirHandlerTest {
     }
 
     @Test
-    @DisplayName("Nonexistent Args Directory should throw IOException")
+    @DisplayName("Nonexistent Args Directory should throw IllegalArgumentException")
     @Order(2)
-    void NonexistentArgsDirShouldThrowIOException() {
-        assertThrows(IOException.class, () -> DirHandler.getWorkingDir(new String[]{"nonexistentDirectory"}));
+    void NonexistentArgsDirShouldThrowIllegalArgumentException() {
+        assertThrows(IllegalArgumentException.class, () -> DirHandler.getWorkingDir(new String[]{"nonexistentDirectory"}));
     }
 
     @Test
