@@ -9,7 +9,7 @@ import java.nio.file.Path;
 import static java.lang.System.getProperty;
 
 /**
- * Returns working directory using either WeatherUpdate's main String[] args passed through
+ * Returns working directory using either entry points's main String[] args passed through
  * from weather-scripts/utilities/JAR or if args are empty, then use user.dir
  */
 public class DirHandler {
@@ -18,7 +18,10 @@ public class DirHandler {
 
     @NotNull
     public static String getWorkingDir(String[] args) throws IOException {
-        if (args != null && args.length != 0 && Files.exists(Path.of(args[0]))) {
+        if (args != null && args.length != 0) {
+            if (!Files.exists(Path.of(args[0]))) {
+                throw new IOException("Directory does not exist: " + args[0]);
+            }
             System.setProperty("user.dir", args[0]);
         }
         String workingDir = getProperty("user.dir") + "\\";
