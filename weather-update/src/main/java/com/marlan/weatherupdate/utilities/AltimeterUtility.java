@@ -2,6 +2,7 @@ package com.marlan.weatherupdate.utilities;
 
 import com.marlan.shared.utilities.Log;
 import com.marlan.weatherupdate.model.station.AVWXStation;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * DCS does not actually use QNH but instead uses QFF when set inside the mission file.
@@ -16,15 +17,14 @@ public class AltimeterUtility {
     private AltimeterUtility() {
     }
 
-    public static double getCorrectedQff(double stationQnhInHg, double stationTempC, AVWXStation station) {
+    public static double getCorrectedQff(double stationQnhInHg, double stationTempC, @NotNull AVWXStation station) {
         double stationElevFeet = station.getElevationFt();
         double stationLatitude = station.getLatitude();
         double pressureAltitude = getPressureAltitude(stationQnhInHg) + stationElevFeet;
         log.info("Pressure Altitude: " + pressureAltitude + " ft");
         double stationQfeInHg = getQfe(pressureAltitude);
         log.info("Station QFE: " + stationQfeInHg + " inHg");
-        double sigmoidApproximation = 60 / (1 + (Math.pow(Math.E,-(stationElevFeet/185 - 7.5)))); // Makes up for some missing parameter in the formula.
-        System.out.println("Magic Approximation: " + sigmoidApproximation);
+        double sigmoidApproximation = 60 / (1 + (Math.pow(Math.E,-(stationElevFeet/185 - 7.5)))); // Approximates some missing parameter in the formula.
         return getQff(stationQfeInHg, stationTempC, stationLatitude, stationElevFeet + sigmoidApproximation);
     }
 
