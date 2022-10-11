@@ -15,7 +15,7 @@ public class Log {
     private static Log instance;
     private final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
     private FileWriter loggerFw;
-    private boolean enabled = true;
+    private boolean isOpen = false;
 
     private Log() {
     }
@@ -43,7 +43,7 @@ public class Log {
     }
 
     private void log(String type, String message) {
-        if (enabled) {
+        if (isOpen) {
             System.out.println(getDateTime() + " " + type + message);
             try {
                 loggerFw.write(getDateTime() + " " + type + message + "\n");
@@ -59,6 +59,7 @@ public class Log {
         try {
             Files.createDirectories(Path.of(dir + "logs"));
             loggerFw = new FileWriter(logPath, true);
+            isOpen = true;
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
@@ -70,13 +71,6 @@ public class Log {
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
-    }
-
-    /**
-     * For disabling logger during testing.
-     */
-    public void disable() {
-        enabled = false;
     }
 
     @NotNull

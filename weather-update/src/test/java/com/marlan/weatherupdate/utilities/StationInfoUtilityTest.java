@@ -1,7 +1,5 @@
 package com.marlan.weatherupdate.utilities;
 
-import com.marlan.shared.utilities.Log;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -9,13 +7,6 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class StationInfoUtilityTest {
-    static Log log = Log.getInstance();
-
-    @BeforeAll
-    static void setup() {
-        log.disable();
-    }
-
     @Test
     @DisplayName("Invalid latitude and longitude should return UTC")
     void invalidLatLongShouldReturnUTC() {
