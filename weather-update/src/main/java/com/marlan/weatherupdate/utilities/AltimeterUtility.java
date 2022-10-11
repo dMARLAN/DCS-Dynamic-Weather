@@ -10,7 +10,7 @@ import com.marlan.weatherupdate.model.station.AVWXStation;
 public class AltimeterUtility {
     private static final Log log = Log.getInstance();
     private static final double FEET_TO_METERS = 0.3048;
-    private static final double PA_TO_INHG = 0.000295299830714;
+    private static final double PA_TO_INHG = 3386.5307486631016042780748663102;
     private static final double ISA_PRESSURE_MB = 1013.25;
 
     private AltimeterUtility() {
@@ -23,12 +23,14 @@ public class AltimeterUtility {
         log.info("Pressure Altitude: " + pressureAltitude + " ft");
         double stationQfeInHg = getQfe(pressureAltitude);
         log.info("Station QFE: " + stationQfeInHg + " inHg");
-        return getQff(stationQfeInHg, stationTempC, stationLatitude, stationElevFeet + 50);
+        double sigmoidApproximation = 60 / (1 + (Math.pow(Math.E,-(stationElevFeet/185 - 7.5)))); // Makes up for some missing parameter in the formula.
+        System.out.println("Magic Approximation: " + sigmoidApproximation);
+        return getQff(stationQfeInHg, stationTempC, stationLatitude, stationElevFeet + sigmoidApproximation);
     }
 
     private static double getPressureAltitude(Double stationQnhInHg) {
         // https://en.wikipedia.org/wiki/Pressure_altitude
-        final double INHG_TO_MB = 33.864;
+        final double INHG_TO_MB = 33.865307486631016042780748663102;
         double stationQnhMb = stationQnhInHg * INHG_TO_MB;
         return 145366.45 * (1 - Math.pow((stationQnhMb / ISA_PRESSURE_MB), 0.190284));
     }
@@ -37,13 +39,13 @@ public class AltimeterUtility {
         // https://en.wikipedia.org/wiki/Atmospheric_pressure
         double h = pressureAltitude * FEET_TO_METERS;
         double p0 = 101325; // Sea Level Standard Atmospheric Pressure (Pa)
-        double t0 = 288.16; // Sea Level Standard Temperature (K)
+        double t0 = 288.15; // Sea Level Standard Temperature (K)
         double g = 9.80665; // Acceleration of Gravity (m/s^2)
-        double m = 0.02896968; // Molar Mass of Earth's Air (kg/mol)
+        double m = 0.0289647; // Molar Mass of Earth's Air (kg/mol)
         double r0 = 8.314462618; // Universal Gas Constant (J/mol/K)
         double cp = 1004.68506; // Specific Heat Capacity of Air (J/kg/K)
 
-        return p0 * Math.pow(1 - ((g * h) / (cp * t0)), (cp * m) / (r0)) * PA_TO_INHG;
+        return p0 * Math.pow(1 - ((g * h) / (cp * t0)), (cp * m) / (r0)) / PA_TO_INHG;
     }
 
     private static double getQff(double qfeInHg, double temperatureInCelsius, double stationLatitude, double stationElevFeet) {
