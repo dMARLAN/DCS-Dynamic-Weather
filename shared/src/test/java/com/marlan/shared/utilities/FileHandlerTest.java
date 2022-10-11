@@ -33,7 +33,7 @@ class FileHandlerTest {
                     Files.delete(filePath);
                 }
             } catch (IOException ioe) {
-                System.out.println("IOException was thrown deleting: " + testFile);
+                fail("IOException was thrown deleting: " + testFile);
             }
         }
     }
