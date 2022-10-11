@@ -25,13 +25,16 @@ class FileHandlerTest {
 
     @AfterAll
     static void teardown() {
-        Path filePath = Path.of("test.txt");
-        try {
-            if (Files.exists(filePath)) {
-                Files.delete(filePath);
+        String[] testFiles = {"test.txt", "test.json"};
+        for (String testFile : testFiles) {
+            Path filePath = Path.of(testFile);
+            try {
+                if (Files.exists(filePath)) {
+                    Files.delete(filePath);
+                }
+            } catch (IOException ioe) {
+                System.out.println("IOException was thrown deleting: " + testFile);
             }
-        } catch (IOException ioe) {
-            fail("IOException was thrown deleting test file.");
         }
     }
 
@@ -72,6 +75,23 @@ class FileHandlerTest {
     @DisplayName("Deleting non existent file throws no exception")
     void fileDeleteShouldNotDelete() {
         assertDoesNotThrow(() -> FileHandler.deleteFile("", "nonexistent.txt"));
+    }
+
+    @Test
+    @DisplayName("Writing JSON matches expected output")
+    void writeJSONShouldMatchExpectedOutput() {
+        String expectedOutput =
+                """
+                {
+                  "test_key": "testValue"
+                }""";
+        FileHandler.writeJSON("", "test.json", new TestObject());
+        String readResult = FileHandler.readFile("", "test.json");
+        assertEquals(expectedOutput, readResult);
+    }
+    private static class TestObject {
+        @SuppressWarnings("unused")
+        private final String testKey = "testValue";
     }
 
 }
