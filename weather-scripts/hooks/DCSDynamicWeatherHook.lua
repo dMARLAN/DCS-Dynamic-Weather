@@ -16,7 +16,6 @@ function DCSDynamicWeatherCallbacks.onMissionLoadEnd()
         DCSDynamicWeatherHook.Logger.info(THIS_METHOD, "\"DCSDW\" not found in mission description (situation), skipping mission name injection.")
         return
     end
-    DCSDynamicWeatherHook.Logger.info(THIS_METHOD, "Mission Description: " .. missionDesc)
 
     local code = [[a_do_script("DCSDynamicWeather.MISSION_NAME = \"]] .. missionName .. [[\"")]]
 
