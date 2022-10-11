@@ -79,21 +79,21 @@ class AltimeterUtilityTest {
         double stationQnhInHg = 29.75;
         double stationTempC = 10;
         AVWXStation station = new AVWXStation();
-        station.setElevationFt(1722); // Kutaisi AFB Elevation
-        station.setLatitude(43.205683); // Kutaisi AFB Latitude
+        station.setElevationFt(1722); // Beslan AFB Elevation
+        station.setLatitude(43.205683); // Beslan AFB Latitude
         double qff = AltimeterUtility.getCorrectedQff(stationQnhInHg, stationTempC, station);
         qff = Math.round(qff * 100.0) / 100.0;
         assertEquals(29.80, qff, qnhDelta);
     }
 
     @Test
-    @DisplayName("Mineralnye Vody AFB: 30.05 InHg QNH & 0.0C == 30.53 InHg QFF")
+    @DisplayName("Mineralnye Vody AFB: 30.05 InHg QNH & 0.0C == 30.09 InHg QFF")
     void mineralnyeVodyAFBTestOne() {
         double stationQnhInHg = 30.05;
         double stationTempC = 0;
         AVWXStation station = new AVWXStation();
-        station.setElevationFt(1050); // Kutaisi AFB Elevation
-        station.setLatitude(44.227816); // Kutaisi AFB Latitude
+        station.setElevationFt(1050); // Mineralnye Vody AFB Elevation
+        station.setLatitude(44.227816); // Mineralnye Vody AFB Latitude
         double qff = AltimeterUtility.getCorrectedQff(stationQnhInHg, stationTempC, station);
         qff = Math.round(qff * 100.0) / 100.0;
         assertEquals(30.09, qff, qnhDelta);
