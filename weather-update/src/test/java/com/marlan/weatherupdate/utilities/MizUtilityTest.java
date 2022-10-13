@@ -25,4 +25,16 @@ class MizUtilityTest {
         assertEquals(expectedPath, new MizUtility(config).getSevenZipPath());
     }
 
+    @Test
+    @DisplayName("Mission file should be extracted from .miz")
+    void missionFileShouldBeExtractedFromMiz() {
+        fail("Not implemented");
+    }
+
+    @Test
+    @DisplayName("Mission file should be updated in .miz")
+    void missionFileShouldBeUpdatedInMiz() {
+        fail("Not implemented");
+    }
+
 }
