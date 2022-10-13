@@ -24,8 +24,10 @@ class MizUtilityTest {
             Field sevenZipPathField = mizUtility.getClass().getDeclaredField(sevenZipPathVarName);
             sevenZipPathField.setAccessible(true);
             actual = sevenZipPathField.get(mizUtility).toString();
-        } catch (NoSuchFieldException | IllegalAccessException nsfe){
+        } catch (NoSuchFieldException nsfe){
             fail(sevenZipPathVarName + " field not found");
+        } catch (IllegalAccessException iae){
+            fail(sevenZipPathVarName + " field not accessible");
         }
 
         assertEquals(expectedPath, actual);
