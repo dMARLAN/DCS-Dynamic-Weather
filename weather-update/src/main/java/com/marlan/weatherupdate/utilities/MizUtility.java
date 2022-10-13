@@ -2,6 +2,7 @@ package com.marlan.weatherupdate.utilities;
 
 import com.marlan.shared.utilities.Log;
 import com.marlan.shared.model.Config;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -14,7 +15,7 @@ import static java.lang.System.getenv;
  */
 public class MizUtility {
     private static final Log log = Log.getInstance();
-    private final String sevenZipPath;
+    @Getter private final String sevenZipPath;
 
     public MizUtility(@NotNull Config config) {
         if (config.getCustomSevenZipPath().isEmpty()) {
