@@ -18,7 +18,7 @@ function menuHandler:onEvent(event)
     end
 end
 
-function createGroupSpecificMenus(adminGroupID, ADMIN_GROUP_NAME)
+function createGroupSpecificMenus(adminGroupID, adminGroupName)
     if setWeatherMenu ~= nil then
         return
     end
@@ -48,7 +48,7 @@ function createGroupSpecificMenus(adminGroupID, ADMIN_GROUP_NAME)
     local real0000Confirm = missionCommands.addSubMenuForGroup(adminGroupID, "Real: 0000L", setWeatherMenu)
     missionCommands.addCommandForGroup(adminGroupID, "Confirm", real0000Confirm, setWeather, "real0000")
 
-    DCSDynamicWeather.Logger.info(THIS_FILE, "Created Set Weather Menus for " .. ADMIN_GROUP_NAME)
+    DCSDynamicWeather.Logger.info(THIS_FILE, "Created Set Weather Menus for " .. adminGroupName)
 end
 
 function createAllGroupsMenus()
