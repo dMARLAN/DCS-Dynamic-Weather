@@ -9,5 +9,8 @@
   "output_to_sheets": false,
   "output_to_discord": false,
   "spreadsheet_id": "",
-  "spreadsheet_range": ""
+  "spreadsheet_range": "",
+  "cyclic_ops": true,
+  "cyclic_windows": 8,
+  "cyclic_length": 75
 }

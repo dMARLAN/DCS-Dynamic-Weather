@@ -7,7 +7,7 @@ local THIS_FILE = "DCSDynamicWeatherHook"
 local DCS_ROOT = lfs.currentdir()
 local DCS_SG = lfs.writedir()
 
-local simulationStartTime = DCS.getRealTime()
+local simulationStartTime = DCS.getRealTime() -- Unnecessary ?
 
 function DCSDynamicWeatherCallbacks.onMissionLoadEnd()
     simulationStartTime = DCS.getRealTime()
