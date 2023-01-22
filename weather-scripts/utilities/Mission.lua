@@ -4,8 +4,6 @@ local THIS_FILE = DCSDynamicWeather.MODULE_NAME .. ".Mission"
 local invertMissionIdentifier, getNextMissionName, loadMission, fileExists, copyFileWithNewIdentifier, invertIdentifier
 
 function DCSDynamicWeather.Mission.loadNextMission(weatherType)
-    local THIS_METHOD = THIS_FILE .. ".loadNextMission()"
-
     weatherType = weatherType or "real"
     local nextMissionName = getNextMissionName()
     trigger.action.outText("[DCSDynamicWeather]: Preparing to load next mission...", 10)

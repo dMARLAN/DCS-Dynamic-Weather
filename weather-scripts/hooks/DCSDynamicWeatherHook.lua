@@ -1,7 +1,6 @@
 local DCS_DYNAMIC_WEATHER_HOOK_VERSION = "1.1.0"
 local DCSDynamicWeather = {}
 local DCSDynamicWeatherCallbacks = {}
-local socket = require("socket")
 DCSDynamicWeather.Logger = {}
 
 local THIS_FILE = "DCSDynamicWeatherHook"
@@ -9,8 +8,22 @@ local DCS_ROOT = lfs.currentdir()
 local DCS_SG = lfs.writedir()
 
 local missionLoaded = false
-local simulationStartTime = DCS.getRealTime() -- Unnecessary ?
+local simulationStartTime = DCS.getRealTime()
+local initialPauseState
 function DCSDynamicWeatherCallbacks.onMissionLoadEnd()
+    local THIS_METHOD = "DCSDynamicWeatherCallbacks.onMissionLoadEnd"
+    initialPauseState = DCS.getPause()
+    DCSDynamicWeather.Logger.info(THIS_METHOD, "Initial pause state: " .. tostring(initialPauseState))
+    if initialPauseState then
+        DCS.setPause(false)
+    end
+
+    local missionDesc = DCS.getMissionDescription()
+    if not string.find(missionDesc, "DCSDW") then
+        DCSDynamicWeather.Logger.info(THIS_METHOD, "\"DCSDW\" not found in mission description (situation), skipping.")
+        return
+    end
+
     missionLoaded = true
     simulationStartTime = DCS.getRealTime()
     DCSDynamicWeather.injectMissionNameToScriptEnv()
@@ -33,44 +46,41 @@ end
 
 local waiting = false
 local checkRestartTime = 0
-local okayRestart = false
+local initialPauseStateSet = false
 function DCSDynamicWeatherCallbacks.onSimulationFrame()
+    if DCS.getRealTime() > simulationStartTime + 5 and not initialPauseStateSet then
+        DCS.setPause(initialPauseState)
+        initialPauseStateSet = true
+    end
+    DCSDynamicWeather.checkCondForRestart()
+end
+
+function DCSDynamicWeather.checkCondForRestart()
+    local THIS_METHOD = "DCSDynamicWeather.waitForRestart"
     if not missionLoaded then
         return
     end
+
     if not waiting then
         waiting = true
         checkRestartTime = DCS.getRealTime() + 15
     else
-        if (DCS.getRealTime() > checkRestartTime and not okayRestart) then
-            okayRestart = DCSDynamicWeather.checkCondForRestart()
+        if (DCS.getRealTime() > checkRestartTime) then
+            if (DCS.getRealTime() > simulationStartTime + DCSDynamicWeather.getRestartTimeInSeconds()) then
+                DCSDynamicWeather.Logger.info(THIS_METHOD, "Restarting mission.")
+                DCS.setPause(false)
+                DCSDynamicWeather.restart()
+            else
+                local timeUntilRestart = DCSDynamicWeather.getRestartTimeInSeconds() + simulationStartTime - DCS.getRealTime()
+                DCSDynamicWeather.Logger.info(THIS_METHOD, "Waiting for restart. (" .. timeUntilRestart .. " seconds)")
+            end
             waiting = false
         end
     end
 end
 
-function DCSDynamicWeather.checkCondForRestart()
-    local THIS_METHOD = "DCSDynamicWeather.waitForRestart"
-    if (DCS.getRealTime() > simulationStartTime + DCSDynamicWeather.getRestartTimeInSeconds()) then
-        DCSDynamicWeather.Logger.info(THIS_METHOD, "Restarting mission.")
-        DCSDynamicWeather.restart()
-        return true
-    else
-        local timeUntilRestart = DCSDynamicWeather.getRestartTimeInSeconds() + simulationStartTime - DCS.getRealTime()
-        DCSDynamicWeather.Logger.info(THIS_METHOD, "Waiting for restart. (" .. timeUntilRestart .. " seconds)")
-        return false
-    end
-end
-
 function DCSDynamicWeather.injectMissionNameToScriptEnv()
-    local THIS_METHOD = "DCSDynamicWeatherCallbacks.onMissionLoadEnd"
     local missionName = DCS.getMissionName()
-    local missionDesc = DCS.getMissionDescription()
-
-    if not string.find(missionDesc, "DCSDW") then
-        DCSDynamicWeather.Logger.info(THIS_METHOD, "\"DCSDW\" not found in mission description (situation), skipping mission name injection.")
-        return
-    end
 
     local code = [[a_do_script("DCSDynamicWeather.MISSION_NAME = \"]] .. missionName .. [[\"")]]
     DCSDynamicWeather.injectCodeStringToScriptEnv(code)
@@ -94,10 +104,6 @@ end
 
 function DCSDynamicWeather.getRestartTimeInSeconds()
     return 120 -- TODO: Make this configurable
-end
-
-function DCSDynamicWeather.sleep(n)
-    socket.sleep(n)
 end
 
 function DCSDynamicWeather.fileExists(file)
