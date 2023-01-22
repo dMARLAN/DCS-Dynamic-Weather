@@ -10,12 +10,21 @@ local DCS_SG = lfs.writedir()
 local missionLoaded = false
 local simulationStartTime = DCS.getRealTime()
 local initialPauseState
+local waiting = false
+local checkRestartTime = 0
+local initialPauseStateSet = false
+
 function DCSDynamicWeatherCallbacks.onMissionLoadEnd()
     local THIS_METHOD = "DCSDynamicWeatherCallbacks.onMissionLoadEnd"
+    waiting = false
+    checkRestartTime = 0
+    initialPauseStateSet = false
+
     initialPauseState = DCS.getPause()
     DCSDynamicWeather.Logger.info(THIS_METHOD, "Initial pause state: " .. tostring(initialPauseState))
     if initialPauseState then
         DCS.setPause(false)
+        DCSDynamicWeather.Logger.info(THIS_METHOD, "Pause State set to: " .. tostring(false))
     end
 
     local missionDesc = DCS.getMissionDescription()
@@ -44,12 +53,11 @@ function DCSDynamicWeatherCallbacks.onTriggerMessage(message, _, _)
     end
 end
 
-local waiting = false
-local checkRestartTime = 0
-local initialPauseStateSet = false
 function DCSDynamicWeatherCallbacks.onSimulationFrame()
+    local THIS_METHOD = "DCSDynamicWeatherCallbacks.onSimulationFrame"
     if DCS.getRealTime() > simulationStartTime + 5 and not initialPauseStateSet then
         DCS.setPause(initialPauseState)
+        DCSDynamicWeather.Logger.info(THIS_METHOD, "Pause State set to: " .. tostring(initialPauseState))
         initialPauseStateSet = true
     end
     DCSDynamicWeather.checkCondForRestart()
@@ -69,6 +77,7 @@ function DCSDynamicWeather.checkCondForRestart()
             if (DCS.getRealTime() > simulationStartTime + DCSDynamicWeather.getRestartTimeInSeconds()) then
                 DCSDynamicWeather.Logger.info(THIS_METHOD, "Restarting mission.")
                 DCS.setPause(false)
+                DCSDynamicWeather.Logger.info(THIS_METHOD, "Pause State set to: " .. tostring(false))
                 DCSDynamicWeather.restart()
             else
                 local timeUntilRestart = DCSDynamicWeather.getRestartTimeInSeconds() + simulationStartTime - DCS.getRealTime()
@@ -103,7 +112,7 @@ function DCSDynamicWeather.injectCodeStringToScriptEnv(code)
 end
 
 function DCSDynamicWeather.getRestartTimeInSeconds()
-    return 120 -- TODO: Make this configurable
+    return 60 -- TODO: Make this configurable
 end
 
 function DCSDynamicWeather.fileExists(file)
