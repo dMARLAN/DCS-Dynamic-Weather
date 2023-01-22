@@ -1,18 +1,19 @@
-local DCS_DYNAMIC_WEATHER_HOOK_VERSION = "1.0.0"
+local DCS_DYNAMIC_WEATHER_HOOK_VERSION = "1.1.0"
 local DCSDynamicWeather = {}
 local DCSDynamicWeatherCallbacks = {}
+local socket = require("socket")
 DCSDynamicWeather.Logger = {}
 
 local THIS_FILE = "DCSDynamicWeatherHook"
 local DCS_ROOT = lfs.currentdir()
 local DCS_SG = lfs.writedir()
 
+local missionLoaded = false
 local simulationStartTime = DCS.getRealTime() -- Unnecessary ?
-
 function DCSDynamicWeatherCallbacks.onMissionLoadEnd()
+    missionLoaded = true
     simulationStartTime = DCS.getRealTime()
     DCSDynamicWeather.injectMissionNameToScriptEnv()
-    DCSDynamicWeather.scheduleRestart()
 end
 
 function DCSDynamicWeatherCallbacks.onTriggerMessage(message, _, _)
@@ -30,9 +31,34 @@ function DCSDynamicWeatherCallbacks.onTriggerMessage(message, _, _)
     end
 end
 
+local waiting = false
+local checkRestartTime = 0
+local okayRestart = false
 function DCSDynamicWeatherCallbacks.onSimulationFrame()
-    if (DCSDynamicWeather.getRestartTimeInSeconds() + simulationStartTime > DCS.getRealTime()) then
+    if not missionLoaded then
+        return
+    end
+    if not waiting then
+        waiting = true
+        checkRestartTime = DCS.getRealTime() + 15
+    else
+        if (DCS.getRealTime() > checkRestartTime and not okayRestart) then
+            okayRestart = DCSDynamicWeather.checkCondForRestart()
+            waiting = false
+        end
+    end
+end
+
+function DCSDynamicWeather.checkCondForRestart()
+    local THIS_METHOD = "DCSDynamicWeather.waitForRestart"
+    if (DCS.getRealTime() > simulationStartTime + DCSDynamicWeather.getRestartTimeInSeconds()) then
+        DCSDynamicWeather.Logger.info(THIS_METHOD, "Restarting mission.")
         DCSDynamicWeather.restart()
+        return true
+    else
+        local timeUntilRestart = DCSDynamicWeather.getRestartTimeInSeconds() + simulationStartTime - DCS.getRealTime()
+        DCSDynamicWeather.Logger.info(THIS_METHOD, "Waiting for restart. (" .. timeUntilRestart .. " seconds)")
+        return false
     end
 end
 
@@ -67,11 +93,11 @@ function DCSDynamicWeather.injectCodeStringToScriptEnv(code)
 end
 
 function DCSDynamicWeather.getRestartTimeInSeconds()
-    return 3600 -- TODO: Make this configurable
+    return 120 -- TODO: Make this configurable
 end
 
 function DCSDynamicWeather.sleep(n)
-    os.execute("sleep " .. tonumber(n))
+    socket.sleep(n)
 end
 
 function DCSDynamicWeather.fileExists(file)

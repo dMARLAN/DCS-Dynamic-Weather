@@ -42,7 +42,7 @@ function restartMission()
 end
 
 function DCSDynamicWeather.Restart.now()
-    local THIS_METHOD = THIS_FILE .. ".attemptRestartNow()"
+    local THIS_METHOD = THIS_FILE .. ".now()"
     DCSDynamicWeather.Logger.info(THIS_METHOD, "Attempting to restart mission now.")
     timer.scheduleFunction(restartMission, nil, timer.getTime() + 1)
 end
