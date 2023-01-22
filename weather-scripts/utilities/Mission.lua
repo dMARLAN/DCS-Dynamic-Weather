@@ -4,7 +4,12 @@ local THIS_FILE = DCSDynamicWeather.MODULE_NAME .. ".Mission"
 local invertMissionIdentifier, getNextMissionName, loadMission, fileExists, copyFileWithNewIdentifier, invertIdentifier
 
 function DCSDynamicWeather.Mission.loadNextMission(weatherType)
-    weatherType = weatherType or "real"
+    if not weatherType and DCSDynamicWeather.CVOps.Enabled then
+        weatherType = "cvops"
+        DCSDynamicWeather.JSON.setValue("current_time", timer.getAbsTime(), DCSDynamicWeather.DTO_PATH)
+    elseif not weatherType then
+        weatherType = "real"
+    end
     local nextMissionName = getNextMissionName()
     trigger.action.outText("[DCSDynamicWeather]: Preparing to load next mission...", 10)
     DCSDynamicWeather.JSON.setValue("weather_type", weatherType, DCSDynamicWeather.DTO_PATH)

@@ -26,6 +26,7 @@ public class MissionValues {
     private final Config config;
     private final DTO dto;
     private final AVWXMetar metarAVWX;
+    private final String missionContent;
 
     @Getter
     private final Wind wind;
@@ -34,10 +35,11 @@ public class MissionValues {
     @Getter
     private final Time time;
 
-    public MissionValues(Config config, DTO dto, AVWXStation stationAVWX, AVWXMetar metarAVWX) {
+    public MissionValues(Config config, DTO dto, AVWXStation stationAVWX, AVWXMetar metarAVWX, String missionContent) {
         this.config = config;
         this.dto = dto;
         this.metarAVWX = metarAVWX;
+        this.missionContent = missionContent;
         this.wind = setWind();
         this.station = setStation();
         ZonedDateTime zonedDateTime = ZonedDateTime.now(ZoneId.of(StationInfoUtility.getZoneId(stationAVWX.getLatitude(), stationAVWX.getLongitude())));
@@ -128,6 +130,10 @@ public class MissionValues {
             } else {
                 assignedHour = zonedDateTime.getHour() + config.getTimeOffset();
             }
+        } else if (dtoWeatherType.equals("cvops")) {
+            int currentTimeInSecs = config.getCurrentTime();
+            int[] listOfCVEventStarts = getCVEventStarts();
+            assignedHour = (currentTimeInSecs / 3600) % 24;
         } else {
             switch (dtoWeatherType) {
                 case "real0400" -> assignedHour = 4;
@@ -139,6 +145,13 @@ public class MissionValues {
             }
         }
         return assignedHour;
+    }
+
+    private int[] getCVEventStarts() {
+        int firstCyclicTimeInSecs = config.getFirstCyclicTimeInSecs();
+        int cyclicWindows = config.getCyclicWindows();
+        int cyclicLength = config.getCyclicLength();
+        return new int[0];
     }
 
 }

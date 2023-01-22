@@ -13,4 +13,8 @@ public class Config {
     private boolean outputToDiscord;
     private String customSevenZipPath;
     private int timeOffset;
+    private int currentTime;
+    private int firstCyclicTimeInSecs;
+    private int cyclicWindows;
+    private int cyclicLength;
 }
