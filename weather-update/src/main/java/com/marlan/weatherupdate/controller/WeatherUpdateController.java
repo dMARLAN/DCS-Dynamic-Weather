@@ -52,7 +52,7 @@ public class WeatherUpdateController {
         mizUtility.extractMission(WORKING_DIR, dto.getMission());
         String missionContent = FileHandler.readFile(WORKING_DIR, MISSION_FILE);
 
-        MissionValues missionValues = new MissionValues(config, dto, stationAVWX, metarAVWX, missionContent);
+        MissionValues missionValues = new MissionValues(config, dto, stationAVWX, metarAVWX);
         MissionEditor missionEditor = new MissionEditor(stationAVWX, missionValues);
 
         String replacedMissionContent = missionEditor.editMission(missionContent);

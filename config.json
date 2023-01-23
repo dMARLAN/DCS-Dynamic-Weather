@@ -11,7 +11,6 @@
   "spreadsheet_id": "",
   "spreadsheet_range": "",
   "cyclic_ops": true,
-  "current_time": 43980,
   "first_cyclic_time_in_secs": 32400,
   "cyclic_windows": 8,
   "cyclic_length": 90,

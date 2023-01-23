@@ -29,7 +29,6 @@ public class MissionValues {
     private final Config config;
     private final DTO dto;
     private final AVWXMetar metarAVWX;
-    private final String missionContent;
 
     @Getter
     private final Wind wind;
@@ -38,11 +37,10 @@ public class MissionValues {
     @Getter
     private final Time time;
 
-    public MissionValues(Config config, DTO dto, AVWXStation stationAVWX, AVWXMetar metarAVWX, String missionContent) {
+    public MissionValues(Config config, DTO dto, AVWXStation stationAVWX, AVWXMetar metarAVWX) {
         this.config = config;
         this.dto = dto;
         this.metarAVWX = metarAVWX;
-        this.missionContent = missionContent;
         this.wind = setWind();
         this.station = setStation();
         ZonedDateTime zonedDateTime = ZonedDateTime.now(ZoneId.of(StationInfoUtility.getZoneId(stationAVWX.getLatitude(), stationAVWX.getLongitude())));
@@ -134,7 +132,7 @@ public class MissionValues {
                 assignedHour = (float) zonedDateTime.getHour() + config.getTimeOffset();
             }
         } else if (dtoWeatherType.equals("cvops")) {
-            int currentTimeInSecs = config.getCurrentTime();
+            int currentTimeInSecs = dto.getCurrentGameTime();
             List<Integer> listOfCVEventStarts = getCVEventStarts();
             int preEventTime = config.getPreEventTime();
 
