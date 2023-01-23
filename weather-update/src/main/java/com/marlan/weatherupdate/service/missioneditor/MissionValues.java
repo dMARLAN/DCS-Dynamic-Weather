@@ -17,6 +17,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 public class MissionValues {
     private static final Log log = Log.getInstance();
@@ -121,19 +124,27 @@ public class MissionValues {
         return zonedDateTime.getMonthValue();
     }
 
-    private int setHour(ZonedDateTime zonedDateTime) {
-        int assignedHour;
+    private float setHour(ZonedDateTime zonedDateTime) {
+        float assignedHour;
         String dtoWeatherType = dto.getWeatherType();
         if (dtoWeatherType.equals("real")) {
             if (zonedDateTime.getHour() + config.getTimeOffset() < 0) {
-                assignedHour = 24 + zonedDateTime.getHour() + config.getTimeOffset();
+                assignedHour = (float) 24 + zonedDateTime.getHour() + config.getTimeOffset();
             } else {
-                assignedHour = zonedDateTime.getHour() + config.getTimeOffset();
+                assignedHour = (float) zonedDateTime.getHour() + config.getTimeOffset();
             }
         } else if (dtoWeatherType.equals("cvops")) {
             int currentTimeInSecs = config.getCurrentTime();
-            int[] listOfCVEventStarts = getCVEventStarts();
-            assignedHour = (currentTimeInSecs / 3600) % 24;
+            List<Integer> listOfCVEventStarts = getCVEventStarts();
+            int preEventTime = config.getPreEventTime();
+
+            int closestEvent = listOfCVEventStarts
+                    .stream()
+                    .min(Comparator.comparingInt(a -> Math.abs(currentTimeInSecs - a)))
+                    .orElse(0);
+
+            assignedHour = ((float)(closestEvent - preEventTime) / 3600) % 24;
+            System.out.println("Closest event: " + closestEvent);
         } else {
             switch (dtoWeatherType) {
                 case "real0400" -> assignedHour = 4;
@@ -147,11 +158,17 @@ public class MissionValues {
         return assignedHour;
     }
 
-    private int[] getCVEventStarts() {
-        int firstCyclicTimeInSecs = config.getFirstCyclicTimeInSecs();
+    private List<Integer> getCVEventStarts() {
+        List<Integer> cvEventStarts = new ArrayList<>();
         int cyclicWindows = config.getCyclicWindows();
-        int cyclicLength = config.getCyclicLength();
-        return new int[0];
+        int firstCyclicTimeInSecs = config.getFirstCyclicTimeInSecs();
+        int cyclicLengthInSecs = config.getCyclicLength() * 60;
+
+        for (int i = 0; i < cyclicWindows; i++) {
+            cvEventStarts.add(firstCyclicTimeInSecs + (i * cyclicLengthInSecs));
+        }
+
+        return cvEventStarts;
     }
 
 }

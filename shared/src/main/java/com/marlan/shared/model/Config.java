@@ -17,4 +17,5 @@ public class Config {
     private int firstCyclicTimeInSecs;
     private int cyclicWindows;
     private int cyclicLength;
+    private int preEventTime;
 }
