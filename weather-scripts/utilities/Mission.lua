@@ -6,7 +6,7 @@ local invertMissionIdentifier, getNextMissionName, loadMission, fileExists, copy
 function DCSDynamicWeather.Mission.loadNextMission(weatherType)
     if not weatherType and DCSDynamicWeather.CVOps.Enabled then
         weatherType = "cvops"
-        DCSDynamicWeather.JSON.setValue("current_time", timer.getAbsTime(), DCSDynamicWeather.DTO_PATH)
+        DCSDynamicWeather.JSON.setValue("current_game_time", timer.getAbsTime(), DCSDynamicWeather.DTO_PATH)
     elseif not weatherType then
         weatherType = "real"
     end
