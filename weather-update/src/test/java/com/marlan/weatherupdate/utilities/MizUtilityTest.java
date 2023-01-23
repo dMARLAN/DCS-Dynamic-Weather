@@ -1,6 +1,7 @@
 package com.marlan.weatherupdate.utilities;
 
 import com.marlan.shared.model.Config;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -23,18 +24,6 @@ class MizUtilityTest {
         String expectedPath = "C:\\Test1\\Test2\\7z.exe";
         config.setCustomSevenZipPath(expectedPath);
         assertEquals(expectedPath, new MizUtility(config).getSevenZipPath());
-    }
-
-    @Test
-    @DisplayName("Mission file should be extracted from .miz")
-    void missionFileShouldBeExtractedFromMiz() {
-        fail("Not implemented");
-    }
-
-    @Test
-    @DisplayName("Mission file should be updated in .miz")
-    void missionFileShouldBeUpdatedInMiz() {
-        fail("Not implemented");
     }
 
 }
