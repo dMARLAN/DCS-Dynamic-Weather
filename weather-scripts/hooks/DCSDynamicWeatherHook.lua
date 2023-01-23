@@ -112,7 +112,7 @@ function DCSDynamicWeather.injectCodeStringToScriptEnv(code)
 end
 
 function DCSDynamicWeather.getRestartTimeInSeconds()
-    return 60 -- TODO: Make this configurable
+    return 3600 -- TODO: Make this configurable
 end
 
 function DCSDynamicWeather.fileExists(file)
