@@ -132,16 +132,20 @@ public class MissionValues {
                 assignedHour = (float) zonedDateTime.getHour() + config.getTimeOffset();
             }
         } else if (dtoWeatherType.equals("cvops")) {
-            int currentTimeInSecs = Integer.parseInt(dto.getCurrentGameTime());
+            int currentTimeInSecs = (int) Double.parseDouble(dto.getCurrentGameTime());
+            if (currentTimeInSecs < 0) {
+                currentTimeInSecs = 0;
+            }
             List<Integer> listOfCVEventStarts = getCVEventStarts();
             int preEventTime = config.getPreEventTime();
 
+            final int finalCurrentTimeInSecs = currentTimeInSecs;
             int closestEvent = listOfCVEventStarts
                     .stream()
-                    .min(Comparator.comparingInt(a -> Math.abs(currentTimeInSecs - a)))
+                    .min(Comparator.comparingInt(a -> Math.abs(finalCurrentTimeInSecs - a)))
                     .orElse(0);
 
-            if (currentTimeInSecs > listOfCVEventStarts.get(listOfCVEventStarts.size() - 1)){
+            if (currentTimeInSecs > listOfCVEventStarts.get(listOfCVEventStarts.size() - 1) + 1800){
                 assignedHour = ((float)(listOfCVEventStarts.get(0) - preEventTime) / 3600) % 24;
             } else {
                 assignedHour = ((float)(closestEvent - preEventTime) / 3600) % 24;
