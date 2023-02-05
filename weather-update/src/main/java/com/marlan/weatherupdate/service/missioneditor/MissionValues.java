@@ -132,7 +132,7 @@ public class MissionValues {
                 assignedHour = (float) zonedDateTime.getHour() + config.getTimeOffset();
             }
         } else if (dtoWeatherType.equals("cvops")) {
-            int currentTimeInSecs = dto.getCurrentGameTime();
+            int currentTimeInSecs = Integer.parseInt(dto.getCurrentGameTime());
             List<Integer> listOfCVEventStarts = getCVEventStarts();
             int preEventTime = config.getPreEventTime();
 
@@ -141,8 +141,11 @@ public class MissionValues {
                     .min(Comparator.comparingInt(a -> Math.abs(currentTimeInSecs - a)))
                     .orElse(0);
 
-            assignedHour = ((float)(closestEvent - preEventTime) / 3600) % 24;
-            System.out.println("Closest event: " + closestEvent);
+            if (currentTimeInSecs > listOfCVEventStarts.get(listOfCVEventStarts.size() - 1)){
+                assignedHour = ((float)(listOfCVEventStarts.get(0) - preEventTime) / 3600) % 24;
+            } else {
+                assignedHour = ((float)(closestEvent - preEventTime) / 3600) % 24;
+            }
         } else {
             switch (dtoWeatherType) {
                 case "real0400" -> assignedHour = 4;

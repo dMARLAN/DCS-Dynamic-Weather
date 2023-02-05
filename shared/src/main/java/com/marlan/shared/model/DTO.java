@@ -13,5 +13,5 @@ public class DTO {
     private String stationLongitude;
     private String stationLatitude;
     private String weatherType;
-    private int currentGameTime;
+    private String currentGameTime;
 }
