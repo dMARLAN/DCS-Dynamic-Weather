@@ -1,48 +1,121 @@
-local DCS_DYNAMIC_WEATHER_HOOK_VERSION = "1.0.0"
-local DCSDynamicWeatherHook = {}
+local DCS_DYNAMIC_WEATHER_HOOK_VERSION = "1.1.0"
+local DCSDynamicWeather = {}
 local DCSDynamicWeatherCallbacks = {}
-DCSDynamicWeatherHook.Logger = {}
+DCSDynamicWeather.Logger = {}
 
 local THIS_FILE = "DCSDynamicWeatherHook"
 local DCS_ROOT = lfs.currentdir()
 local DCS_SG = lfs.writedir()
 
+local missionLoaded = false
+local simulationStartTime = DCS.getRealTime()
+local initialPauseState
+local waiting = false
+local checkRestartTime = 0
+local initialPauseStateSet = false
+
 function DCSDynamicWeatherCallbacks.onMissionLoadEnd()
     local THIS_METHOD = "DCSDynamicWeatherCallbacks.onMissionLoadEnd"
-    local missionName = DCS.getMissionName()
-    local missionDesc = DCS.getMissionDescription()
+    waiting = false
+    checkRestartTime = 0
+    initialPauseStateSet = false
 
+    initialPauseState = DCS.getPause()
+    DCSDynamicWeather.Logger.info(THIS_METHOD, "Initial pause state: " .. tostring(initialPauseState))
+    if initialPauseState then
+        DCS.setPause(false)
+        DCSDynamicWeather.Logger.info(THIS_METHOD, "Pause State set to: " .. tostring(false))
+    end
+
+    local missionDesc = DCS.getMissionDescription()
     if not string.find(missionDesc, "DCSDW") then
-        DCSDynamicWeatherHook.Logger.info(THIS_METHOD, "\"DCSDW\" not found in mission description (situation), skipping mission name injection.")
+        DCSDynamicWeather.Logger.info(THIS_METHOD, "\"DCSDW\" not found in mission description (situation), skipping.")
         return
     end
 
-    local code = [[a_do_script("DCSDynamicWeather.MISSION_NAME = \"]] .. missionName .. [[\"")]]
-
-    local successful, err = pcall(net.dostring_in, "mission", code)
-    if not successful then
-        DCSDynamicWeatherHook.Logger.error(THIS_METHOD, "Failed to inject: \"" .. code .. "\" with error: " .. err)
-    else
-        DCSDynamicWeatherHook.Logger.info(THIS_METHOD, "Injected: \"" .. code .. "\"")
-    end
+    missionLoaded = true
+    simulationStartTime = DCS.getRealTime()
+    DCSDynamicWeather.injectMissionNameToScriptEnv()
 end
 
 function DCSDynamicWeatherCallbacks.onTriggerMessage(message, _, _)
     local THIS_METHOD = "DCSDynamicWeatherCallbacks.onTriggerMessage"
 
     if not (DCS.isServer() and DCS.isMultiplayer()) then
-        DCSDynamicWeatherHook.Logger.warning(THIS_METHOD, "Only a multiplayer server can load a mission.")
+        DCSDynamicWeather.Logger.warning(THIS_METHOD, "Only a multiplayer server can load a mission.")
         return
     end
 
     if (string.match(message, "%[DCSDynamicWeather%.Mission%]:%sLoad%sMission:%s")) then
         local mission = string.match(message, "%[DCSDynamicWeather%.Mission%]:%sLoad Mission:%s(.*)")
-        DCSDynamicWeatherHook.Logger.info(THIS_METHOD, "Loading Mission: " .. DCS_SG .. "Missions\\" .. mission)
+        DCSDynamicWeather.Logger.info(THIS_METHOD, "Loading Mission: " .. DCS_SG .. "Missions\\" .. mission)
         net.load_mission(DCS_SG .. "Missions\\" .. mission)
     end
 end
 
-function DCSDynamicWeatherHook.fileExists(file)
+function DCSDynamicWeatherCallbacks.onSimulationFrame()
+    local THIS_METHOD = "DCSDynamicWeatherCallbacks.onSimulationFrame"
+    if DCS.getRealTime() > simulationStartTime + 5 and not initialPauseStateSet then
+        DCS.setPause(initialPauseState)
+        DCSDynamicWeather.Logger.info(THIS_METHOD, "Pause State set to: " .. tostring(initialPauseState))
+        initialPauseStateSet = true
+    end
+    DCSDynamicWeather.checkCondForRestart()
+end
+
+function DCSDynamicWeather.checkCondForRestart()
+    local THIS_METHOD = "DCSDynamicWeather.waitForRestart"
+    if not missionLoaded then
+        return
+    end
+
+    if not waiting then
+        waiting = true
+        checkRestartTime = DCS.getRealTime() + 15
+    else
+        if (DCS.getRealTime() > checkRestartTime) then
+            if (DCS.getRealTime() > simulationStartTime + DCSDynamicWeather.getRestartTimeInSeconds()) then
+                DCSDynamicWeather.Logger.info(THIS_METHOD, "Restarting mission.")
+                DCS.setPause(false)
+                DCSDynamicWeather.Logger.info(THIS_METHOD, "Pause State set to: " .. tostring(false))
+                DCSDynamicWeather.restart()
+            else
+                local timeUntilRestart = DCSDynamicWeather.getRestartTimeInSeconds() + simulationStartTime - DCS.getRealTime()
+                DCSDynamicWeather.Logger.info(THIS_METHOD, "Waiting for restart. (" .. timeUntilRestart .. " seconds)")
+            end
+            waiting = false
+        end
+    end
+end
+
+function DCSDynamicWeather.injectMissionNameToScriptEnv()
+    local missionName = DCS.getMissionName()
+
+    local code = [[a_do_script("DCSDynamicWeather.MISSION_NAME = \"]] .. missionName .. [[\"")]]
+    DCSDynamicWeather.injectCodeStringToScriptEnv(code)
+end
+
+function DCSDynamicWeather.restart()
+    local code = [[a_do_script("DCSDynamicWeather.Restart.now()")]]
+    DCSDynamicWeather.injectCodeStringToScriptEnv(code)
+end
+
+function DCSDynamicWeather.injectCodeStringToScriptEnv(code)
+    local THIS_METHOD = "DCSDynamicWeatherHook.injectCode"
+
+    local successful, err = pcall(net.dostring_in, "mission", code)
+    if not successful then
+        DCSDynamicWeather.Logger.error(THIS_METHOD, "Failed to inject: \"" .. code .. "\" with error: " .. err)
+    else
+        DCSDynamicWeather.Logger.info(THIS_METHOD, "Injected: \"" .. code .. "\"")
+    end
+end
+
+function DCSDynamicWeather.getRestartTimeInSeconds()
+    return 3600 -- TODO: Make this configurable
+end
+
+function DCSDynamicWeather.fileExists(file)
     local f = io.open(file, "rb")
     if f then
         io.close(f)
@@ -50,16 +123,16 @@ function DCSDynamicWeatherHook.fileExists(file)
     return f ~= nil
 end
 
-function DCSDynamicWeatherHook.desanitizeMissionScripting()
+function DCSDynamicWeather.desanitizeMissionScripting()
     local THIS_METHOD = "DCSDynamicWeatherHook.desanitizeMissionScripting"
-    DCSDynamicWeatherHook.Logger.info(THIS_METHOD, "Desanitizing Mission Scripting...")
+    DCSDynamicWeather.Logger.info(THIS_METHOD, "Desanitizing Mission Scripting...")
     local missionScriptingFileName = "MissionScripting.lua"
     local missionScriptingFilePath = DCS_ROOT .. "Scripts\\" .. missionScriptingFileName
     local uncommentedLineFound = false
     local newMissionScriptingContent = ""
 
-    if not (DCSDynamicWeatherHook.fileExists(missionScriptingFilePath)) then
-        DCSDynamicWeatherHook.Logger.error(THIS_METHOD, "File: " .. missionScriptingFilePath .. " does not exist.")
+    if not (DCSDynamicWeather.fileExists(missionScriptingFilePath)) then
+        DCSDynamicWeather.Logger.error(THIS_METHOD, "File: " .. missionScriptingFilePath .. " does not exist.")
         return
     end
 
@@ -79,25 +152,25 @@ function DCSDynamicWeatherHook.desanitizeMissionScripting()
         io.write(writeMissionScriptingFile, newMissionScriptingContent)
         io.flush(writeMissionScriptingFile)
         io.close(writeMissionScriptingFile)
-        DCSDynamicWeatherHook.Logger.info(THIS_METHOD, "Desanitized Mission Scripting.")
+        DCSDynamicWeather.Logger.info(THIS_METHOD, "Desanitized Mission Scripting.")
     else
-        DCSDynamicWeatherHook.Logger.info(THIS_METHOD, "Mission Scripting is already desanitized.")
+        DCSDynamicWeather.Logger.info(THIS_METHOD, "Mission Scripting is already desanitized.")
     end
 end
 
-function DCSDynamicWeatherHook.Logger.info(logSource, message)
-    DCSDynamicWeatherHook.Logger.printLog(logSource, message, "INFO    ")
+function DCSDynamicWeather.Logger.info(logSource, message)
+    DCSDynamicWeather.Logger.printLog(logSource, message, "INFO    ")
 end
 
-function DCSDynamicWeatherHook.Logger.warning(logSource, message)
-    DCSDynamicWeatherHook.Logger.printLog(logSource, message, "WARNING ")
+function DCSDynamicWeather.Logger.warning(logSource, message)
+    DCSDynamicWeather.Logger.printLog(logSource, message, "WARNING ")
 end
 
-function DCSDynamicWeatherHook.Logger.error(logSource, message)
-    DCSDynamicWeatherHook.Logger.printLog(logSource, message, "ERROR   ")
+function DCSDynamicWeather.Logger.error(logSource, message)
+    DCSDynamicWeather.Logger.printLog(logSource, message, "ERROR   ")
 end
 
-function DCSDynamicWeatherHook.Logger.printLog(logSource, message, level)
+function DCSDynamicWeather.Logger.printLog(logSource, message, level)
     local time = os.date("%Y-%m-%d %H:%M:%S ")
     local logFile = io.open(DCS_SG .. "Logs\\" .. THIS_FILE .. ".log", "a")
     io.write(logFile, time .. level .. "[" .. logSource .. "]: " .. message .. "\n")
@@ -106,13 +179,13 @@ function DCSDynamicWeatherHook.Logger.printLog(logSource, message, level)
 end
 
 local function main()
-    DCSDynamicWeatherHook.Logger.info(THIS_FILE, "Loading DCS Dynamic Weather Version: " .. DCS_DYNAMIC_WEATHER_HOOK_VERSION .. "...")
-    DCSDynamicWeatherHook.Logger.info(THIS_FILE, "DCS_ROOT: " .. DCS_ROOT)
-    DCSDynamicWeatherHook.Logger.info(THIS_FILE, "DCS_SG: " .. DCS_SG)
+    DCSDynamicWeather.Logger.info(THIS_FILE, "Loading DCS Dynamic Weather Version: " .. DCS_DYNAMIC_WEATHER_HOOK_VERSION .. "...")
+    DCSDynamicWeather.Logger.info(THIS_FILE, "DCS_ROOT: " .. DCS_ROOT)
+    DCSDynamicWeather.Logger.info(THIS_FILE, "DCS_SG: " .. DCS_SG)
 
-    DCSDynamicWeatherHook.desanitizeMissionScripting()
+    DCSDynamicWeather.desanitizeMissionScripting()
     DCS.setUserCallbacks(DCSDynamicWeatherCallbacks)
 
-    DCSDynamicWeatherHook.Logger.info(THIS_FILE, "Loaded.")
+    DCSDynamicWeather.Logger.info(THIS_FILE, "Loaded.")
 end
 main()

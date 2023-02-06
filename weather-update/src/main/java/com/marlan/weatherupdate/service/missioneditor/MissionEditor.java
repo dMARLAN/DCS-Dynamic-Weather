@@ -82,8 +82,8 @@ public class MissionEditor {
     }
 
     @NotNull
-    private String replaceHour(String mission, int hour) {
-        mission = mission.replaceAll("(?<=\\[\"currentKey\"]\\s{1,5}=\\s{1,5}.{1,10}\n)(.*)", "    [\"start_time\"] = $startTime,".replace("$startTime", Integer.toString(hour * 3600)));
+    private String replaceHour(String mission, float hour) {
+        mission = mission.replaceAll("(?<=\\[\"currentKey\"]\\s{1,5}=\\s{1,5}.{1,10}\n)(.*)", "    [\"start_time\"] = $startTime,".replace("$startTime", Float.toString(hour * 3600)));
         log.info("Start Time set to: " + hour * 3600 + "s (" + hour + "h)");
         return mission;
     }

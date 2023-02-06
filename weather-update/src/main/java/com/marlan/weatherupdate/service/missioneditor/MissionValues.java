@@ -17,6 +17,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 public class MissionValues {
     private static final Log log = Log.getInstance();
@@ -119,14 +122,33 @@ public class MissionValues {
         return zonedDateTime.getMonthValue();
     }
 
-    private int setHour(ZonedDateTime zonedDateTime) {
-        int assignedHour;
+    private float setHour(ZonedDateTime zonedDateTime) {
+        float assignedHour;
         String dtoWeatherType = dto.getWeatherType();
         if (dtoWeatherType.equals("real")) {
             if (zonedDateTime.getHour() + config.getTimeOffset() < 0) {
-                assignedHour = 24 + zonedDateTime.getHour() + config.getTimeOffset();
+                assignedHour = (float) 24 + zonedDateTime.getHour() + config.getTimeOffset();
             } else {
-                assignedHour = zonedDateTime.getHour() + config.getTimeOffset();
+                assignedHour = (float) zonedDateTime.getHour() + config.getTimeOffset();
+            }
+        } else if (dtoWeatherType.equals("cvops")) {
+            int currentTimeInSecs = (int) Double.parseDouble(dto.getCurrentGameTime());
+            if (currentTimeInSecs < 0) {
+                currentTimeInSecs = 0;
+            }
+            List<Integer> listOfCVEventStarts = getCVEventStarts();
+            int preEventTime = config.getPreEventTime();
+
+            final int finalCurrentTimeInSecs = currentTimeInSecs;
+            int closestEvent = listOfCVEventStarts
+                    .stream()
+                    .min(Comparator.comparingInt(a -> Math.abs(finalCurrentTimeInSecs - a)))
+                    .orElse(0);
+
+            if (currentTimeInSecs > listOfCVEventStarts.get(listOfCVEventStarts.size() - 1) + 1800){
+                assignedHour = ((float)(listOfCVEventStarts.get(0) - preEventTime) / 3600) % 24;
+            } else {
+                assignedHour = ((float)(closestEvent - preEventTime) / 3600) % 24;
             }
         } else {
             switch (dtoWeatherType) {
@@ -139,6 +161,19 @@ public class MissionValues {
             }
         }
         return assignedHour;
+    }
+
+    private List<Integer> getCVEventStarts() {
+        List<Integer> cvEventStarts = new ArrayList<>();
+        int cyclicWindows = config.getCyclicWindows();
+        int firstCyclicTimeInSecs = config.getFirstCyclicTimeInSecs();
+        int cyclicLengthInSecs = config.getCyclicLength() * 60;
+
+        for (int i = 0; i < cyclicWindows; i++) {
+            cvEventStarts.add(firstCyclicTimeInSecs + (i * cyclicLengthInSecs));
+        }
+
+        return cvEventStarts;
     }
 
 }

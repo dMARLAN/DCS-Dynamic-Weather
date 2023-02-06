@@ -32,9 +32,10 @@ function checkReplaceNil(message)
 end
 
 function printLog(logSource, message, level)
-    local time = os.date("%Y-%m-%d %H:%M:%S ")
-    local logFile = io.open(DCSDynamicWeather.SCRIPTS_PATH .. "\\logs\\" .. DCSDynamicWeather.MODULE_NAME .. ".log", "a")
-    io.write(logFile, time .. level .. "[" .. logSource .. "]: " .. message .. "\n")
+    local fullTimeStamp = os.date("%Y-%m-%d %H:%M:%S ")
+    local ymdTimeStamp = os.date("%Y%m%d")
+    local logFile = io.open(DCSDynamicWeather.SCRIPTS_PATH .. "\\logs\\" .. DCSDynamicWeather.MODULE_NAME .. "-" .. ymdTimeStamp .. ".log", "a")
+    io.write(logFile, fullTimeStamp .. level .. "[" .. logSource .. "]: " .. message .. "\n")
     io.flush(logFile)
     io.close(logFile)
 end

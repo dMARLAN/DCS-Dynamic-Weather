@@ -27,18 +27,17 @@ local function loadLua(folder, fileName)
 end
 
 loadLua(UTILITIES, "Logger") -- Must be first
-
 loadLua(UTILITIES, "File")
 loadLua(UTILITIES, "JAR")
 loadLua(UTILITIES, "JSON")
 loadLua(UTILITIES, "Mission")
+loadLua(UTILITIES, "Restart")
 
 loadAllLua(LIBRARIES)
 loadAllLua(MODEL)
 
 loadLua(WEATHER_OUTPUT, "BuildMetar")
 loadLua(WEATHER_OUTPUT, "SetWeather")
-loadLua(WEATHER_OUTPUT, "Restart")
 
 DCSDynamicWeather.Logger.info(THIS_FILE, "DCSDynamicWeather.SCRIPTS_PATH: " .. DCSDynamicWeather.SCRIPTS_PATH)
 DCSDynamicWeather.Logger.info(THIS_FILE, "DCSDynamicWeather.DATA_FILE: " .. DCSDynamicWeather.DTO_PATH)
