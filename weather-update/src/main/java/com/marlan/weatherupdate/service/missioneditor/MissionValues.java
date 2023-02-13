@@ -61,7 +61,7 @@ public class MissionValues {
 
     private double setWindSpeed() {
         String dtoWeatherType = dto.getWeatherType();
-        if (dtoWeatherType.contains("real")) {
+        if (dtoWeatherType.contains("real") || dtoWeatherType.equals("cvops")) {
             return metarAVWX.getWindSpeed().flatMap(WindSpeed::getValue).orElse(0.0);
         } else {
             return 0.0;
@@ -70,7 +70,7 @@ public class MissionValues {
 
     private double setWindDirection() {
         String dtoWeatherType = dto.getWeatherType();
-        if (dtoWeatherType.contains("real")) {
+        if (dtoWeatherType.contains("real") || dtoWeatherType.equals("cvops")) {
             return metarAVWX.getWindDirection().flatMap(WindDirection::getValue).orElse(0.0);
         } else {
             return 0.0;
@@ -79,7 +79,7 @@ public class MissionValues {
 
     private double setStationTempC() {
         String dtoWeatherType = dto.getWeatherType();
-        if (dtoWeatherType.contains("real")) {
+        if (dtoWeatherType.contains("real") || dtoWeatherType.equals("cvops")) {
             return metarAVWX.getTemperature().flatMap(Temperature::getValue).orElse(ISA_TEMP_C);
         } else {
             return ISA_TEMP_C;
@@ -88,7 +88,7 @@ public class MissionValues {
 
     private double setStationQnh() {
         String dtoWeatherType = dto.getWeatherType();
-        if (dtoWeatherType.contains("real")) {
+        if (dtoWeatherType.contains("real") || dtoWeatherType.equals("cvops")) {
             if (metarAVWX.getUnits().getAltimeter().equals("hPa")) {
                 return metarAVWX.getAltimeter().getValue() / INHG_TO_HPA;
             } else {
@@ -131,7 +131,7 @@ public class MissionValues {
             } else {
                 assignedHour = (float) zonedDateTime.getHour() + config.getTimeOffset();
             }
-        } else if (dtoWeatherType.equals("cvops")) {
+        } else if (dtoWeatherType.contains("cvops")) {
             int currentTimeInSecs = (int) Double.parseDouble(dto.getCurrentGameTime());
             if (currentTimeInSecs < 0) {
                 currentTimeInSecs = 0;

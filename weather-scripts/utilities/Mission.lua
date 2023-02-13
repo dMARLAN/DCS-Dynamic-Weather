@@ -7,12 +7,12 @@ function DCSDynamicWeather.Mission.loadNextMission(weatherType)
     local cvOpsEnabled = DCSDynamicWeather.JSON.getValue("cyclic_ops", DCSDynamicWeather.CONFIG_PATH)
     if not weatherType and cvOpsEnabled == "true" then
         weatherType = "cvops"
-        DCSDynamicWeather.JSON.setValue("current_game_time", timer.getAbsTime(), DCSDynamicWeather.DTO_PATH)
     elseif not weatherType then
         weatherType = "real"
     end
     local nextMissionName = getNextMissionName()
     trigger.action.outText("[DCSDynamicWeather]: Preparing to load next mission...", 10)
+    DCSDynamicWeather.JSON.setValue("current_game_time", timer.getAbsTime(), DCSDynamicWeather.DTO_PATH)
     DCSDynamicWeather.JSON.setValue("weather_type", weatherType, DCSDynamicWeather.DTO_PATH)
     DCSDynamicWeather.JSON.setValue("mission", nextMissionName .. ".miz", DCSDynamicWeather.DTO_PATH)
     DCSDynamicWeather.JAR.execute("weather-update")
