@@ -26,7 +26,7 @@ function createGroupSpecificMenus(adminGroupID, adminGroupName)
 
     if DCSDynamicWeather.JSON.getValue("cyclic_ops", DCSDynamicWeather.CONFIG_PATH) == "true" then
         local clearDayConfirm = missionCommands.addSubMenuForGroup(adminGroupID, "Clear", setWeatherMenu)
-        missionCommands.addCommandForGroup(adminGroupID, "Confirm", clearDayConfirm, setWeather, "cvopsClear")
+        missionCommands.addCommandForGroup(adminGroupID, "Confirm", clearDayConfirm, setWeather, "cvopsclear")
         DCSDynamicWeather.Logger.info(THIS_FILE, "Created Cyclic Ops Set Weather Menus for " .. adminGroupName)
     else
         local clearDayConfirm = missionCommands.addSubMenuForGroup(adminGroupID, "Clear: 1200L", setWeatherMenu)
