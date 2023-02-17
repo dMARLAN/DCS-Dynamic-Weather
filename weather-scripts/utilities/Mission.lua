@@ -4,8 +4,8 @@ local THIS_FILE = DCSDynamicWeather.MODULE_NAME .. ".Mission"
 local invertMissionIdentifier, getNextMissionName, loadMission, fileExists, copyFileWithNewIdentifier, invertIdentifier
 
 function DCSDynamicWeather.Mission.loadNextMission(weatherType)
-    local cvOpsEnabled = DCSDynamicWeather.JSON.getValue("cyclic_ops", DCSDynamicWeather.CONFIG_PATH)
-    if not weatherType and cvOpsEnabled == "true" then
+    local cvOpsEnabled = DCSDynamicWeather.JSON.getValue("cyclic_ops", DCSDynamicWeather.CONFIG_PATH) == "true"
+    if not weatherType and cvOpsEnabled then
         weatherType = "cvops"
     elseif not weatherType then
         weatherType = "real"
