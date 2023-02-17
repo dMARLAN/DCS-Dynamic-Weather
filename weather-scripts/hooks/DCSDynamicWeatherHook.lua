@@ -13,12 +13,13 @@ local initialPauseState
 local waiting = false
 local checkRestartTime = 0
 local initialPauseStateSet = false
+local injectedRestart = false
 
 function DCSDynamicWeatherCallbacks.onMissionLoadEnd()
     local THIS_METHOD = "DCSDynamicWeatherCallbacks.onMissionLoadEnd"
     waiting = false
-    checkRestartTime = 0
     initialPauseStateSet = false
+    injectedRestart = false
 
     initialPauseState = DCS.getPause()
     DCSDynamicWeather.Logger.info(THIS_METHOD, "Initial pause state: " .. tostring(initialPauseState))
@@ -60,7 +61,10 @@ function DCSDynamicWeatherCallbacks.onSimulationFrame()
         DCSDynamicWeather.Logger.info(THIS_METHOD, "Pause State set to: " .. tostring(initialPauseState))
         initialPauseStateSet = true
     end
-    DCSDynamicWeather.checkCondForRestart()
+
+    if math.floor(DCS.getRealTime()) % 60 == 0 then
+        DCSDynamicWeather.checkCondForRestart()
+    end
 end
 
 function DCSDynamicWeather.checkCondForRestart()
@@ -74,11 +78,12 @@ function DCSDynamicWeather.checkCondForRestart()
         checkRestartTime = DCS.getRealTime() + 15
     else
         if (DCS.getRealTime() > checkRestartTime) then
-            if (DCS.getRealTime() > simulationStartTime + DCSDynamicWeather.getRestartTimeInSeconds()) then
+            if (DCS.getRealTime() > simulationStartTime + DCSDynamicWeather.getRestartTimeInSeconds()) and not injectedRestart then
                 DCSDynamicWeather.Logger.info(THIS_METHOD, "Restarting mission.")
                 DCS.setPause(false)
                 DCSDynamicWeather.Logger.info(THIS_METHOD, "Pause State set to: " .. tostring(false))
                 DCSDynamicWeather.restart()
+                injectedRestart = true
             else
                 local timeUntilRestart = DCSDynamicWeather.getRestartTimeInSeconds() + simulationStartTime - DCS.getRealTime()
                 DCSDynamicWeather.Logger.info(THIS_METHOD, "Waiting for restart. (" .. timeUntilRestart .. " seconds)")
