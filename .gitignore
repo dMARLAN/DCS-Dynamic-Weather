@@ -1,7 +1,6 @@
 releases/
 resources
 .idea
-Air_Wing_Nellis.miz
 logs/
 avwx_api_key.json
 discord_api_key.json
@@ -136,8 +135,7 @@ gradle-app.setting
 
 # Cache of project
 .gradletasknamecache
-Air_Wing_Nellis_A.miz
 tokens/StoredCredential
 dto.json
 /secrets/googlesheets.json
-/Factory_Home_Plate.miz
+/Syria_Deployment.miz

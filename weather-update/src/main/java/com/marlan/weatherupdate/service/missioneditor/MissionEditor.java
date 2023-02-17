@@ -6,6 +6,7 @@ import com.marlan.weatherupdate.utilities.AltimeterUtility;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Random;
+import java.util.regex.Pattern;
 
 /**
  * Handles replacing strings inside the mission file
@@ -53,7 +54,12 @@ public class MissionEditor {
 
     @NotNull
     private String replaceQnh(String mission, double qffMmHg, double qnhInHg) {
-        mission = mission.replaceAll("(\\[\"qnh\"].*)\n", "[\"qnh\"] = \\$qnh,\n".replace("$qnh", Double.toString(qffMmHg))); // DCS actually uses QFF not QNH!
+        String regexSequence = "(\\[\"qnh\"].*)\n";
+        if (!Pattern.compile(regexSequence).matcher(mission).find()) {
+            log.error("Regex match failed, QNH not set.");
+            return mission;
+        }
+        mission = mission.replaceAll(regexSequence, "[\"qnh\"] = \\$qnh,\n".replace("$qnh", Double.toString(qffMmHg))); // DCS actually uses QFF not QNH!
         double qnhMmHg = qnhInHg * INHG_TO_MMHG;
         log.info("QNH set to: " + qnhInHg + " inHg (" + qnhMmHg + " mmHg)");
         log.info("QFF set to: " + qffMmHg / INHG_TO_MMHG + " inHg (" + qffMmHg + " mmHg)");
@@ -62,35 +68,60 @@ public class MissionEditor {
 
     @NotNull
     private String replaceTemperature(String mission, double stationTempC) {
-        mission = mission.replaceAll("(\\[\"temperature\"].*)\n", "[\"temperature\"] = \\$stationTempC,\n".replace("$stationTempC", Double.toString(stationTempC)));
+        String regexSequence = "(\\[\"temperature\"].*)\n";
+        if (!Pattern.compile(regexSequence).matcher(mission).find()) {
+            log.error("Regex match failed, Temperature not set.");
+            return mission;
+        }
+        mission = mission.replaceAll(regexSequence, "[\"temperature\"] = \\$stationTempC,\n".replace("$stationTempC", Double.toString(stationTempC)));
         log.info("Station Temperature set to: " + stationTempC + " C" + " / Sea Level Temperature set to: " + Math.round(stationTempC + TEMP_LAPSE_RATE_C * (stationAVWX.getElevationFt() / 1000)) + " C");
         return mission;
     }
 
     @NotNull
     private String replaceMonth(String mission, int month) {
-        mission = mission.replaceAll("(\\[\"Month\"].*)\n", "[\"Month\"] = \\$month,\n".replace("$month", Integer.toString(month)));
+        String regexSequence = "(\\[\"Month\"].*)\n";
+        if (!Pattern.compile(regexSequence).matcher(mission).find()) {
+            log.error("Regex match failed, Month not set.");
+            return mission;
+        }
+        mission = mission.replaceAll(regexSequence, "[\"Month\"] = \\$month,\n".replace("$month", Integer.toString(month)));
         log.info("Month set to: " + month);
         return mission;
     }
 
     @NotNull
     private String replaceDay(String mission, int day) {
-        mission = mission.replaceAll("(\\[\"Day\"].*)\n", "[\"Day\"] = \\$day,\n".replace("$day", Integer.toString(day)));
+        String regexSequence = "(\\[\"Day\"].*)\n";
+        if (!Pattern.compile(regexSequence).matcher(mission).find()) {
+            log.error("Regex match failed, Day not set.");
+            return mission;
+        }
+        mission = mission.replaceAll(regexSequence, "[\"Day\"] = \\$day,\n".replace("$day", Integer.toString(day)));
         log.info("Day set to: " + day);
         return mission;
     }
 
     @NotNull
     private String replaceHour(String mission, float hour) {
-        mission = mission.replaceAll("(^ {4}\\[\"start_time\"].*)", "    [\"start_time\"] = $startTime,".replace("$startTime", Float.toString(hour * 3600)));
+        String regexSequence = "(^ {4}\\[\"start_time\"].*)";
+        if (!Pattern.compile(regexSequence, Pattern.MULTILINE).matcher(mission).find()) {
+            log.error("Regex match failed, Hour not set.");
+            return mission;
+        }
+        mission = mission.replaceAll(regexSequence, "    [\"start_time\"] = $startTime,".replace("$startTime", Float.toString(hour * 3600)));
         log.info("Start Time set to: " + hour * 3600 + "s (" + hour + "h)");
         return mission;
     }
 
     @NotNull
     private String replaceWindGround(String mission, double windSpeedGround, double windDirectionGround) {
-        mission = mission.replaceAll("\\[\"atGround\"]\\s+=\\s+\\{([^}]*)",
+        String regexSequence = "\\[\"atGround\"]\\s+=\\s+\\{([^}]*)";
+        if (!Pattern.compile(regexSequence).matcher(mission).find()) {
+            log.error("Regex match failed, Wind at Ground not set.");
+            return mission;
+        }
+        mission = mission.replaceAll(regexSequence,
                 "[\"atGround\"] =\n            {\n                [\"speed\"] = $windGroundSpeed,\n                [\"dir\"] = $windGroundDir,\n            "
                         .replace("$windGroundSpeed", Double.toString(windSpeedGround))
                         .replace("$windGroundDir", Double.toString(windDirectionGround)));
@@ -100,7 +131,12 @@ public class MissionEditor {
 
     @NotNull
     private String replaceWind2000(String mission, double windSpeed2000, double windDirection2000) {
-        mission = mission.replaceAll("\\[\"at2000\"]\\s+=\\s+\\{([^}]*)",
+        String regexSequence = "\\[\"at2000\"]\\s+=\\s+\\{([^}]*)";
+        if (!Pattern.compile(regexSequence).matcher(mission).find()) {
+            log.error("Regex match failed, Wind at 2000 not set.");
+            return mission;
+        }
+        mission = mission.replaceAll(regexSequence,
                 "[\"at2000\"] =\n            {\n                [\"speed\"] = $wind2000Speed,\n                [\"dir\"] = $wind2000Dir,\n            "
                         .replace("$wind2000Speed", Double.toString(windSpeed2000))
                         .replace("$wind2000Dir", Double.toString(windDirection2000)));
@@ -110,7 +146,12 @@ public class MissionEditor {
 
     @NotNull
     private String replaceWind8000(String mission, double windSpeed8000, double windDirection8000) {
-        mission = mission.replaceAll("\\[\"at8000\"]\\s+=\\s+\\{([^}]*)",
+        String regexSequence = "\\[\"at8000\"]\\s+=\\s+\\{([^}]*)";
+        if (!Pattern.compile(regexSequence).matcher(mission).find()) {
+            log.error("Regex match failed, Wind at 8000 not set.");
+            return mission;
+        }
+        mission = mission.replaceAll(regexSequence,
                 "[\"at8000\"] =\n            {\n                [\"speed\"] = $wind8000Speed,\n                [\"dir\"] = $wind8000Dir,\n            "
                         .replace("$wind8000Speed", Double.toString(windSpeed8000))
                         .replace("$wind8000Dir", Double.toString(windDirection8000)));
@@ -119,14 +160,25 @@ public class MissionEditor {
     }
 
     private String replaceCloudsPreset(String mission, String cloudsPreset) {
+        String regexSequence;
         if (!mission.contains("[\"preset\"]")) {
+            regexSequence = "(\\[\"iprecptns\"].*)\n";
+            if (!Pattern.compile(regexSequence).matcher(mission).find()) {
+                log.error("Regex match failed, Precipitation not set.");
+                return mission;
+            }
             mission = mission.replaceAll(
-                            "(\\[\"iprecptns\"].*)\n",
+                            regexSequence,
                             "[\"iprecptns\"] = 0,\n            [\"preset\"] = \"\\$cloudsPreset\",\n")
                     .replace("$cloudsPreset", cloudsPreset);
         } else {
+            regexSequence = "(\\[\"preset\"].*)\n";
+            if (!Pattern.compile(regexSequence).matcher(mission).find()) {
+                log.error("Regex match failed, Cloud Preset not set.");
+                return mission;
+            }
             mission = mission.replaceAll(
-                    "(\\[\"preset\"].*)\n",
+                    regexSequence,
                     "[\"preset\"] = \"\\$cloudsPreset\",\n"
                             .replace("$cloudsPreset", cloudsPreset));
         }
