@@ -35,11 +35,13 @@ function encodeJSONMissionFile()
     local Factory = require("Factory")
     local JSON = loadfile(lfs.currentdir() .. "Scripts\\" .. "JSON.lua")()
 
-    trigger.action.outText("[DCSDynamicWeather]: Encode", 10)
+    trigger.action.outText("[DCSDynamicWeather.Mission]: Encode", 10)
     local startWaitTime = timer.getTime()
     while DCSDynamicWeather.MISSION_TABLE == nil do
-        DCSDynamicWeather.Logger.info(THIS_FILE, "Waiting for mission table to be populated...")
-        if timer.getTime() - startWaitTime > 10 then
+        if timer.getTime() % 1 == 0 then
+            trigger.action.outText("[DCSDynamicWeather.Mission]: Waiting for mission table to be populated...", 10)
+        end
+        if timer.getTime() > startWaitTime + 10 then
             DCSDynamicWeather.Logger.error(THIS_FILE, "Timed out waiting for mission table to be populated.")
             return
         end
