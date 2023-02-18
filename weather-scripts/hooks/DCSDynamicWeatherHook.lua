@@ -57,10 +57,6 @@ function DCSDynamicWeatherCallbacks.onTriggerMessage(message, _, _)
     if (string.match(message, "%[DCSDynamicWeather%.Mission%]:%sEdit")) then
         DCSDynamicWeather.printMissionAsJson(DCS.getMissionName(), net.lua2json(DCS.getCurrentMission()))
     end
-
-    if (string.match(message, "%[DCSDynamicWeather%.Mission%]:%sUpdate")) then
-        DCSDynamicWeather.updateMissionToLua(DCS.getMissionName())
-    end
 end
 
 function DCSDynamicWeatherCallbacks.onSimulationFrame()
@@ -178,10 +174,6 @@ function DCSDynamicWeather.removeMissionIdentifier(mission)
         return string.sub(mission, 1, #mission - 2)
     end
     return mission
-end
-
-function DCSDynamicWeather.updateMissionToLua(missionName)
-    DCSDynamicWeather.Logger.info(THIS_METHOD, "Mission file was yeeted.")
 end
 
 function DCSDynamicWeather.printMissionAsJson(missionName, missionJson)
