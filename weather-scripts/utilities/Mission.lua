@@ -15,22 +15,41 @@ function decodeJSONAndSerializeMissionFile()
 
     local readMissionFile = io.open(DCSDynamicWeather.SCRIPTS_PATH .. "\\mission", "r")
     local missionFileContents = io.read(readMissionFile, "*a")
+    DCSDynamicWeather.Logger.info(THIS_METHOD, "Read mission file.")
+
     local missionFileJson = JSON:decode(missionFileContents)
+    DCSDynamicWeather.Logger.info(THIS_METHOD, "Decoded mission file.")
+
     local withoutMissionFileJson = missionFileJson.mission
+    DCSDynamicWeather.Logger.info(THIS_METHOD, "Removed mission from table.")
     io.close(readMissionFile)
 
     local fout = io.open(DCSDynamicWeather.SCRIPTS_PATH .. "\\mission", "w")
     local serializer = Serializer.new()
     serializer:construct(fout)
     serializer:serialize_simple2("mission", withoutMissionFileJson)
+    DCSDynamicWeather.Logger.info(THIS_METHOD, "Serialized and wrote mission file.")
 end
 
 function encodeJSONMissionFile()
     local Factory = require("Factory")
     local JSON = loadfile(lfs.currentdir() .. "Scripts\\" .. "JSON.lua")()
 
-    local missionFileJson = JSON:encode(missionFileContents)
-
+    trigger.action.outText("[DCSDynamicWeather]: Encode", 10)
+    local startWaitTime = timer.getTime()
+    while DCSDynamicWeather.MISSION_TABLE == nil do
+        DCSDynamicWeather.Logger.info(THIS_FILE, "Waiting for mission table to be populated...")
+        if timer.getTime() - startWaitTime > 10 then
+            DCSDynamicWeather.Logger.error(THIS_FILE, "Timed out waiting for mission table to be populated.")
+            return
+        end
+    end
+    local missionFileJson = JSON:encode(DCSDynamicWeather.MISSION_TABLE)
+    local fout = io.open(DCSDynamicWeather.SCRIPTS_PATH .. "\\mission", "w")
+    fout:write(missionFileJson)
+    fout:flush()
+    fout:close()
+    DCSDynamicWeather.Logger.info(THIS_FILE, "Encoded and wrote mission file.")
 end
 
 function DCSDynamicWeather.Mission.loadNextMission(weatherType)

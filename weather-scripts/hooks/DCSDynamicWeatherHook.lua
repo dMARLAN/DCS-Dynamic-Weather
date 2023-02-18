@@ -54,8 +54,9 @@ function DCSDynamicWeatherCallbacks.onTriggerMessage(message, _, _)
         net.load_mission(DCS_SG .. "Missions\\" .. mission)
     end
 
-    if (string.match(message, "%[DCSDynamicWeather%.Mission%]:%sEdit")) then
-        DCSDynamicWeather.printMissionAsJson(DCS.getMissionName(), net.lua2json(DCS.getCurrentMission()))
+    if (string.match(message, "%[DCSDynamicWeather%.Mission%]:%sEncode")) then
+        local code = [[a_do_script("DCSDynamicWeather.MISSION_TABLE = \"]] .. DCS.getCurrentMission() .. [[\"")]]
+        DCSDynamicWeather.injectCodeStringToScriptEnv(code)
     end
 end
 
@@ -166,25 +167,6 @@ function DCSDynamicWeather.desanitizeMissionScripting()
     else
         DCSDynamicWeather.Logger.info(THIS_METHOD, "Mission Scripting is already desanitized.")
     end
-end
-
-function DCSDynamicWeather.removeMissionIdentifier(mission)
-    local missionNameLast2Chars = string.sub(mission, #mission - 1)
-    if (string.match(missionNameLast2Chars, "_A") or string.match(missionNameLast2Chars, "_B")) then
-        return string.sub(mission, 1, #mission - 2)
-    end
-    return mission
-end
-
-function DCSDynamicWeather.printMissionAsJson(missionName, missionJson)
-    local THIS_METHOD = "DCSDynamicWeather.printMissionAsJson"
-    DCSDynamicWeather.Logger.info(THIS_METHOD, "Printing mission file as JSON...")
-    local missionNameNoIdent = DCSDynamicWeather.removeMissionIdentifier(missionName)
-    local missionFile = io.open(DCS_SG .. "Missions\\" .. missionNameNoIdent  .. "\\mission", "wb")
-    io.write(missionFile, missionJson)
-    io.flush(missionFile)
-    io.close(missionFile)
-    DCSDynamicWeather.Logger.info(THIS_METHOD, "Mission file printed as JSON.")
 end
 
 function DCSDynamicWeather.Logger.info(logSource, message)
