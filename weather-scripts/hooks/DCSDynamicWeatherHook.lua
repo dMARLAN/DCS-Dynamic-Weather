@@ -6,6 +6,7 @@ DCSDynamicWeather.Logger = {}
 local THIS_FILE = "DCSDynamicWeatherHook"
 local DCS_ROOT = lfs.currentdir()
 local DCS_SG = lfs.writedir()
+local RESTART_TIME = 3600
 
 local missionLoaded = false
 local simulationStartTime = DCS.getRealTime()
@@ -51,6 +52,14 @@ function DCSDynamicWeatherCallbacks.onTriggerMessage(message, _, _)
         local mission = string.match(message, "%[DCSDynamicWeather%.Mission%]:%sLoad Mission:%s(.*)")
         DCSDynamicWeather.Logger.info(THIS_METHOD, "Loading Mission: " .. DCS_SG .. "Missions\\" .. mission)
         net.load_mission(DCS_SG .. "Missions\\" .. mission)
+    end
+
+    if (string.match(message, "%[DCSDynamicWeather%.Mission%]:%sEdit")) then
+        DCSDynamicWeather.printMissionAsJson(DCS.getMissionName(), net.lua2json(DCS.getCurrentMission()))
+    end
+
+    if (string.match(message, "%[DCSDynamicWeather%.Mission%]:%sUpdate")) then
+        DCSDynamicWeather.updateMissionToLua(DCS.getMissionName())
     end
 end
 
@@ -117,7 +126,7 @@ function DCSDynamicWeather.injectCodeStringToScriptEnv(code)
 end
 
 function DCSDynamicWeather.getRestartTimeInSeconds()
-    return 3600 -- TODO: Make this configurable
+    return RESTART_TIME -- TODO: Make this configurable
 end
 
 function DCSDynamicWeather.fileExists(file)
@@ -161,6 +170,29 @@ function DCSDynamicWeather.desanitizeMissionScripting()
     else
         DCSDynamicWeather.Logger.info(THIS_METHOD, "Mission Scripting is already desanitized.")
     end
+end
+
+function DCSDynamicWeather.removeMissionIdentifier(mission)
+    local missionNameLast2Chars = string.sub(mission, #mission - 1)
+    if (string.match(missionNameLast2Chars, "_A") or string.match(missionNameLast2Chars, "_B")) then
+        return string.sub(mission, 1, #mission - 2)
+    end
+    return mission
+end
+
+function DCSDynamicWeather.updateMissionToLua(missionName)
+    DCSDynamicWeather.Logger.info(THIS_METHOD, "Mission file was yeeted.")
+end
+
+function DCSDynamicWeather.printMissionAsJson(missionName, missionJson)
+    local THIS_METHOD = "DCSDynamicWeather.printMissionAsJson"
+    DCSDynamicWeather.Logger.info(THIS_METHOD, "Printing mission file as JSON...")
+    local missionNameNoIdent = DCSDynamicWeather.removeMissionIdentifier(missionName)
+    local missionFile = io.open(DCS_SG .. "Missions\\" .. missionNameNoIdent  .. "\\mission", "wb")
+    io.write(missionFile, missionJson)
+    io.flush(missionFile)
+    io.close(missionFile)
+    DCSDynamicWeather.Logger.info(THIS_METHOD, "Mission file printed as JSON.")
 end
 
 function DCSDynamicWeather.Logger.info(logSource, message)

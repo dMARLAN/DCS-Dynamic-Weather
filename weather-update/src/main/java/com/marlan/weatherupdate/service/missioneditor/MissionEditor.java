@@ -1,12 +1,13 @@
 package com.marlan.weatherupdate.service.missioneditor;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.*;
 import com.marlan.shared.utilities.Log;
 import com.marlan.weatherupdate.model.station.AVWXStation;
 import com.marlan.weatherupdate.utilities.AltimeterUtility;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Random;
-import java.util.regex.Pattern;
 
 /**
  * Handles replacing strings inside the mission file
@@ -25,7 +26,7 @@ public class MissionEditor {
         this.missionValues = missionValues;
     }
 
-    public String editMission(String mission) {
+    public void editMission(JsonNode mission) {
         double correctedQffInHg = AltimeterUtility.getCorrectedQff(missionValues.getStation().getQnh(), missionValues.getStation().getTempC(), stationAVWX);
         double qffMmHg = correctedQffInHg * INHG_TO_MMHG;
 
@@ -39,151 +40,73 @@ public class MissionEditor {
 
         String cloudsPreset = buildCloudsPreset(selectCloudsPresetSuffix(missionValues.getStation().getMetar()));
 
-        mission = replaceCloudsPreset(mission, cloudsPreset);
-        mission = replaceWind8000(mission, windSpeed8000, windDirection8000);
-        mission = replaceWind2000(mission, windSpeed2000, windDirection2000);
-        mission = replaceWindGround(mission, windSpeedGround, windDirectionGround);
-        mission = replaceHour(mission, missionValues.getTime().getHour());
-        mission = replaceDay(mission, missionValues.getTime().getDay());
-        mission = replaceMonth(mission, missionValues.getTime().getMonth());
-        mission = replaceTemperature(mission, missionValues.getStation().getTempC());
-        mission = replaceQnh(mission, qffMmHg, missionValues.getStation().getQnh());
-
-        return mission;
+        replaceCloudsPreset(mission, cloudsPreset);
+        replaceWind8000(mission, windSpeed8000, windDirection8000);
+        replaceWind2000(mission, windSpeed2000, windDirection2000);
+        replaceWindGround(mission, windSpeedGround, windDirectionGround);
+        replaceHour(mission, missionValues.getTime().getHour());
+        replaceDay(mission, missionValues.getTime().getDay());
+        replaceMonth(mission, missionValues.getTime().getMonth());
+        replaceTemperature(mission, missionValues.getStation().getTempC());
+        replaceQnh(mission, qffMmHg, missionValues.getStation().getQnh());
     }
 
-    @NotNull
-    private String replaceQnh(String mission, double qffMmHg, double qnhInHg) {
-        String regexSequence = "(\\[\"qnh\"].*)\n";
-        if (!Pattern.compile(regexSequence).matcher(mission).find()) {
-            log.error("Regex match failed, QNH not set.");
-            return mission;
-        }
-        mission = mission.replaceAll(regexSequence, "[\"qnh\"] = \\$qnh,\n".replace("$qnh", Double.toString(qffMmHg))); // DCS actually uses QFF not QNH!
+    private void replaceQnh(@NotNull JsonNode mission, double qffMmHg, double qnhInHg) {
+        ((ObjectNode) mission.get("weather")).set("qnh", new DoubleNode(qffMmHg)); // DCS actually uses QFF not QNH!
         double qnhMmHg = qnhInHg * INHG_TO_MMHG;
         log.info("QNH set to: " + qnhInHg + " inHg (" + qnhMmHg + " mmHg)");
         log.info("QFF set to: " + qffMmHg / INHG_TO_MMHG + " inHg (" + qffMmHg + " mmHg)");
-        return mission;
     }
 
-    @NotNull
-    private String replaceTemperature(String mission, double stationTempC) {
-        String regexSequence = "(\\[\"temperature\"].*)\n";
-        if (!Pattern.compile(regexSequence).matcher(mission).find()) {
-            log.error("Regex match failed, Temperature not set.");
-            return mission;
-        }
-        mission = mission.replaceAll(regexSequence, "[\"temperature\"] = \\$stationTempC,\n".replace("$stationTempC", Double.toString(stationTempC)));
-        log.info("Station Temperature set to: " + stationTempC + " C" + " / Sea Level Temperature set to: " + Math.round(stationTempC + TEMP_LAPSE_RATE_C * (stationAVWX.getElevationFt() / 1000)) + " C");
-        return mission;
+    private void replaceTemperature(@NotNull JsonNode mission, double stationTempC) {
+        ((ObjectNode) mission.get("weather").get("season")).set("temperature", new DoubleNode(stationTempC));
+        log.info("Station Temperature set to: "
+                 + stationTempC + " C"
+                 + " / Sea Level Temperature set to: "
+                 + Math.round(stationTempC + TEMP_LAPSE_RATE_C * (stationAVWX.getElevationFt() / 1000)) + " C");
     }
 
-    @NotNull
-    private String replaceMonth(String mission, int month) {
-        String regexSequence = "(\\[\"Month\"].*)\n";
-        if (!Pattern.compile(regexSequence).matcher(mission).find()) {
-            log.error("Regex match failed, Month not set.");
-            return mission;
-        }
-        mission = mission.replaceAll(regexSequence, "[\"Month\"] = \\$month,\n".replace("$month", Integer.toString(month)));
+    private void replaceMonth(@NotNull JsonNode mission, int month) {
+        ((ObjectNode) mission.get("date")).set("Month", new IntNode(month));
         log.info("Month set to: " + month);
-        return mission;
     }
 
-    @NotNull
-    private String replaceDay(String mission, int day) {
-        String regexSequence = "(\\[\"Day\"].*)\n";
-        if (!Pattern.compile(regexSequence).matcher(mission).find()) {
-            log.error("Regex match failed, Day not set.");
-            return mission;
-        }
-        mission = mission.replaceAll(regexSequence, "[\"Day\"] = \\$day,\n".replace("$day", Integer.toString(day)));
+    private void replaceDay(@NotNull JsonNode mission, int day) {
+        ((ObjectNode) mission.get("date")).set("Day", new IntNode(day));
         log.info("Day set to: " + day);
-        return mission;
     }
 
-    @NotNull
-    private String replaceHour(String mission, float hour) {
-        String regexSequence = "(^ {4}\\[\"start_time\"].*)";
-        if (!Pattern.compile(regexSequence, Pattern.MULTILINE).matcher(mission).find()) {
-            log.error("Regex match failed, Hour not set.");
-            return mission;
-        }
-        mission = mission.replaceAll(regexSequence, "    [\"start_time\"] = $startTime,".replace("$startTime", Float.toString(hour * 3600)));
+    private void replaceHour(@NotNull JsonNode mission, float hour) {
+        ((ObjectNode) mission).set("start_time", new FloatNode(hour * 3600));
         log.info("Start Time set to: " + hour * 3600 + "s (" + hour + "h)");
-        return mission;
     }
 
-    @NotNull
-    private String replaceWindGround(String mission, double windSpeedGround, double windDirectionGround) {
-        String regexSequence = "\\[\"atGround\"]\\s+=\\s+\\{([^}]*)";
-        if (!Pattern.compile(regexSequence).matcher(mission).find()) {
-            log.error("Regex match failed, Wind at Ground not set.");
-            return mission;
-        }
-        mission = mission.replaceAll(regexSequence,
-                "[\"atGround\"] =\n            {\n                [\"speed\"] = $windGroundSpeed,\n                [\"dir\"] = $windGroundDir,\n            "
-                        .replace("$windGroundSpeed", Double.toString(windSpeedGround))
-                        .replace("$windGroundDir", Double.toString(windDirectionGround)));
-        log.info("Wind at Ground set to: " + Math.round(windSpeedGround) + " m/s (" + Math.round(windSpeedGround / KNOTS_TO_METERS) + " kts) " + Math.floor(invertWindDirection(windDirectionGround)) + "°");
-        return mission;
+    private void replaceWindGround(@NotNull JsonNode mission, double windSpeedGround, double windDirectionGround) {
+        ((ObjectNode) mission.get("weather").get("wind").get("atGround")).set("speed", new DoubleNode(windSpeedGround));
+        ((ObjectNode) mission.get("weather").get("wind").get("atGround")).set("dir", new DoubleNode(windDirectionGround));
+        log.info("Wind at Ground set to: " + Math.round(windSpeedGround) + " m/s ("
+                 + Math.round(windSpeedGround / KNOTS_TO_METERS) + " kts) "
+                 + Math.floor(invertWindDirection(windDirectionGround)) + "°");
     }
 
-    @NotNull
-    private String replaceWind2000(String mission, double windSpeed2000, double windDirection2000) {
-        String regexSequence = "\\[\"at2000\"]\\s+=\\s+\\{([^}]*)";
-        if (!Pattern.compile(regexSequence).matcher(mission).find()) {
-            log.error("Regex match failed, Wind at 2000 not set.");
-            return mission;
-        }
-        mission = mission.replaceAll(regexSequence,
-                "[\"at2000\"] =\n            {\n                [\"speed\"] = $wind2000Speed,\n                [\"dir\"] = $wind2000Dir,\n            "
-                        .replace("$wind2000Speed", Double.toString(windSpeed2000))
-                        .replace("$wind2000Dir", Double.toString(windDirection2000)));
+    private void replaceWind2000(@NotNull JsonNode mission, double windSpeed2000, double windDirection2000) {
+        ((ObjectNode) mission.get("weather").get("wind").get("at2000")).set("speed", new DoubleNode(windSpeed2000));
+        ((ObjectNode) mission.get("weather").get("wind").get("at2000")).set("dir", new DoubleNode(windDirection2000));
         log.info("Wind at 2000 set to: " + Math.round(windSpeed2000) + " m/s (" + Math.round(windSpeed2000 / KNOTS_TO_METERS) + " kts) " + Math.floor(invertWindDirection(windDirection2000)) + "°");
-        return mission;
     }
 
-    @NotNull
-    private String replaceWind8000(String mission, double windSpeed8000, double windDirection8000) {
-        String regexSequence = "\\[\"at8000\"]\\s+=\\s+\\{([^}]*)";
-        if (!Pattern.compile(regexSequence).matcher(mission).find()) {
-            log.error("Regex match failed, Wind at 8000 not set.");
-            return mission;
-        }
-        mission = mission.replaceAll(regexSequence,
-                "[\"at8000\"] =\n            {\n                [\"speed\"] = $wind8000Speed,\n                [\"dir\"] = $wind8000Dir,\n            "
-                        .replace("$wind8000Speed", Double.toString(windSpeed8000))
-                        .replace("$wind8000Dir", Double.toString(windDirection8000)));
+    private void replaceWind8000(@NotNull JsonNode mission, double windSpeed8000, double windDirection8000) {
+        ((ObjectNode) mission.get("weather").get("wind").get("at8000")).set("speed", new DoubleNode(windSpeed8000));
+        ((ObjectNode) mission.get("weather").get("wind").get("at8000")).set("dir", new DoubleNode(windDirection8000));
         log.info("Wind at 8000 set to: " + Math.round(windSpeed8000) + " m/s (" + Math.round(windSpeed8000 / KNOTS_TO_METERS) + " kts) " + Math.floor(invertWindDirection(windDirection8000)) + "°");
-        return mission;
     }
 
-    private String replaceCloudsPreset(String mission, String cloudsPreset) {
-        String regexSequence;
-        if (!mission.contains("[\"preset\"]")) {
-            regexSequence = "(\\[\"iprecptns\"].*)\n";
-            if (!Pattern.compile(regexSequence).matcher(mission).find()) {
-                log.error("Regex match failed, Precipitation not set.");
-                return mission;
-            }
-            mission = mission.replaceAll(
-                            regexSequence,
-                            "[\"iprecptns\"] = 0,\n            [\"preset\"] = \"\\$cloudsPreset\",\n")
-                    .replace("$cloudsPreset", cloudsPreset);
-        } else {
-            regexSequence = "(\\[\"preset\"].*)\n";
-            if (!Pattern.compile(regexSequence).matcher(mission).find()) {
-                log.error("Regex match failed, Cloud Preset not set.");
-                return mission;
-            }
-            mission = mission.replaceAll(
-                    regexSequence,
-                    "[\"preset\"] = \"\\$cloudsPreset\",\n"
-                            .replace("$cloudsPreset", cloudsPreset));
+    private void replaceCloudsPreset(@NotNull JsonNode mission, String cloudsPreset) {
+        if (mission.get("weather").get("clouds").has("preset")) {
+            ((ObjectNode) mission.get("weather").get("clouds"))
+                    .set("preset", new TextNode(cloudsPreset));
         }
         log.info("Clouds Preset: " + cloudsPreset);
-        return mission;
     }
 
     private double getCorrectedGroundWindSpeed(double windSpeedKnots, double stationAltitude) {

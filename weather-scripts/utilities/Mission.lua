@@ -1,7 +1,59 @@
 DCSDynamicWeather.Mission = {}
+local IS_MISSION_EDITED = false
 
 local THIS_FILE = DCSDynamicWeather.MODULE_NAME .. ".Mission"
-local invertMissionIdentifier, getNextMissionName, loadMission, fileExists, copyFileWithNewIdentifier, invertIdentifier
+local invertMissionIdentifier, getNextMissionName, loadMission, fileExists, copyFileWithNewIdentifier, invertIdentifier, executeWeatherUpdate, executeMissionEdit, executeMissionUpdate
+
+function executeMissionEdit()
+    trigger.action.outText("[DCSDynamicWeather.Mission]: Update", 10, false)
+    DCSDynamicWeather.JSON.setValue("update_phase", "update", DCSDynamicWeather.DTO_PATH)
+    timer.scheduleFunction(executeWeatherUpdate, nil, timer.getTime() + 3)
+end
+
+function executeMissionUpdate()
+    eatMyAss()
+    DCSDynamicWeather.JSON.setValue("update_phase", "edit", DCSDynamicWeather.DTO_PATH)
+    timer.scheduleFunction(executeWeatherUpdate, nil, timer.getTime() + 3)
+end
+
+function DCSDynamicWeather.removeMissionIdentifier(mission)
+    local missionNameLast2Chars = string.sub(mission, #mission - 1)
+    if (string.match(missionNameLast2Chars, "_A") or string.match(missionNameLast2Chars, "_B")) then
+        return string.sub(mission, 1, #mission - 2)
+    end
+    return mission
+end
+
+function eatMyAss()
+    local THIS_METHOD = "DCSDynamicWeather.updateMissionToLua"
+    DCSDynamicWeather.Logger.info(THIS_METHOD, "Updating mission file to Lua...")
+    local readMissionFile = io.open(DCSDynamicWeather.SCRIPTS_PATH .. "\\mission", "rb")
+    DCSDynamicWeather.Logger.info(THIS_METHOD, "open")
+    local missionFileContents = io.read(readMissionFile, "*all")
+    DCSDynamicWeather.Logger.info(THIS_METHOD, "read")
+    local missionFileJson = json.decode(missionFileContents)
+    DCSDynamicWeather.Logger.info(THIS_METHOD, "decode")
+    DCSDynamicWeather.Logger.info(THIS_METHOD, missionFileJson)
+    local missionFileLuaCode = string.dump(missionFileJson)
+    DCSDynamicWeather.Logger.info(THIS_METHOD, "dump")
+    DCSDynamicWeather.Logger.info(THIS_METHOD, missionFileLuaCode)
+    io.close(readMissionFile)
+
+    local writeMissionFile = io.open(DCSDynamicWeather.SCRIPTS_PATH .. "\\mission", "wb")
+    io.write(writeMissionFile, missionFileLuaCode)
+    io.flush(writeMissionFile)
+    io.close(writeMissionFile)
+end
+
+function executeWeatherUpdate()
+    DCSDynamicWeather.JAR.execute("weather-update")
+    if not IS_MISSION_EDITED then
+        IS_MISSION_EDITED = true
+        executeMissionUpdate()
+    else
+        loadMission(getNextMissionName())
+    end
+end
 
 function DCSDynamicWeather.Mission.loadNextMission(weatherType)
     local cvOpsEnabled = DCSDynamicWeather.JSON.getValue("cyclic_ops", DCSDynamicWeather.CONFIG_PATH) == "true"
@@ -15,9 +67,8 @@ function DCSDynamicWeather.Mission.loadNextMission(weatherType)
     DCSDynamicWeather.JSON.setValue("current_game_time", timer.getAbsTime(), DCSDynamicWeather.DTO_PATH)
     DCSDynamicWeather.JSON.setValue("weather_type", weatherType, DCSDynamicWeather.DTO_PATH)
     DCSDynamicWeather.JSON.setValue("mission", nextMissionName .. ".miz", DCSDynamicWeather.DTO_PATH)
-    DCSDynamicWeather.JAR.execute("weather-update")
 
-    loadMission(nextMissionName)
+    executeMissionEdit()
 end
 
 function loadMission(mission)

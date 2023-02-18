@@ -1,5 +1,7 @@
 package com.marlan.weatherupdate.controller;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -13,6 +15,9 @@ import com.marlan.weatherupdate.service.missioneditor.MissionValues;
 import com.marlan.weatherupdate.utilities.MizUtility;
 import com.marlan.shared.model.Config;
 import com.marlan.shared.model.DTO;
+
+import java.io.File;
+import java.io.IOException;
 
 /**
  * Controller for Weather Update module
@@ -41,27 +46,34 @@ public class WeatherUpdateController {
         DTO dto = gson.fromJson(dataContent, DTO.class);
         Config config = gson.fromJson(configFileContent, Config.class);
 
-        AVWXClient avwxClient = new AVWXClient(WORKING_DIR);
-        AVWXMetar metarAVWX = gson.fromJson(avwxClient.getMetar(dto).body(), AVWXMetar.class);
-        AVWXStation stationAVWX = gson.fromJson(avwxClient.getStation(metarAVWX).body(), AVWXStation.class);
+        if (dto.getUpdatePhase().equals("edit")) {
+            AVWXClient avwxClient = new AVWXClient(WORKING_DIR);
+            AVWXMetar metarAVWX = gson.fromJson(avwxClient.getMetar(dto).body(), AVWXMetar.class);
+            AVWXStation stationAVWX = gson.fromJson(avwxClient.getStation(metarAVWX).body(), AVWXStation.class);
 
-        dto.setIcao(stationAVWX.getIcao());
-        FileHandler.writeJSON(WORKING_DIR, DTO_PATH, dto);
+            dto.setIcao(stationAVWX.getIcao());
+            FileHandler.writeJSON(WORKING_DIR, DTO_PATH, dto);
 
-        MizUtility mizUtility = new MizUtility(config);
-        mizUtility.extractMission(WORKING_DIR, dto.getMission());
-        String missionContent = FileHandler.readFile(WORKING_DIR, MISSION_FILE);
+            ObjectMapper objectMapper = new ObjectMapper();
+            File missionFile = new File(WORKING_DIR + MISSION_FILE);
+            JsonNode rootNode;
+            try{
+                rootNode = objectMapper.readTree(missionFile);
+            } catch (IOException ioe) {
+                log.error("Could not read mission: " + ioe.getMessage());
+                return;
+            }
 
-        MissionValues missionValues = new MissionValues(config, dto, stationAVWX, metarAVWX);
-        MissionEditor missionEditor = new MissionEditor(stationAVWX, missionValues);
+            MissionValues missionValues = new MissionValues(config, dto, stationAVWX, metarAVWX);
+            MissionEditor missionEditor = new MissionEditor(stationAVWX, missionValues);
 
-        String replacedMissionContent = missionEditor.editMission(missionContent);
+            missionEditor.editMission(rootNode.get("mission"));
 
-        FileHandler.overwriteFile(WORKING_DIR, MISSION_FILE, replacedMissionContent);
-
-        mizUtility.updateMiz(WORKING_DIR, dto.getMission(), MISSION_FILE);
-
-        FileHandler.deleteFile(WORKING_DIR, MISSION_FILE);
+            FileHandler.overwriteFile(WORKING_DIR, MISSION_FILE, rootNode.toPrettyString());
+        } else {
+            MizUtility mizUtility = new MizUtility(config);
+            mizUtility.updateMiz(WORKING_DIR, dto.getMission(), MISSION_FILE);
+            FileHandler.deleteFile(WORKING_DIR, MISSION_FILE);
+        }
     }
-
 }

@@ -7,7 +7,6 @@ DCSDynamicWeather.CONFIG_PATH = "config.json"
 
 local LIBRARIES = "libraries"
 local UTILITIES = "utilities"
-local MODEL = "model"
 local WEATHER_OUTPUT = "weatheroutput"
 local THIS_FILE = "DCSDynamicWeatherLoader"
 
@@ -34,7 +33,6 @@ loadLua(UTILITIES, "Mission")
 loadLua(UTILITIES, "Restart")
 
 loadAllLua(LIBRARIES)
-loadAllLua(MODEL)
 
 loadLua(WEATHER_OUTPUT, "BuildMetar")
 loadLua(WEATHER_OUTPUT, "SetWeather")

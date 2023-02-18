@@ -3,7 +3,7 @@ plugins {
 }
 
 group 'com.marlan'
-version '2.0.6'
+version '2.1.11'
 
 repositories {
     mavenCentral()
@@ -26,6 +26,8 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.10'
     implementation 'us.dustinj.timezonemap:timezonemap:4.5'
     implementation 'org.jetbrains:annotations:23.1.0'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.4.2'
+    implementation 'org.luaj:luaj-jse:3.0.1'
 
     annotationProcessor 'org.jetbrains:annotations:23.1.0'
 
