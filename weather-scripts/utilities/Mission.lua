@@ -1,123 +1,36 @@
 DCSDynamicWeather.Mission = {}
-local IS_MISSION_EDITED = false
+package.path = package.path .. ";.\\Scripts\\?.lua;"
 
 local THIS_FILE = DCSDynamicWeather.MODULE_NAME .. ".Mission"
-local invertMissionIdentifier, getNextMissionName, loadMission, fileExists, copyFileWithNewIdentifier, invertIdentifier, executeWeatherUpdate, executeMissionEdit, executeMissionUpdate
+local invertMissionIdentifier, getNextMissionName, loadMission,
+fileExists, copyFileWithNewIdentifier, invertIdentifier,
+executeMissionEdit, decodeJSONAndSerializeMissionFile, encodeJSONMissionFile
 
-function executeMissionEdit()
-    trigger.action.outText("[DCSDynamicWeather.Mission]: Edit", 10, false)
-    DCSDynamicWeather.JSON.setValue("update_phase", "edit", DCSDynamicWeather.DTO_PATH)
-    timer.scheduleFunction(executeWeatherUpdate, nil, timer.getTime() + 3)
-end
-
-function executeMissionUpdate()
-    eatMyAss()
-    DCSDynamicWeather.JSON.setValue("update_phase", "update", DCSDynamicWeather.DTO_PATH)
-    timer.scheduleFunction(executeWeatherUpdate, nil, timer.getTime() + 3)
-end
-
-function DCSDynamicWeather.removeMissionIdentifier(mission)
-    local missionNameLast2Chars = string.sub(mission, #mission - 1)
-    if (string.match(missionNameLast2Chars, "_A") or string.match(missionNameLast2Chars, "_B")) then
-        return string.sub(mission, 1, #mission - 2)
-    end
-    return mission
-end
-
-function DCSDynamicWeather.Mission.writeData(fcn, fcnVars, fdir)
-    if lfs and io then
-        local f = io.open(fdir, 'w')
-        f:write(fcn(unpack(fcnVars, 1, table.maxn(fcnVars))))
-        f:close()
-    end
-end
-
-function DCSDynamicWeather.Mission.basicSerialize(var)
-    if var == nil then
-        return "\"\""
-    else
-        if ((type(var) == 'number') or
-                (type(var) == 'boolean') or
-                (type(var) == 'function') or
-                (type(var) == 'table') or
-                (type(var) == 'userdata') ) then
-            return tostring(var)
-        elseif type(var) == 'string' then
-            var = string.format('%q', var)
-            return var
-        end
-    end
-end
-
-function DCSDynamicWeather.Mission.serialize(name, value, level)
-    --Based on ED's serialize_simple2
-    local function basicSerialize(o)
-        if type(o) == "number" then
-            return tostring(o)
-        elseif type(o) == "boolean" then
-            return tostring(o)
-        else -- assume it is a string
-            return basicSerialize(o)
-        end
-    end
-
-    local function serializeToTbl(name, value, level)
-        local var_str_tbl = {}
-        if level == nil then
-            level = ""
-        end
-        if level ~= "" then
-            level = level..""
-        end
-        table.insert(var_str_tbl, level .. name .. " = ")
-
-        if type(value) == "number" or type(value) == "string" or type(value) == "boolean" then
-            table.insert(var_str_tbl, basicSerialize(value) ..	",\n")
-        elseif type(value) == "table" then
-            table.insert(var_str_tbl, "\n"..level.."{\n")
-
-            for k,v in pairs(value) do -- serialize its fields
-                local key
-                if type(k) == "number" then
-                    key = string.format("[%s]", k)
-                else
-                    key = string.format("[%q]", k)
-                end
-                table.insert(var_str_tbl, DCSDynamicWeather.Mission.serialize(key, v, level.."	"))
-            end
-            if level == "" then
-                table.insert(var_str_tbl, level.."} -- end of "..name.."\n")
-            else
-                table.insert(var_str_tbl, level.."}, -- end of "..name.."\n")
-            end
-        end
-        return var_str_tbl
-    end
-    local t_str = serializeToTbl(name, value, level)
-    return table.concat(t_str)
-end
-
-function eatMyAss()
+function decodeJSONAndSerializeMissionFile()
     local THIS_METHOD = "DCSDynamicWeather.updateMissionToLua"
-    DCSDynamicWeather.Logger.info(THIS_METHOD, "Updating mission file to Lua...")
+
+    local Factory = require("Factory")
+    local JSON = loadfile(lfs.currentdir() .. "Scripts\\" .. "JSON.lua")()
+    local Serializer = require("Serializer")
+
     local readMissionFile = io.open(DCSDynamicWeather.SCRIPTS_PATH .. "\\mission", "r")
     local missionFileContents = io.read(readMissionFile, "*a")
-    local missionFileJson = dkjson.decode(missionFileContents)
+    local missionFileJson = JSON:decode(missionFileContents)
+    local withoutMissionFileJson = missionFileJson.mission
     io.close(readMissionFile)
-    DCSDynamicWeather.Mission.writeData(DCSDynamicWeather.Mission.serialize,
-            {'mission', missionFileJson},
-            DCSDynamicWeather.SCRIPTS_PATH .. "\\mission"
-    )
+
+    local fout = io.open(DCSDynamicWeather.SCRIPTS_PATH .. "\\mission", "w")
+    local serializer = Serializer.new()
+    serializer:construct(fout)
+    serializer:serialize_simple2("mission", withoutMissionFileJson)
 end
 
-function executeWeatherUpdate()
-    DCSDynamicWeather.JAR.execute("weather-update")
-    if not IS_MISSION_EDITED then
-        IS_MISSION_EDITED = true
-        executeMissionUpdate()
-    else
-        loadMission(getNextMissionName())
-    end
+function encodeJSONMissionFile()
+    local Factory = require("Factory")
+    local JSON = loadfile(lfs.currentdir() .. "Scripts\\" .. "JSON.lua")()
+
+    local missionFileJson = JSON:encode(missionFileContents)
+
 end
 
 function DCSDynamicWeather.Mission.loadNextMission(weatherType)
@@ -132,6 +45,14 @@ function DCSDynamicWeather.Mission.loadNextMission(weatherType)
     DCSDynamicWeather.JSON.setValue("current_game_time", timer.getAbsTime(), DCSDynamicWeather.DTO_PATH)
     DCSDynamicWeather.JSON.setValue("weather_type", weatherType, DCSDynamicWeather.DTO_PATH)
     DCSDynamicWeather.JSON.setValue("mission", nextMissionName .. ".miz", DCSDynamicWeather.DTO_PATH)
+
+    encodeJSONMissionFile()
+    DCSDynamicWeather.JSON.setValue("update_phase", "edit", DCSDynamicWeather.DTO_PATH)
+    DCSDynamicWeather.JAR.execute("weather-update")
+
+    decodeJSONAndSerializeMissionFile()
+    DCSDynamicWeather.JSON.setValue("update_phase", "update", DCSDynamicWeather.DTO_PATH)
+    DCSDynamicWeather.JAR.execute("weather-update")
 
     executeMissionEdit()
 end
