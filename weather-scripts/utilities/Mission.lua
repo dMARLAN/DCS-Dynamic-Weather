@@ -24,16 +24,15 @@ function DCSDynamicWeather.removeMissionIdentifier(mission)
     return mission
 end
 
-function writeData(fcn, fcnVars, fname)
+function DCSDynamicWeather.Mission.writeData(fcn, fcnVars, fdir)
     if lfs and io then
-        local fdir = lfs.writedir() .. [[Logs\]] .. fname
         local f = io.open(fdir, 'w')
         f:write(fcn(unpack(fcnVars, 1, table.maxn(fcnVars))))
         f:close()
     end
 end
 
-function basicSerialize(var)
+function DCSDynamicWeather.Mission.basicSerialize(var)
     if var == nil then
         return "\"\""
     else
@@ -50,7 +49,7 @@ function basicSerialize(var)
     end
 end
 
-function serialize(name, value, level)
+function DCSDynamicWeather.Mission.serialize(name, value, level)
     --Based on ED's serialize_simple2
     local function basicSerialize(o)
         if type(o) == "number" then
@@ -84,7 +83,7 @@ function serialize(name, value, level)
                 else
                     key = string.format("[%q]", k)
                 end
-                table.insert(var_str_tbl, serialize(key, v, level.."	"))
+                table.insert(var_str_tbl, DCSDynamicWeather.Mission.serialize(key, v, level.."	"))
             end
             if level == "" then
                 table.insert(var_str_tbl, level.."} -- end of "..name.."\n")
@@ -105,11 +104,10 @@ function eatMyAss()
     local missionFileContents = io.read(readMissionFile, "*a")
     local missionFileJson = dkjson.decode(missionFileContents)
     io.close(readMissionFile)
-    writeData(serialize,{'mission', missionFileJson}, DCSDynamicWeather.SCRIPTS_PATH .. "\\mission")
-    --local writeMissionFile = io.open(DCSDynamicWeather.SCRIPTS_PATH .. "\\mission", "wb")
-    --io.write(writeMissionFile, oneLineSerialize(missionFileJson))
-    --io.flush(writeMissionFile)
-    --io.close(writeMissionFile)
+    DCSDynamicWeather.Mission.writeData(DCSDynamicWeather.Mission.serialize,
+            {'mission', missionFileJson},
+            DCSDynamicWeather.SCRIPTS_PATH .. "\\mission"
+    )
 end
 
 function executeWeatherUpdate()
