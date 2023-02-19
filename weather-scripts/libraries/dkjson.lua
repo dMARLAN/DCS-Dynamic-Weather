@@ -1,7 +1,7 @@
 -- Module options:
 local always_use_lpeg = false
-local register_global_module_table = false
-local global_module_name = 'json'
+local register_global_module_table = true
+local global_module_name = 'dkjson'
 
 --[==[
 

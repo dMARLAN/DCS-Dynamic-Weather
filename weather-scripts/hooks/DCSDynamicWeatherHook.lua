@@ -54,7 +54,7 @@ function DCSDynamicWeatherCallbacks.onTriggerMessage(message, _, _)
         net.load_mission(DCS_SG .. "Missions\\" .. mission)
     end
 
-    if (string.match(message, "%[DCSDynamicWeather%.Mission%]:%sEdit%sMission")) then
+    if (string.match(message, "%[DCSDynamicWeather%.Mission%]:%sEncode")) then
         DCSDynamicWeather.injectMissionTableToScriptEnv()
     end
 end
@@ -96,6 +96,14 @@ function DCSDynamicWeather.checkCondForRestart()
             waiting = false
         end
     end
+end
+
+function DCSDynamicWeather.injectMissionTableToScriptEnv()
+    dofile(lfs.writedir() .. "Missions\\Syria_Deployment\\dkjson.lua")
+    local missionTable = DCS.getCurrentMission()
+    local missionTableJson = dkjson.encode(missionTable)
+    local code = [[a_do_script("DCSDynamicWeather.MISSION_NAME = \"]] .. missionTableJson .. [[\"")]]
+    DCSDynamicWeather.injectCodeStringToScriptEnv(code)
 end
 
 function DCSDynamicWeather.injectMissionNameToScriptEnv()

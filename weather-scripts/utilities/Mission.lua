@@ -4,7 +4,9 @@ package.path = package.path .. ";.\\Scripts\\?.lua;"
 local THIS_FILE = DCSDynamicWeather.MODULE_NAME .. ".Mission"
 local invertMissionIdentifier, getNextMissionName, loadMission,
 fileExists, copyFileWithNewIdentifier, invertIdentifier,
-executeMissionEdit, decodeJSONAndSerializeMissionFile, encodeJSONMissionFile
+decodeJSONAndSerializeMissionFile, encodeJSONMissionFile, executeWeatherUpdate
+
+local missionEncoded = false
 
 function decodeJSONAndSerializeMissionFile()
     local THIS_METHOD = "DCSDynamicWeather.updateMissionToLua"
@@ -32,9 +34,6 @@ function decodeJSONAndSerializeMissionFile()
 end
 
 function encodeJSONMissionFile()
-    local Factory = require("Factory")
-    local JSON = loadfile(lfs.currentdir() .. "Scripts\\" .. "JSON.lua")()
-
     trigger.action.outText("[DCSDynamicWeather.Mission]: Encode", 10)
     local startWaitTime = timer.getTime()
     while DCSDynamicWeather.MISSION_TABLE == nil do
@@ -54,6 +53,12 @@ function encodeJSONMissionFile()
     DCSDynamicWeather.Logger.info(THIS_FILE, "Encoded and wrote mission file.")
 end
 
+function executeWeatherUpdate()
+    if not missionEncoded then
+        DCSDynamicWeather.JAR.execute("weather-update")
+    end
+end
+
 function DCSDynamicWeather.Mission.loadNextMission(weatherType)
     local cvOpsEnabled = DCSDynamicWeather.JSON.getValue("cyclic_ops", DCSDynamicWeather.CONFIG_PATH) == "true"
     if not weatherType and cvOpsEnabled then
@@ -67,15 +72,13 @@ function DCSDynamicWeather.Mission.loadNextMission(weatherType)
     DCSDynamicWeather.JSON.setValue("weather_type", weatherType, DCSDynamicWeather.DTO_PATH)
     DCSDynamicWeather.JSON.setValue("mission", nextMissionName .. ".miz", DCSDynamicWeather.DTO_PATH)
 
-    encodeJSONMissionFile()
+    trigger.action.outText("[DCSDynamicWeather.Mission]: Encode", 10)
     DCSDynamicWeather.JSON.setValue("update_phase", "edit", DCSDynamicWeather.DTO_PATH)
-    DCSDynamicWeather.JAR.execute("weather-update")
+    timer.scheduleFunction(executeWeatherUpdate, nil, timer.getTime() + 2)
 
     decodeJSONAndSerializeMissionFile()
     DCSDynamicWeather.JSON.setValue("update_phase", "update", DCSDynamicWeather.DTO_PATH)
     DCSDynamicWeather.JAR.execute("weather-update")
-
-    executeMissionEdit()
 end
 
 function loadMission(mission)
