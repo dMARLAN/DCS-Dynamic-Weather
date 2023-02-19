@@ -44,7 +44,7 @@ end
 function DCSDynamicWeather.Restart.now()
     local THIS_METHOD = THIS_FILE .. ".now()"
     DCSDynamicWeather.Logger.info(THIS_METHOD, "Attempting to restart mission now.")
-    restartMission()
+    timer.scheduleFunction(restartMission, nil, timer.getTime() + 1)
 end
 
 function getMaximumOvertimeInSeconds()

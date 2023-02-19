@@ -69,7 +69,7 @@ end
 
 function DCSDynamicWeather.checkCondForRestart()
     local THIS_METHOD = "DCSDynamicWeather.waitForRestart"
-    if not missionLoaded then
+    if not missionLoaded or injectedRestart then
         return
     end
 
@@ -78,7 +78,7 @@ function DCSDynamicWeather.checkCondForRestart()
         checkRestartTime = DCS.getRealTime() + 15
     else
         if (DCS.getRealTime() > checkRestartTime) then
-            if (DCS.getRealTime() > simulationStartTime + DCSDynamicWeather.getRestartTimeInSeconds()) and not injectedRestart then
+            if (DCS.getRealTime() > simulationStartTime + DCSDynamicWeather.getRestartTimeInSeconds()) then
                 DCSDynamicWeather.Logger.info(THIS_METHOD, "Restarting mission.")
                 DCS.setPause(false)
                 DCSDynamicWeather.Logger.info(THIS_METHOD, "Pause State set to: " .. tostring(false))
