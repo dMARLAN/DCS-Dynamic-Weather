@@ -9,7 +9,7 @@ local DCS_SG = lfs.writedir()
 
 local missionLoaded = false
 local simulationStartTime = DCS.getRealTime()
-local initialPauseState
+local initialPauseState = false
 local waiting = false
 local checkRestartTime = 0
 local initialPauseStateSet = false
@@ -17,11 +17,13 @@ local injectedRestart = false
 
 function DCSDynamicWeatherCallbacks.onMissionLoadEnd()
     local THIS_METHOD = "DCSDynamicWeatherCallbacks.onMissionLoadEnd"
+
+    if not initialPauseStateSet then
+        initialPauseState = DCS.getPause()
+    end
     waiting = false
-    initialPauseStateSet = false
     injectedRestart = false
 
-    initialPauseState = DCS.getPause()
     DCSDynamicWeather.Logger.info(THIS_METHOD, "Initial pause state: " .. tostring(initialPauseState))
     if initialPauseState then
         DCS.setPause(false)
@@ -69,7 +71,12 @@ end
 
 function DCSDynamicWeather.checkCondForRestart()
     local THIS_METHOD = "DCSDynamicWeather.waitForRestart"
-    if not missionLoaded or injectedRestart then
+    if not missionLoaded then
+        return
+    end
+
+    if injectedRestart then
+        DCS.setPause(false) -- Makes sure that the mission env scripts aren't blocked by the pause state
         return
     end
 

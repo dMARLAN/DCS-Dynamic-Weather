@@ -15,10 +15,9 @@ function getNumPlayerUnits()
     return numPlayerUnits
 end
 
-function restartMission()
+function restartMission(repeatInterval)
     local maxOverTime = getMaximumOvertimeInSeconds()
     local reminderIntervalInMins = 60
-    local repeatInterval = 300
     local numPlayerUnits = getNumPlayerUnits()
     if (numPlayerUnits == 0 or timer.getTime() >= maxOverTime) then
         DCSDynamicWeather.Logger.info(THIS_FILE, "Restarting mission.")
@@ -44,7 +43,7 @@ end
 function DCSDynamicWeather.Restart.now()
     local THIS_METHOD = THIS_FILE .. ".now()"
     DCSDynamicWeather.Logger.info(THIS_METHOD, "Attempting to restart mission now.")
-    timer.scheduleFunction(restartMission, nil, timer.getTime() + 1)
+    timer.scheduleFunction(restartMission, 60, timer.getTime() + 1)
 end
 
 function getMaximumOvertimeInSeconds()
