@@ -54,9 +54,8 @@ function DCSDynamicWeatherCallbacks.onTriggerMessage(message, _, _)
         net.load_mission(DCS_SG .. "Missions\\" .. mission)
     end
 
-    if (string.match(message, "%[DCSDynamicWeather%.Mission%]:%sEncode")) then
-        local code = [[a_do_script("DCSDynamicWeather.MISSION_TABLE = \"]] .. DCS.getCurrentMission() .. [[\"")]]
-        DCSDynamicWeather.injectCodeStringToScriptEnv(code)
+    if (string.match(message, "%[DCSDynamicWeather%.Mission%]:%sEdit%sMission")) then
+        DCSDynamicWeather.injectMissionTableToScriptEnv()
     end
 end
 
