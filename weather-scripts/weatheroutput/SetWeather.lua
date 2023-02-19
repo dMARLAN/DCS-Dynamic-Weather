@@ -10,7 +10,7 @@ end
 
 function menuHandler:onEvent(event)
     if event.id == world.event.S_EVENT_BIRTH and event.initiator:getPlayerName() ~= nil then
-        if Group.getName(event.initiator:getGroup()) == ADMIN_GROUP_NAME then
+        if string.find(Group.getName(event.initiator:getGroup()), ADMIN_GROUP_NAME) then
             local adminGroup = event.initiator:getGroup()
             local adminGroupID = Group.getID(adminGroup)
             createGroupSpecificMenus(adminGroupID, ADMIN_GROUP_NAME)
