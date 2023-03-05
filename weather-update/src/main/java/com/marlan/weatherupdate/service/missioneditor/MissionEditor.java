@@ -212,10 +212,13 @@ public class MissionEditor {
     }
 
     private String replaceCloudsPreset(String mission, String cloudsPreset) {
-        if (true) {
-            return replaceCloudsWithoutPreset(mission, cloudsPreset);
+        Pattern pattern = Pattern.compile(
+                "(\\[\"clouds\"]\\s*=\\s*\\{[^{}]*\\[\"preset\"]\\s*=\\s*\")([^,\"]*)(\")", Pattern.MULTILINE);
+        Matcher matcher = pattern.matcher(mission);
+        if (matcher.find()) {
+            return replaceCloudsWithPreset(mission, cloudsPreset);
         }
-        return replaceCloudsWithPreset(mission, cloudsPreset);
+        return replaceCloudsWithoutPreset(mission, cloudsPreset);
     }
 
     private double getCorrectedGroundWindSpeed(double windSpeedKnots, double stationAltitude) {
