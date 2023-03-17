@@ -50,10 +50,3 @@ function getMaximumOvertimeInSeconds()
     local maximumOverTimeInHours = DCSDynamicWeather.JSON.getValue("maximumHoursForEachRestart", DCSDynamicWeather.CONFIG_PATH)
     return maximumOverTimeInHours * 3600
 end
-
-local function main()
-    --local restartTimeInHours = DCSDynamicWeather.JSON.getValue("hoursForEachRestart", DCSDynamicWeather.CONFIG_PATH)
-    --local restartTimeInSeconds = restartTimeInHours * 3600
-    --timer.scheduleFunction(restartMission, nil, timer.getTime() + restartTimeInSeconds)
-end
-main()
