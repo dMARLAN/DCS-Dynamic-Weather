@@ -135,7 +135,7 @@ function BuildMetar.getDayAndTimeZulu()
         minutes = "0" .. minutes
     end
 
-    return os.date("%d") .. hours .. minutes .. "Z"
+    return os.date("%d") .. math.floor(hours + 0.5) .. math.floor(minutes + 0.5) .. "Z"
 end
 
 function BuildMetar.getVisibility()
