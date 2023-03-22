@@ -102,7 +102,7 @@ function BuildMetar.getDayAndTimeZulu()
     local time = timer.getAbsTime()
     local day = env.mission.date.Day
     local hours = math.floor(time / 3600)
-    local minutes = (time / 60) - (hours * 60)
+    local minutes = math.floor(((time / 60) - (hours * 60)) + 0.5)
     DCSDynamicWeather.Logger.info(THIS_METHOD, "Local Time: Day: " .. day .. " Hour: " .. hours .. " Minute: " .. minutes)
 
     local timeChangeToZulu
@@ -135,7 +135,7 @@ function BuildMetar.getDayAndTimeZulu()
         minutes = "0" .. minutes
     end
 
-    return os.date("%d") .. math.floor(hours + 0.5) .. math.floor(minutes + 0.5) .. "Z"
+    return os.date("%d") .. hours .. minutes .. "Z"
 end
 
 function BuildMetar.getVisibility()
