@@ -44,13 +44,15 @@ function DCSDynamicWeather.JSON.getValue(key, relativeFilePath)
     io.close(readFile)
 
     local value = string.match(fileContents, key .. "\":%s+\"(%w*)")
-    if value == nil then
-        DCSDynamicWeather.Logger.warning(THIS_METHOD, "Key: \"" .. key .. "\" was nil in File: \"" .. relativeFilePath .. "\"")
-        return
-    else
-        DCSDynamicWeather.Logger.info(THIS_METHOD, "Key: \"" .. key .. "\" Value: \"" .. value .. "\" in File: \"" .. relativeFilePath .. "\" retrieved.")
-        return value
+    if not value then
+        value = string.match(fileContents, key .. "\":%s+(%w*)")
+        if not value then
+            DCSDynamicWeather.Logger.warning(THIS_METHOD, "Key: \"" .. key .. "\" was nil in File: \"" .. relativeFilePath .. "\"")
+            return
+        end
     end
+    DCSDynamicWeather.Logger.info(THIS_METHOD, "Key: \"" .. key .. "\" Value: \"" .. value .. "\" in File: \"" .. relativeFilePath .. "\" retrieved.")
+    return value
 end
 
 function fileExists(file)
