@@ -12,7 +12,8 @@
   "spreadsheet_range": "",
   "cyclic_ops": true,
   "first_cyclic_time_in_secs": 32400,
-  "cyclic_windows": 8,
-  "cyclic_length": 90,
-  "pre_event_time": 1800
+  "cyclic_windows": 10,
+  "cyclic_length": 75,
+  "pre_event_time": 1200,
+  "recovery_duration": 900
 }
