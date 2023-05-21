@@ -30,9 +30,11 @@ public class MissionEditor {
         double correctedQffInHg = AltimeterUtility.getCorrectedQff(missionValues.getStation().getQnh(), missionValues.getStation().getTempC(), stationAVWX);
         double qffMmHg = correctedQffInHg * INHG_TO_MMHG;
 
-        double windSpeedGround = getCorrectedGroundWindSpeed(missionValues.getWind().getSpeed(), stationAVWX.getElevationM()); // "Ground" Wind is 10m/33ft but also sets ~500m/1660ft
-        double windSpeed2000 = getModifiedWindSpeed(2000, missionValues.getWind().getSpeed()); // "2000" Wind is 2000m/6600ft
-        double windSpeed8000 = getModifiedWindSpeed(8000, missionValues.getWind().getSpeed()); // "8000" Wind is 8000m/26000ft
+        double windSpeedBase = missionValues.getWind().getSpeed();
+        double modifiedWindSpeed = getModifiedBaseWindSpeed(windSpeedBase);
+        double windSpeedGround = getCorrectedGroundWindSpeed(modifiedWindSpeed, stationAVWX.getElevationM()); // "Ground" Wind is 10m/33ft but also sets ~500m/1660ft
+        double windSpeed2000 = getModifiedWindSpeed(2000, modifiedWindSpeed); // "2000" Wind is 2000m/6600ft
+        double windSpeed8000 = getModifiedWindSpeed(8000, modifiedWindSpeed); // "8000" Wind is 8000m/26000ft
 
         double windDirectionGround = invertWindDirection(missionValues.getWind().getDirection()); // Wind Direction is backwards in DCS.
         double windDirection2000 = randomizeWindDirection(missionValues.getWind().getDirection());
@@ -51,6 +53,23 @@ public class MissionEditor {
         mission = replaceQnh(mission, qffMmHg, missionValues.getStation().getQnh());
 
         return mission;
+    }
+
+    /**
+     * This method modifies a base wind speed value using a soft limiting function.
+     * For wind speeds above the limit, a logarithmic scaling is applied such that the output increases,
+     * but at a decreasing rate. This has the effect of 'softly' limiting the wind speed to the limit.
+     * The rate of increase above the limit is controlled by the 'steepness' parameter.
+     */
+    private double getModifiedBaseWindSpeed(double windSpeedBase) {
+        double limit = 15.0;
+        double steepness = 3;
+
+        if (windSpeedBase <= limit) {
+            return windSpeedBase;
+        } else {
+            return limit + steepness * Math.log(windSpeedBase - limit + 1);
+        }
     }
 
     @NotNull
@@ -80,8 +99,8 @@ public class MissionEditor {
         mission = matcher.replaceAll("[\"temperature\"] = \\$stationTempC,\n"
                 .replace("$stationTempC", Double.toString(stationTempC)));
         log.info("Station Temperature set to: " + stationTempC
-                 + " C" + " / Sea Level Temperature set to: "
-                 + Math.round(stationTempC + TEMP_LAPSE_RATE_C * (stationAVWX.getElevationFt() / 1000)) + " C");
+                + " C" + " / Sea Level Temperature set to: "
+                + Math.round(stationTempC + TEMP_LAPSE_RATE_C * (stationAVWX.getElevationFt() / 1000)) + " C");
         return mission;
     }
 
@@ -140,9 +159,9 @@ public class MissionEditor {
                         .replace("$windGroundDir", Double.toString(windDirectionGround)));
 
         log.info("Wind at Ground set to: "
-                 + Math.round(windSpeedGround) + " m/s ("
-                 + Math.round(windSpeedGround / KNOTS_TO_METERS) + " kts) "
-                 + Math.floor(invertWindDirection(windDirectionGround)) + "°");
+                + Math.round(windSpeedGround) + " m/s ("
+                + Math.round(windSpeedGround / KNOTS_TO_METERS) + " kts) "
+                + Math.floor(invertWindDirection(windDirectionGround)) + "°");
         return mission;
     }
 
@@ -159,9 +178,9 @@ public class MissionEditor {
                         .replace("$wind2000Speed", Double.toString(windSpeed2000))
                         .replace("$wind2000Dir", Double.toString(windDirection2000)));
         log.info("Wind at 2000 set to: "
-                 + Math.round(windSpeed2000) + " m/s ("
-                 + Math.round(windSpeed2000 / KNOTS_TO_METERS) + " kts) "
-                 + Math.floor(invertWindDirection(windDirection2000)) + "°");
+                + Math.round(windSpeed2000) + " m/s ("
+                + Math.round(windSpeed2000 / KNOTS_TO_METERS) + " kts) "
+                + Math.floor(invertWindDirection(windDirection2000)) + "°");
         return mission;
     }
 
@@ -178,9 +197,9 @@ public class MissionEditor {
                         .replace("$wind8000Speed", Double.toString(windSpeed8000))
                         .replace("$wind8000Dir", Double.toString(windDirection8000)));
         log.info("Wind at 8000 set to: "
-                 + Math.round(windSpeed8000) + " m/s ("
-                 + Math.round(windSpeed8000 / KNOTS_TO_METERS) + " kts) "
-                 + Math.floor(invertWindDirection(windDirection8000)) + "°");
+                + Math.round(windSpeed8000) + " m/s ("
+                + Math.round(windSpeed8000 / KNOTS_TO_METERS) + " kts) "
+                + Math.floor(invertWindDirection(windDirection8000)) + "°");
         return mission;
     }
 
@@ -222,8 +241,7 @@ public class MissionEditor {
     }
 
     private double getCorrectedGroundWindSpeed(double windSpeedKnots, double stationAltitude) {
-        double windSpeedMultiplier;
-        windSpeedMultiplier = Math.abs((0.5 / 500) * stationAltitude - 1);
+        double windSpeedMultiplier = Math.abs((0.5 / 500) * stationAltitude - 1);
         return windSpeedKnots * windSpeedMultiplier * KNOTS_TO_METERS;
     }
 
