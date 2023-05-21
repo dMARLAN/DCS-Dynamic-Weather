@@ -63,7 +63,7 @@ public class MissionEditor {
      */
     private double getModifiedBaseWindSpeed(double windSpeedBase) {
         double limit = 15.0;
-        double steepness = 3;
+        double steepness = 2.5;
 
         if (windSpeedBase <= limit) {
             return windSpeedBase;
