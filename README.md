@@ -13,9 +13,7 @@ Optionally outputs METAR to Discord Webhook or Google Sheets Cell for KBC's (Kne
 - Automatically desanitizes `\Program Files\Eagle Dynamics\DCS World OpenBeta\Scripts\MissionScripting.lua`
   - Be aware of running other untrusted DCS scripts when `MissionScripting.lua` is desanitized.
 
-I'm a new programmer, if you notice any bugs or have any suggestions, please let me know! If you enjoyed this project, consider giving it a star!
 
-Donations are welcome :)
 
 [![](https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_37x23.jpg)](https://www.paypal.com/paypalme/CPenarsky?country.x=CA&locale.x=en_US)
 
