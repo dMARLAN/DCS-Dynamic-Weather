@@ -21,7 +21,7 @@ Optionally outputs METAR to Discord Webhook or Google Sheets Cell for KBC's (Kne
 - [7zip](https://www.7-zip.org/)
 - [Java 17](https://www.oracle.com/java/technologies/downloads/#jdk17-windows) (Class File Version 61.0 or newer)
 - [Dedicated DCS Server](https://www.digitalcombatsimulator.com/en/downloads/world/server_beta/)
-- Windows (Probably? I haven't tested/built for other OS yet...)
+- Windows
 
 ## Installation
 #### Initial Set-up
