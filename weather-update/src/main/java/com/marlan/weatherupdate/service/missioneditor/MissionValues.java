@@ -151,17 +151,23 @@ public class MissionValues {
                 assignedHour = ((float)(closestEvent - preEventTime) / 3600) % 24;
             }
         } else {
-            switch (dtoWeatherType) {
-                case "real0400" -> assignedHour = 4;
-                case "real0600" -> assignedHour = 6;
-                case "real1800" -> assignedHour = 18;
-                case "real2200" -> assignedHour = 22;
-                case "real0000", "clearNight" -> assignedHour = 0;
-                default -> assignedHour = 12;
+            Pattern pattern = Pattern.compile("(real|clear)(\\d{4})");
+            Matcher matcher = pattern.matcher(dtoWeatherType);
+
+            if (matcher.matches()) {
+                String timeStr = matcher.group(2);
+                int hour = Integer.parseInt(timeStr.substring(0, 2));
+                int minute = Integer.parseInt(timeStr.substring(2, 4));
+                assignedHour =  hour + minute / 60.0f;
+            } else if ("clearNight".equals(dtoWeatherType)) {
+                assignedHour = 0.0f;
+            } else {
+                assignedHour = 12.0f;
             }
         }
         return assignedHour;
     }
+
 
     private List<Integer> getCVEventStarts() {
         List<Integer> cvEventStarts = new ArrayList<>();
