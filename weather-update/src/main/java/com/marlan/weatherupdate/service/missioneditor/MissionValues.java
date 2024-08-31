@@ -21,6 +21,9 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class MissionValues {
     private static final Log log = Log.getInstance();
     private static final double ISA_TEMP_C = 15;
