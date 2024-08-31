@@ -168,7 +168,6 @@ public class MissionValues {
         return assignedHour;
     }
 
-
     private List<Integer> getCVEventStarts() {
         List<Integer> cvEventStarts = new ArrayList<>();
         int cyclicWindows = config.getCyclicWindows();
