@@ -133,7 +133,7 @@ public class MissionEditor {
 
     @NotNull
     private String replaceHour(String mission, float hour) {
-        Pattern pattern = Pattern.compile("(?:\\s{4}|\\t)\\[\"start_time\"]\\s=\\s.*,", Pattern.MULTILINE);
+        Pattern pattern = Pattern.compile("^(?:\\s{4}|\\t)\\[\"start_time\"]\\s=\\s.*,$", Pattern.MULTILINE);
         Matcher matcher = pattern.matcher(mission);
         if (!matcher.find()) {
             log.error("Regex match failed, Hour not set.");
